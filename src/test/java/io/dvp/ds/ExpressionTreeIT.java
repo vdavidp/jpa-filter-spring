@@ -14,7 +14,7 @@ public class ExpressionTreeIT {
 
     @Test
     public void performSimpleSum() {
-        ExpressionTree tree = ExpressionTree.build("2+3", bOp, new NumberOperand());
+        ExpressionTree tree = ExpressionTree.build("2 + 3", bOp, new NumberOperand());
         assertEquals("[[2]+[3]]", tree.toString());
     }
 }

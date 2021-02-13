@@ -19,6 +19,9 @@ public class ExpressionTree {
         int i = 0;
 
         for ( ; i < expression.length() - 1; i++) {
+            if (expression.charAt(i) == ' ') {
+                continue;
+            }
             exp += expression.charAt(i);
             Optional<Symbol> curr = matches.apply(exp);
             Optional<Symbol> next = matches.apply(exp + expression.charAt(i + 1));

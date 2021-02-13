@@ -31,7 +31,7 @@ public class ExpressionTreeTest {
         when(left.merge(op)).thenReturn(op);
         when(op.merge(right)).thenReturn(op);
 
-        ExpressionTree et = ExpressionTree.build("4+3", operatorProto, operandProto);
+        ExpressionTree et = ExpressionTree.build("4 + 3", operatorProto, operandProto);
 
         verify(left).merge(op);
         verify(op).merge(right);
