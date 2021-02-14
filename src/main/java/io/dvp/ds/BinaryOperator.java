@@ -1,7 +1,7 @@
 package io.dvp.ds;
 
 public abstract class BinaryOperator implements Symbol {
-    private Symbol left, right;
+    protected Symbol left, right;
 
     @Override
     public boolean matches(String symbol) {
@@ -14,15 +14,14 @@ public abstract class BinaryOperator implements Symbol {
     public Symbol merge(Symbol s) {
         if (left == null) {
             left = s;
+            return this;
         } else if (right == null) {
             right = s;
+            return this;
+        } else {
+            s.merge(this);
+            return s;
         }
-        return this;
-    }
-
-    @Override
-    public Symbol copy(String symbol) {
-        return this;
     }
 
     @Override

@@ -20,6 +20,13 @@ public class ExpressionTree {
 
         for ( ; i < expression.length() - 1; i++) {
             if (expression.charAt(i) == ' ') {
+                if (!"".equals(exp)) {
+                    Optional<Symbol> node = matches.apply(exp);
+                    if (node.isPresent()) {
+                        root = root.merge(node.get());
+                        exp = "";
+                    }
+                }
                 continue;
             }
             exp += expression.charAt(i);
@@ -31,7 +38,7 @@ public class ExpressionTree {
             }
         }
 
-        Optional<Symbol> node = matches.apply(expression.substring(i));
+        Optional<Symbol> node = matches.apply(exp + expression.substring(i));
         if (node.isPresent()) {
             root = root.merge(node.get());
         }
