@@ -1,17 +1,13 @@
 package io.dvp.ds;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+
+import java.util.Optional;
 
 @RequiredArgsConstructor
 public class BinaryOperator implements Symbol {
     private final String symbol;
     private Symbol left, right;
-
-    @Override
-    public boolean matches(String exp) {
-        return symbol.equals(exp);
-    }
 
     @Override
     public Symbol merge(Symbol s) {
@@ -28,8 +24,12 @@ public class BinaryOperator implements Symbol {
     }
 
     @Override
-    public Symbol copy(String symbol) {
-        return new BinaryOperator(this.symbol);
+    public Optional<Symbol> copy(String exp) {
+        if (symbol.equals(exp)) {
+            return Optional.of(new BinaryOperator(this.symbol));
+        } else {
+            return Optional.empty();
+        }
     }
 
     @Override

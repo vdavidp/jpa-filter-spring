@@ -1,7 +1,10 @@
 package io.dvp.ds;
 
+import java.util.Optional;
+
 public interface Symbol {
-    boolean matches(String symbol);
+
     Symbol merge(Symbol s);
-    Symbol copy(String symbol);
+
+    Optional<Symbol> copy(String symbol);
 }

@@ -42,8 +42,9 @@ public class ExpressionTree {
 
     private static Optional<Symbol> findMatch(String exp, Symbol[] symbols) {
         List<Symbol> result = Arrays.stream(symbols)
-                .filter(s -> s.matches(exp))
                 .map(s -> s.copy(exp))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .collect(toList());
         return result.size() > 0 ? Optional.of(result.get(0)): Optional.empty();
     }
@@ -56,17 +57,12 @@ public class ExpressionTree {
     private static class NullSymbol implements Symbol {
 
         @Override
-        public boolean matches(String symbol) {
-            throw new RuntimeException("Not implemented");
-        }
-
-        @Override
         public Symbol merge(Symbol s) {
             return s;
         }
 
         @Override
-        public Symbol copy(String symbol) {
+        public Optional<Symbol> copy(String symbol) {
             throw new RuntimeException("Not implemented");
         }
     }

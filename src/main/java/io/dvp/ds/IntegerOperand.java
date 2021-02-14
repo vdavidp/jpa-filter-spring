@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 import java.math.BigInteger;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 @NoArgsConstructor
@@ -14,19 +15,18 @@ public class IntegerOperand implements Symbol {
     private BigInteger number;
 
     @Override
-    public boolean matches(String symbol) {
-        return integerPtrn.matcher(symbol).matches();
-    }
-
-    @Override
     public Symbol merge(Symbol s) {
         s.merge(this);
         return s;
     }
 
     @Override
-    public Symbol copy(String exp) {
-        return new IntegerOperand(new BigInteger(exp));
+    public Optional<Symbol> copy(String exp) {
+        if (integerPtrn.matcher(exp).matches()) {
+            return Optional.of(new IntegerOperand(new BigInteger(exp)));
+        } else {
+            return Optional.empty();
+        }
     }
 
     @Override
