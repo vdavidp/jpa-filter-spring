@@ -1,86 +1,73 @@
 package io.dvp.ds;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
+
+import static java.util.stream.Collectors.toList;
 
 @Slf4j
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class ExpressionTree {
-    private Symbol root;
+    private final Symbol root;
 
     public static ExpressionTree build(String expression, Symbol...symbols) {
-        Function<String, Optional<Symbol>> matches = s -> findSymbol(symbols, s);
-        Symbol root = new TextSymbol(expression);
-        String exp = "";
+        Symbol root = new NullSymbol();
+        String subExpr = "";
         int i = 0;
-
         for ( ; i < expression.length() - 1; i++) {
             if (expression.charAt(i) == ' ') {
-                if (!"".equals(exp)) {
-                    Optional<Symbol> node = matches.apply(exp);
-                    if (node.isPresent()) {
-                        root = root.merge(node.get());
-                        exp = "";
-                    }
-                }
                 continue;
             }
-            exp += expression.charAt(i);
-            Optional<Symbol> curr = matches.apply(exp);
-            Optional<Symbol> next = matches.apply(exp + expression.charAt(i + 1));
-            if (curr.isPresent() && !next.isPresent()) {
-                root = root.merge(curr.get());
-                exp = "";
+
+            subExpr += expression.charAt(i);
+            Optional<Symbol> currMatch = findMatch(subExpr, symbols);
+            Optional<Symbol> nextMatch = findMatch(subExpr + expression.charAt(i+1), symbols);
+            if (currMatch.isPresent() && !nextMatch.isPresent()) {
+                root  = root.merge(currMatch.get());
+                subExpr = "";
             }
         }
 
-        Optional<Symbol> node = matches.apply(exp + expression.substring(i));
-        if (node.isPresent()) {
-            root = root.merge(node.get());
+        Optional<Symbol> match = findMatch(subExpr + expression.substring(i), symbols);
+        if (match.isPresent()) {
+            root = root.merge(match.get());
         }
-
         return new ExpressionTree(root);
     }
 
-    private static Optional<Symbol> findSymbol(Symbol[] symbols, String exp) {
-        for (Symbol s: symbols) {
-            if (s.matches(exp)) {
-                return Optional.of(s.copy(exp));
-            }
-        }
-        return Optional.empty();
+    private static Optional<Symbol> findMatch(String exp, Symbol[] symbols) {
+        List<Symbol> result = Arrays.stream(symbols)
+                .filter(s -> s.matches(exp))
+                .map(s -> s.copy(exp))
+                .collect(toList());
+        return result.size() > 0 ? Optional.of(result.get(0)): Optional.empty();
     }
 
+    @Override
     public String toString() {
         return root.toString();
     }
 
-}
+    private static class NullSymbol implements Symbol {
 
-@AllArgsConstructor
-class TextSymbol implements Symbol {
-    private String text;
+        @Override
+        public boolean matches(String symbol) {
+            throw new RuntimeException("Not implemented");
+        }
 
-    @Override
-    public boolean matches(String symbol) {
-        return true;
-    }
+        @Override
+        public Symbol merge(Symbol s) {
+            return s;
+        }
 
-    @Override
-    public Symbol merge(Symbol s) {
-        return s;
-    }
-
-    @Override
-    public Symbol copy(String exp) {
-        throw new RuntimeException("Method not implemented");
-    }
-
-    public String toString() {
-        return text;
+        @Override
+        public Symbol copy(String symbol) {
+            throw new RuntimeException("Not implemented");
+        }
     }
 }

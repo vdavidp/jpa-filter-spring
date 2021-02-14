@@ -1,21 +1,24 @@
 package io.dvp.ds;
 
-public abstract class BinaryOperator implements Symbol {
-    protected Symbol left, right;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+public class BinaryOperator implements Symbol {
+    private final String symbol;
+    private Symbol left, right;
 
     @Override
-    public boolean matches(String symbol) {
-        return getSymbol().equals(symbol);
+    public boolean matches(String exp) {
+        return symbol.equals(exp);
     }
-
-    protected abstract String getSymbol();
 
     @Override
     public Symbol merge(Symbol s) {
         if (left == null) {
             left = s;
             return this;
-        } else if (right == null) {
+        } if (right == null) {
             right = s;
             return this;
         } else {
@@ -25,7 +28,12 @@ public abstract class BinaryOperator implements Symbol {
     }
 
     @Override
+    public Symbol copy(String symbol) {
+        return new BinaryOperator(this.symbol);
+    }
+
+    @Override
     public String toString() {
-        return "[" + left + getSymbol() + right + "]";
+        return "[" + left + symbol + right + "]";
     }
 }

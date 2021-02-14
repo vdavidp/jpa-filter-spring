@@ -1,46 +1,39 @@
 package io.dvp.ds;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.Spy;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.junit.jupiter.api.TestTemplate;
+import org.springframework.test.context.TestPropertySource;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
 public class BinaryOperatorTest {
-    @Mock
-    Symbol left, right;
+    BinaryOperator op = new BinaryOperator("+");
 
-    @Spy
-    BinaryOperator operator, operator2;
-
-    @BeforeEach
-    public void init() {
-        when(operator.getSymbol()).thenReturn(":");
+    @Test
+    void match() {
+        assertTrue(op.matches("+"));
+        assertFalse(op.matches("++"));
+        assertFalse(op.matches("23"));
+        assertFalse(op.matches("+ "));
     }
 
     @Test
-    public void match() {
-        assertTrue(operator.matches(":"));
-        assertFalse(operator.matches(":d"));
-        assertFalse(operator.matches("3"));
+    void copy() {
+        Symbol other = op.copy("+");
+        assertNotEquals(other, op);
     }
 
     @Test
-    public void merge() {
-        when(operator2.getSymbol()).thenReturn(":");
-        when(left.toString()).thenReturn("[3]");
-        when(right.toString()).thenReturn("[5]");
+    void merge() {
+        Symbol operand1 = new IntegerOperand().copy("12");
+        Symbol operand2 = new IntegerOperand().copy("9");
 
-        assertEquals(operator, operator.merge(left));
-        assertEquals(operator, operator.merge(right));
-        assertEquals(operator2, operator.merge(operator2));
-        assertEquals("[[[3]:[5]]:null]", operator2.toString());
+        assertEquals(op, op.merge(operand1));
+        assertEquals(op, op.merge(operand2));
+        assertEquals("[[12]+[9]]", op.toString());
+
+        Symbol op2 = op.merge(new BinaryOperator("+"));
+        assertNotEquals(op2, op);
+        assertEquals("[[[12]+[9]]+null]", op2.toString());
     }
 }
-
