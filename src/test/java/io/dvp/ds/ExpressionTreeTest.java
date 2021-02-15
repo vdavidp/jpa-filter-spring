@@ -52,4 +52,12 @@ public class ExpressionTreeTest {
                 new BinaryOperator("%", 30));
         assertEquals("[[[14]+[[12]/[4]]]+[[3]/[9]]]", et.toString());
     }
+
+    @Test
+    void parseDecimalValue() {
+        ExpressionTree et = ExpressionTree.build("4.32 + 22.2",
+                new IntegerOperand(), new BinaryOperator("+", 10),
+                new DotOperator(50));
+        assertEquals("[[4.32]+[22.2]]", et.toString());
+    }
 }

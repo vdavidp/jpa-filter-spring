@@ -22,11 +22,4 @@ public class IntegerOperandTest {
         assertFalse(number.copy(" 12 ").isPresent());
         assertFalse(number.copy("").isPresent());
     }
-
-    @Test
-    void merge() {
-        Optional<Symbol> num = number.copy("9");
-        Symbol other = num.get().merge(new BinaryOperator("+", 10));
-        assertEquals("[[9]+null]", other.toString());
-    }
 }
