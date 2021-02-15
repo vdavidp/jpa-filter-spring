@@ -30,6 +30,11 @@ public class IntegerOperand implements Symbol {
     }
 
     @Override
+    public int getWeight() {
+        return 100;
+    }
+
+    @Override
     public String toString() {
         return "[" + number + "]";
     }

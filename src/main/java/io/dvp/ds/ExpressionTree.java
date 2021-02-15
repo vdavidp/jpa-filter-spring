@@ -65,5 +65,10 @@ public class ExpressionTree {
         public Optional<Symbol> copy(String symbol) {
             throw new RuntimeException("Not implemented");
         }
+
+        @Override
+        public int getWeight() {
+            throw new RuntimeException();
+        }
     }
 }

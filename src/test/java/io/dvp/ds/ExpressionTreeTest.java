@@ -14,13 +14,42 @@ public class ExpressionTreeTest {
 
     @Test
     void parseBinaryOperation() {
-        ExpressionTree et = ExpressionTree.build("84 + 31", new IntegerOperand(), new BinaryOperator("+"));
+        ExpressionTree et = ExpressionTree.build("84 + 31", new IntegerOperand(), new BinaryOperator("+", 10));
         assertEquals("[[84]+[31]]", et.toString());
     }
 
     @Test
     void parseChainedBinaryOperation() {
-        ExpressionTree et = ExpressionTree.build("4 + 5 + 123", new IntegerOperand(), new BinaryOperator("+"));
+        ExpressionTree et = ExpressionTree.build("4 + 5 + 123", new IntegerOperand(), new BinaryOperator("+", 10));
         assertEquals("[[[4]+[5]]+[123]]", et.toString());
+    }
+
+    @Test
+    void parseOperationWithTwoDifferentOperatorPrecedence() {
+        ExpressionTree et = ExpressionTree.build("14 + 12 / 4",
+                new IntegerOperand(),
+                new BinaryOperator("+", 10),
+                new BinaryOperator("/", 20));
+        assertEquals("[[14]+[[12]/[4]]]", et.toString());
+    }
+
+    @Test
+    void parseOperationWithThreeDifferentOperatorPrecedence() {
+        ExpressionTree et = ExpressionTree.build("14 + 12 / 4 % 3",
+                new IntegerOperand(),
+                new BinaryOperator("+", 10),
+                new BinaryOperator("/", 20),
+                new BinaryOperator("%", 30));
+        assertEquals("[[14]+[[[12]/[4]]%[3]]]", et.toString());
+    }
+
+    @Test
+    void parseOperationWithTwoDifferentOperatorPrecedenceMultipleOccurrences() {
+        ExpressionTree et = ExpressionTree.build("14 + 12 / 4 + 3 / 9",
+                new IntegerOperand(),
+                new BinaryOperator("+", 10),
+                new BinaryOperator("/", 20),
+                new BinaryOperator("%", 30));
+        assertEquals("[[[14]+[[12]/[4]]]+[[3]/[9]]]", et.toString());
     }
 }

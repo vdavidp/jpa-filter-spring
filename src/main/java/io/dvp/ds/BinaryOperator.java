@@ -1,5 +1,6 @@
 package io.dvp.ds;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;
@@ -7,6 +8,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class BinaryOperator implements Symbol {
     private final String symbol;
+    @Getter
+    private final int weight;
+
     private Symbol left, right;
 
     @Override
@@ -17,6 +21,9 @@ public class BinaryOperator implements Symbol {
         } if (right == null) {
             right = s;
             return this;
+        } else if (s.getWeight() > weight) {
+            right = s.merge(right);
+            return this;
         } else {
             s.merge(this);
             return s;
@@ -26,7 +33,7 @@ public class BinaryOperator implements Symbol {
     @Override
     public Optional<Symbol> copy(String exp) {
         if (symbol.equals(exp)) {
-            return Optional.of(new BinaryOperator(this.symbol));
+            return Optional.of(new BinaryOperator(this.symbol, this.weight));
         } else {
             return Optional.empty();
         }
