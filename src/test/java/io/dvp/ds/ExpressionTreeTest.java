@@ -2,6 +2,9 @@ package io.dvp.ds;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ExpressionTreeTest {
@@ -54,10 +57,13 @@ public class ExpressionTreeTest {
     }
 
     @Test
-    void parseDecimalValue() {
+    void parseFactoryOperator() {
+        List<Symbol> list = new ArrayList<Symbol>();
+        list.add(new DecimalOperand());
+
         ExpressionTree et = ExpressionTree.build("4.32 + 22.2",
                 new IntegerOperand(), new BinaryOperator("+", 10),
-                new DotOperator(50));
+                new FactoryOperator(".", 50, list));
         assertEquals("[[4.32]+[22.2]]", et.toString());
     }
 }

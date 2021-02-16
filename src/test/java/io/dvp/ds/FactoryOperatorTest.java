@@ -2,10 +2,11 @@ package io.dvp.ds;
 
 import org.junit.jupiter.api.Test;
 
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class DotOperatorTest {
-    DotOperator op = new DotOperator(50);
+public class FactoryOperatorTest {
+    FactoryOperator op = new FactoryOperator(".", 50, singletonList(new DecimalOperand()));
 
     @Test
     void copy() {

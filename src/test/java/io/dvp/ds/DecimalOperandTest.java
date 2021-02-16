@@ -20,13 +20,4 @@ public class DecimalOperandTest {
         assertFalse(op.copy("a").isPresent());
         assertFalse(op.copy("").isPresent());
     }
-
-    @Test
-    void merge() {
-        Symbol num = op.copy("12.32").get();
-        Symbol binaryOp = new BinaryOperator("+", 10);
-        assertSame(binaryOp, num.merge(binaryOp));
-        assertEquals("[[12.32]+null]", binaryOp.toString());
-
-    }
 }
