@@ -10,14 +10,14 @@ import java.util.regex.Pattern;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor
-public class DecimalOperand extends NumberOperand {
+public class DecimalFactory extends NumberOperand {
     private static Pattern decimalPattern = Pattern.compile("^[0-9]+\\.[0-9]+$");
     private BigDecimal number;
 
     @Override
     public Optional<Symbol> copy(String exp) {
         if (decimalPattern.matcher(exp).find()) {
-            return Optional.of(new DecimalOperand(new BigDecimal(exp)));
+            return Optional.of(new DecimalFactory(new BigDecimal(exp)));
         } else {
             return Optional.empty();
         }

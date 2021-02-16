@@ -4,8 +4,8 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class DecimalOperandTest {
-    DecimalOperand op = new DecimalOperand();
+public class DecimalFactoryTest {
+    DecimalFactory op = new DecimalFactory();
 
     @Test
     void copy() {

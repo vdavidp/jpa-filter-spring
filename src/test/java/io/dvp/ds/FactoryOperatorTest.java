@@ -6,7 +6,7 @@ import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class FactoryOperatorTest {
-    FactoryOperator op = new FactoryOperator(".", 50, singletonList(new DecimalOperand()));
+    FactoryOperator op = new FactoryOperator(".", 50, singletonList(new DecimalFactory()));
 
     @Test
     void copy() {
@@ -26,5 +26,10 @@ public class FactoryOperatorTest {
         Symbol other = op.merge(right);
         assertNotSame(other, op);
         assertEquals("[938.32]", other.toString());
+    }
+
+    @Test
+    void mergeChained() {
+
     }
 }
