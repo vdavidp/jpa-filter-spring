@@ -18,13 +18,17 @@ public class ExpressionTreeTest {
 
     @Test
     void parseBinaryOperation() {
-        ExpressionTree et = ExpressionTree.build("84 + 31", new IntegerOperand(), new BinaryOperator("+", 10));
+        ExpressionTree et = ExpressionTree.build("84 + 31",
+                new IntegerOperand(),
+                new BinaryOperator("+", 10));
         assertEquals("[[84]+[31]]", et.toString());
     }
 
     @Test
     void parseChainedBinaryOperation() {
-        ExpressionTree et = ExpressionTree.build("4 + 5 + 123", new IntegerOperand(), new BinaryOperator("+", 10));
+        ExpressionTree et = ExpressionTree.build("4 + 5 + 123",
+                new IntegerOperand(),
+                new BinaryOperator("+", 10));
         assertEquals("[[[4]+[5]]+[123]]", et.toString());
     }
 
@@ -69,9 +73,9 @@ public class ExpressionTreeTest {
 
     @Test
     void parseChainedFactoryOperator() {
-        List<Symbol> factories = Arrays.asList(new DecimalFactory(), new CompoundVariableFactory());
+        List<Symbol> factories = Arrays.asList(new DecimalFactory());
 
-        ExpressionTree et = ExpressionTree.build("obj.prop.subProp + 4.32 + otherProp",
+        ExpressionTree et = ExpressionTree.build("{obj.prop.subProp} + 4.32 + {otherProp}",
                 new IntegerOperand(),
                 new VariableOperand(),
                 new BinaryOperator("+", 10),
