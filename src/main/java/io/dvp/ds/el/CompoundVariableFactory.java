@@ -1,4 +1,4 @@
-package io.dvp.ds;
+package io.dvp.ds.el;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
