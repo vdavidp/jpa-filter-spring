@@ -13,10 +13,12 @@ import static java.util.stream.Collectors.toList;
 @RequiredArgsConstructor
 public class FactoryOperator implements Symbol {
     private static Pattern extractor = Pattern.compile("^\\[(.+)]$");
+
     private final String symbol;
     @Getter
     private final int weight;
     private final List<Symbol> symbols;
+
     private Symbol left, right;
 
     @Override

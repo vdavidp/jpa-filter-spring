@@ -1,17 +1,14 @@
 package io.dvp.ds;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
-public class NumberOperandTest {
-    NumberOperand number = spy(NumberOperand.class);
+public class OperandTest {
+    Operand number = spy(Operand.class);
 
     @BeforeEach
     void init() {

@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class IntegerOperand extends NumberOperand {
+public class IntegerOperand extends Operand {
     private static Pattern integerPattern = Pattern.compile("^[0-9]+$");
     private BigInteger number;
 

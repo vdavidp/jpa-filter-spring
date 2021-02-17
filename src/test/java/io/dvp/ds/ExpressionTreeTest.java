@@ -69,12 +69,13 @@ public class ExpressionTreeTest {
 
     @Test
     void parseChainedFactoryOperator() {
-        List<Symbol> factories = Arrays.asList(new DecimalFactory(), new VariableFactory());
+        List<Symbol> factories = Arrays.asList(new DecimalFactory(), new CompoundVariableFactory());
 
-        ExpressionTree et = ExpressionTree.build("obj.prop.subProp + 4.32",
+        ExpressionTree et = ExpressionTree.build("obj.prop.subProp + 4.32 + otherProp",
                 new IntegerOperand(),
+                new VariableOperand(),
                 new BinaryOperator("+", 10),
                 new FactoryOperator(".", 50, factories));
-        assertEquals("[[obj.prop.subProp]+[4.32]]", et.toString());
+        assertEquals("[[[obj.prop.subProp]+[4.32]]+[otherProp]]", et.toString());
     }
 }

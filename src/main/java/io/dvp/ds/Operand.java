@@ -2,7 +2,7 @@ package io.dvp.ds;
 
 import lombok.Getter;
 
-public abstract class NumberOperand implements Symbol {
+public abstract class Operand implements Symbol {
     @Getter
     private int weight = 100;
 
