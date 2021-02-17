@@ -7,6 +7,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 public class BinaryOperator implements Symbol {
+
     private final String symbol;
     @Getter
     private final int weight;

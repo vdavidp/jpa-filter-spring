@@ -4,20 +4,20 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
-import java.math.BigInteger;
+import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
-@NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class IntegerOperand extends Operand {
-    private static Pattern integerPattern = Pattern.compile("^[0-9]+$");
-    private BigInteger number;
+@NoArgsConstructor
+public class DecimalFactory extends Operand {
+    private static Pattern decimalPattern = Pattern.compile("^[0-9]+\\.[0-9]+$");
+    private BigDecimal number;
 
     @Override
     public Optional<Symbol> copy(String exp) {
-        if (integerPattern.matcher(exp).find()) {
-            return Optional.of(new IntegerOperand(new BigInteger(exp)));
+        if (decimalPattern.matcher(exp).find()) {
+            return Optional.of(new DecimalFactory(new BigDecimal(exp)));
         } else {
             return Optional.empty();
         }

@@ -3,21 +3,21 @@ package io.dvp.ds;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
-import java.math.BigInteger;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
-@NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class IntegerOperand extends Operand {
-    private static Pattern integerPattern = Pattern.compile("^[0-9]+$");
-    private BigInteger number;
+@NoArgsConstructor
+public class VariableOperand extends Operand {
+    private static final Pattern variablePattern = Pattern.compile("^[a-zA-Z][a-zA-Z0-9]*$");
+    private String value;
 
     @Override
     public Optional<Symbol> copy(String exp) {
-        if (integerPattern.matcher(exp).find()) {
-            return Optional.of(new IntegerOperand(new BigInteger(exp)));
+        if (variablePattern.matcher(exp).find()) {
+            return Optional.of(new VariableOperand(exp));
         } else {
             return Optional.empty();
         }
@@ -25,6 +25,6 @@ public class IntegerOperand extends Operand {
 
     @Override
     public String toString() {
-        return "[" + number + "]";
+        return "[" + value + "]";
     }
 }

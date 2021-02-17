@@ -2,6 +2,10 @@ package io.dvp.ds;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+import java.util.List;
+
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ExpressionTreeTest {
@@ -51,5 +55,27 @@ public class ExpressionTreeTest {
                 new BinaryOperator("/", 20),
                 new BinaryOperator("%", 30));
         assertEquals("[[[14]+[[12]/[4]]]+[[3]/[9]]]", et.toString());
+    }
+
+    @Test
+    void parseFactoryOperator() {
+        List<Symbol> factories = singletonList(new DecimalFactory());
+
+        ExpressionTree et = ExpressionTree.build("4.32 + 22.2",
+                new IntegerOperand(), new BinaryOperator("+", 10),
+                new FactoryOperator(".", 50, factories));
+        assertEquals("[[4.32]+[22.2]]", et.toString());
+    }
+
+    @Test
+    void parseChainedFactoryOperator() {
+        List<Symbol> factories = Arrays.asList(new DecimalFactory(), new CompoundVariableFactory());
+
+        ExpressionTree et = ExpressionTree.build("obj.prop.subProp + 4.32 + otherProp",
+                new IntegerOperand(),
+                new VariableOperand(),
+                new BinaryOperator("+", 10),
+                new FactoryOperator(".", 50, factories));
+        assertEquals("[[[obj.prop.subProp]+[4.32]]+[otherProp]]", et.toString());
     }
 }

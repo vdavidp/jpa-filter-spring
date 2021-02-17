@@ -19,7 +19,7 @@ public class BinaryOperatorTest {
 
     @Test
     void copy() {
-        assertNotEquals(operator, operator.copy("+"));
+        assertNotSame(operator, operator.copy("+").get());
         assertFalse(operator.copy("+ ").isPresent());
         assertFalse(operator.copy("a").isPresent());
         assertFalse(operator.copy("2").isPresent());
