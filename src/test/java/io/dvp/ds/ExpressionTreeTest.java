@@ -43,7 +43,7 @@ public class ExpressionTreeTest {
                 new IntegerOperand(),
                 new BinaryOperator("+", 10),
                 new BinaryOperator("/", 20),
-                new BinaryOperator("%", 30));
+                new BinaryOperator("%", 20));
         assertEquals("[[14]+[[[12]/[4]]%[3]]]", et.toString());
     }
 
@@ -53,7 +53,7 @@ public class ExpressionTreeTest {
                 new IntegerOperand(),
                 new BinaryOperator("+", 10),
                 new BinaryOperator("/", 20),
-                new BinaryOperator("%", 30));
+                new BinaryOperator("%", 20));
         assertEquals("[[[14]+[[12]/[4]]]+[[3]/[9]]]", et.toString());
     }
 
