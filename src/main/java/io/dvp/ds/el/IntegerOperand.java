@@ -11,12 +11,13 @@ import java.util.regex.Pattern;
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class IntegerOperand extends Operand {
-    private static Pattern integerPattern = Pattern.compile("^[0-9]+$");
+
+    private static final Pattern pattern = Pattern.compile("^[0-9]+$");
     private BigInteger number;
 
     @Override
     public Optional<Symbol> copy(String exp) {
-        if (integerPattern.matcher(exp).find()) {
+        if (pattern.matcher(exp).find()) {
             return Optional.of(new IntegerOperand(new BigInteger(exp)));
         } else {
             return Optional.empty();

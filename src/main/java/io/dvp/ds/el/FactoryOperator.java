@@ -12,7 +12,8 @@ import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
 public class FactoryOperator implements Symbol {
-    private static Pattern extractor = Pattern.compile("^\\[(.+)]$");
+
+    private static final Pattern extractorRegex = Pattern.compile("^\\[(.+)]$");
 
     private final String symbol;
     @Getter
@@ -46,7 +47,7 @@ public class FactoryOperator implements Symbol {
     }
 
     private String findRawContent(Symbol s) {
-        Matcher match = extractor.matcher(s.toString());
+        Matcher match = extractorRegex.matcher(s.toString());
         if (!match.find()) {
             throw new RuntimeException("Not able to get raw symbol of " + s);
         }

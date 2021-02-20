@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor
 public class VariableOperand extends Operand {
+
     private static final Pattern pattern = Pattern.compile("^\\{([^{\\s}]+)}$");
     private String value;
 

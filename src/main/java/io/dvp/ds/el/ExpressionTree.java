@@ -13,6 +13,7 @@ import static java.util.stream.Collectors.toList;
 @Slf4j
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class ExpressionTree {
+
     private final Symbol root;
 
     public static ExpressionTree build(String expression, Symbol...symbols) {
