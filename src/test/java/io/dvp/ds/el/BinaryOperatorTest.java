@@ -3,25 +3,40 @@ package io.dvp.ds.el;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Optional;
+import java.util.function.Function;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class BinaryOperatorTest {
     BinaryOperator operator = new BinaryOperator("+", 10);
     Symbol left, right, middle;
 
+    Function<String, Symbol> numFactory = number -> new IntegerOperand().copy(number).get();
+
     @BeforeEach
     void init() {
-        left = new IntegerOperand().copy("12").get();
-        right = new IntegerOperand().copy("9").get();
-        middle = new IntegerOperand().copy("38").get();
+        left = numFactory.apply("12");
+        right = numFactory.apply("9");
+        middle = numFactory.apply("38");
     }
 
     @Test
     void copy() {
-        assertNotSame(operator, operator.copy("+").get());
-        assertFalse(operator.copy("+ ").isPresent());
+        assertValid("+");
+        assertValid(" +");
+        assertValid("    + \t\t ");
         assertFalse(operator.copy("a").isPresent());
         assertFalse(operator.copy("2").isPresent());
+        assertFalse(operator.copy("++").isPresent());
+    }
+
+    void assertValid(String exp) {
+        Optional<Symbol> op = operator.copy(exp);
+        assertTrue(op.isPresent());
+        assertNotSame(operator, op.get());
+        assertSame(BinaryOperator.class, op.get().getClass());
+        assertEquals("[null" + exp.trim() + "null]", op.get().toString());
     }
 
     @Test

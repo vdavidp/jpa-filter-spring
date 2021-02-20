@@ -21,10 +21,6 @@ public class ExpressionTree {
         String subExpr = "";
         int i = 0;
         for ( ; i < expression.length() - 1; i++) {
-            if (expression.charAt(i) == ' ') {
-                continue;
-            }
-
             subExpr += expression.charAt(i);
             Optional<Symbol> currMatch = findMatch(subExpr, symbols);
             Optional<Symbol> nextMatch = findMatch(subExpr + expression.charAt(i+1), symbols);

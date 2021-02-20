@@ -72,8 +72,8 @@ public class ExpressionTreeTest {
     }
 
     @Test
-    void parseChainedFactoryOperator() {
-        List<Symbol> factories = Arrays.asList(new DecimalFactory());
+    void parseVariableOperand() {
+        List<Symbol> factories = singletonList(new DecimalFactory());
 
         ExpressionTree et = ExpressionTree.build("{obj.prop.subProp} + 4.32 + {otherProp}",
                 new IntegerOperand(),
@@ -81,5 +81,13 @@ public class ExpressionTreeTest {
                 new BinaryOperator("+", 10),
                 new FactoryOperator(".", 50, factories));
         assertEquals("[[[obj.prop.subProp]+[4.32]]+[otherProp]]", et.toString());
+    }
+
+    @Test
+    void parseVarcharOperand() {
+        ExpressionTree et = ExpressionTree.build("'Scape with backslashes\\\\' = 'That\\'s all'",
+                new BinaryOperator("=", 10),
+                new VarcharOperand());
+        assertEquals("[[Scape with backslashes\\]=[That's all]]", et.toString());
     }
 }
