@@ -1,6 +1,7 @@
 package io.dvp.ds.el;
 
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -8,12 +9,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 
 @Slf4j
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class ExpressionTree {
 
+    @Getter
     private final Symbol root;
 
     public static ExpressionTree build(String expression, Symbol...symbols) {
@@ -51,6 +54,18 @@ public class ExpressionTree {
         return root.toString();
     }
 
+    public static Symbol[] defaultSymbols() {
+        return new Symbol[] {
+                new IntegerOperand(),
+                new FactoryOperator(".", 30, asList(new DecimalFactory())),
+                new VariableOperand(),
+                new VarcharOperand(),
+                new BinaryOperator("=", 20),
+                new BinaryOperator("and", 10),
+                new BinaryOperator("or", 10)
+        };
+    }
+
     private static class NullSymbol implements Symbol {
 
         @Override
@@ -66,6 +81,11 @@ public class ExpressionTree {
         @Override
         public int getWeight() {
             throw new RuntimeException();
+        }
+
+        @Override
+        public void visit(Visitor visitor) {
+            throw new RuntimeException("Not implemented");
         }
     }
 }

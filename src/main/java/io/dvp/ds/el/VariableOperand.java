@@ -2,6 +2,7 @@ package io.dvp.ds.el;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.Optional;
@@ -13,6 +14,7 @@ import java.util.regex.Pattern;
 public class VariableOperand extends Operand {
 
     private static final Pattern pattern = Pattern.compile("^\\{([^{\\s}]+)}$");
+    @Getter
     private String value;
 
     @Override
@@ -23,6 +25,11 @@ public class VariableOperand extends Operand {
         } else {
             return Optional.empty();
         }
+    }
+
+    @Override
+    public void visit(Visitor visitor) {
+        visitor.accept(this);
     }
 
     @Override

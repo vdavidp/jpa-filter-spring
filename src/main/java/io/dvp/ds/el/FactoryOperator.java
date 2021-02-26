@@ -64,6 +64,11 @@ public class FactoryOperator implements Symbol {
     }
 
     @Override
+    public void visit(Visitor visitor) {
+        throw new RuntimeException("Not implemented");
+    }
+
+    @Override
     public String toString() {
         return "{" + left + "." + right + "}";
     }

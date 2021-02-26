@@ -1,6 +1,7 @@
 package io.dvp.ds.el;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.Optional;
@@ -15,6 +16,7 @@ public class VarcharOperand extends Operand {
 
     private static final Pattern pattern = Pattern.compile("^'((?:[^\\\\']|\\\\'|\\\\\\\\)*)'$");
 
+    @Getter
     private String value;
 
     @Override
@@ -26,6 +28,11 @@ public class VarcharOperand extends Operand {
         } else {
             return Optional.empty();
         }
+    }
+
+    @Override
+    public void visit(Visitor visitor) {
+        visitor.accept(this);
     }
 
     @Override

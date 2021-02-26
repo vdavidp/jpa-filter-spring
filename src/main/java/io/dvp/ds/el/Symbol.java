@@ -9,4 +9,6 @@ public interface Symbol {
     Optional<Symbol> copy(String exp);
 
     int getWeight();
+
+    void visit(Visitor visitor);
 }

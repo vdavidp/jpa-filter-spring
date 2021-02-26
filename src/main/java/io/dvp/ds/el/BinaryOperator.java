@@ -8,6 +8,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class BinaryOperator implements Symbol {
 
+    @Getter
     private final String symbol;
     @Getter
     private final int weight;
@@ -38,6 +39,13 @@ public class BinaryOperator implements Symbol {
         } else {
             return Optional.empty();
         }
+    }
+
+    @Override
+    public void visit(Visitor visitor) {
+        left.visit(visitor);
+        right.visit(visitor);
+        visitor.accept(this);
     }
 
     @Override

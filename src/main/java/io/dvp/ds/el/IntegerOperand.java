@@ -25,6 +25,11 @@ public class IntegerOperand extends Operand {
     }
 
     @Override
+    public void visit(Visitor visitor) {
+        throw new RuntimeException("Not implemented");
+    }
+
+    @Override
     public String toString() {
         return "[" + number + "]";
     }
