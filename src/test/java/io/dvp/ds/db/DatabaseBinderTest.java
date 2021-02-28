@@ -9,8 +9,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.persistence.criteria.*;
 
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Queue;
+import java.util.function.BiFunction;
+
 import static io.dvp.ds.el.ExpressionTree.defaultSymbols;
 import static java.util.Collections.singletonMap;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -24,6 +31,8 @@ public class DatabaseBinderTest {
     Path<String> path1, path2;
     @Mock
     Path<Boolean> pathBool1, pathBool2;
+    @Mock
+    Predicate predicate1, predicate2, predicate3;
 
     DatabaseBinder<Article> binder;
 
@@ -81,5 +90,25 @@ public class DatabaseBinderTest {
         tree.getRoot().visit(binder);
 
         verify(cb).or(eq(pathBool1), eq(pathBool2));
+    }
+
+    @Test
+    void bindTwoOperatorsWithDifferentWeight() {
+        when(root.<String>get("prop")).thenReturn(path1);
+        when(root.<String>get("name")).thenReturn(path2);
+        when(cb.equal(eq(path1), eq("something"))).thenReturn(predicate1);
+        when(cb.equal(eq(path2), eq("me"))).thenReturn(predicate2);
+        when(cb.and(eq(predicate1), eq(predicate2))).thenReturn(predicate3);
+
+        Map<String, BiFunction<Deque<Object>, CriteriaBuilder, Predicate>> mappers = new HashMap<>();
+        mappers.put("=", Mappers.equalTo());
+        mappers.put("and", Mappers.and());
+        binder.setMappers(mappers);
+
+        String exp = "{prop}='something' and {name}='me'";
+        ExpressionTree tree = ExpressionTree.build(exp, defaultSymbols());
+        tree.getRoot().visit(binder);
+
+        assertEquals(predicate3, binder.getPredicate());
     }
 }

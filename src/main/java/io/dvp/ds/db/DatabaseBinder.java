@@ -6,10 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.criteria.*;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Queue;
+import java.util.*;
 import java.util.function.BiFunction;
 
 @RequiredArgsConstructor
@@ -18,23 +15,27 @@ public class DatabaseBinder<T> implements Visitor {
     private final Root<T> root;
     private final CriteriaBuilder cb;
 
-    private Queue<Object> queue = new LinkedList<>();
+    private Deque<Object> deque = new LinkedList<>();
 
     @Setter
-    private Map<String, BiFunction<Queue<Object>, CriteriaBuilder, Predicate>> mappers;
+    private Map<String, BiFunction<Deque<Object>, CriteriaBuilder, Predicate>> mappers;
 
     @Override
     public void accept(BinaryOperator operator) {
-        mappers.get(operator.getSymbol()).apply(queue, cb);
+        deque.addFirst(mappers.get(operator.getSymbol()).apply(deque, cb));
     }
 
     @Override
     public void accept(VarcharOperand operand) {
-        queue.add(operand.getValue());
+        deque.addFirst(operand.getValue());
     }
 
     @Override
     public void accept(VariableOperand operand) {
-        queue.add(root.get(operand.getValue()));
+        deque.addFirst(root.get(operand.getValue()));
+    }
+
+    public Predicate getPredicate() {
+        return (Predicate) deque.removeFirst();
     }
 }
