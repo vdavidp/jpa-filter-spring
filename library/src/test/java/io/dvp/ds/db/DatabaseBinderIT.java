@@ -1,6 +1,5 @@
 package io.dvp.ds.db;
 
-import io.dvp.ds.el.Binder;
 import io.dvp.ds.el.ExpressionTree;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -22,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
-public class DatabaseBindingIT {
+public class DatabaseBinderIT {
 
     @PersistenceContext
     EntityManager entityManager;
@@ -36,10 +35,10 @@ public class DatabaseBindingIT {
         Root<Article> root = cq.from(Article.class);
 
         Map<String, BiFunction<Deque<Object>, CriteriaBuilder, Predicate>> mappers = new HashMap<>();
-        mappers.put("=", DbMappers.equalTo());
-        mappers.put("or", DbMappers.or());
+        mappers.put("=", Mappers.equalTo());
+        mappers.put("or", Mappers.or());
 
-        Binder<Article> binder = new Binder<>(root, entityManager.getCriteriaBuilder());
+        DatabaseBinder<Article> binder = new DatabaseBinder<>(root, entityManager.getCriteriaBuilder());
         binder.setMappers(mappers);
         tree.getRoot().visit(binder);
 

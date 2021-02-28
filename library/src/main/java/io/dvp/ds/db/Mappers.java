@@ -6,7 +6,7 @@ import javax.persistence.criteria.Predicate;
 import java.util.Deque;
 import java.util.function.BiFunction;
 
-public class DbMappers {
+public class Mappers {
 
     public static BiFunction<Deque<Object>, CriteriaBuilder, Predicate> equalTo() {
         return (deque, cb) -> {

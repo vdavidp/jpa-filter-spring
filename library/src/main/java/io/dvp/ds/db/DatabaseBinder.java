@@ -1,5 +1,9 @@
-package io.dvp.ds.el;
+package io.dvp.ds.db;
 
+import io.dvp.ds.el.BinaryOperator;
+import io.dvp.ds.el.VarcharOperand;
+import io.dvp.ds.el.VariableOperand;
+import io.dvp.ds.el.Visitor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
@@ -8,7 +12,7 @@ import java.util.*;
 import java.util.function.BiFunction;
 
 @RequiredArgsConstructor
-public class Binder<T> implements Visitor {
+public class DatabaseBinder<T> implements Visitor {
 
     private final Root<T> root;
     private final CriteriaBuilder cb;

@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class DatabaseBindingTest {
+public class DatabaseBinderTest {
 
     @Mock
     Root<Article> root;
@@ -33,21 +33,21 @@ public class DatabaseBindingTest {
     @Mock
     Predicate predicate1, predicate2, predicate3;
 
-    Binder<Article> binder;
+    DatabaseBinder<Article> databaseBinder;
 
     @BeforeEach
     void setup() {
-        binder = new Binder<>(root, cb);
+        databaseBinder = new DatabaseBinder<>(root, cb);
     }
 
     @Test
     void bindEqualToOperatorWithOneExpression() {
         when(root.<String>get("title")).thenReturn(path1);
 
-        binder.setMappers(singletonMap("=", DbMappers.equalTo()));
+        databaseBinder.setMappers(singletonMap("=", Mappers.equalTo()));
 
         ExpressionTree tree = ExpressionTree.build("{title}='Title1'", defaultSymbols());
-        tree.getRoot().visit(binder);
+        tree.getRoot().visit(databaseBinder);
 
         verify(cb).equal(eq(path1), eq("Title1"));
     }
@@ -57,10 +57,10 @@ public class DatabaseBindingTest {
         when(root.<String>get("title")).thenReturn(path1);
         when(root.<String>get("other")).thenReturn(path2);
 
-        binder.setMappers(singletonMap("=", DbMappers.equalTo()));
+        databaseBinder.setMappers(singletonMap("=", Mappers.equalTo()));
 
         ExpressionTree tree = ExpressionTree.build("{title}={other}", defaultSymbols());
-        tree.getRoot().visit(binder);
+        tree.getRoot().visit(databaseBinder);
 
         verify(cb).equal(eq(path1), eq(path2));
     }
@@ -70,10 +70,10 @@ public class DatabaseBindingTest {
         when(root.<Boolean>get("active1")).thenReturn(pathBool1);
         when(root.<Boolean>get("active2")).thenReturn(pathBool2);
 
-        binder.setMappers(singletonMap("and", DbMappers.and()));
+        databaseBinder.setMappers(singletonMap("and", Mappers.and()));
 
         ExpressionTree tree = ExpressionTree.build("{active1}and{active2}", defaultSymbols());
-        tree.getRoot().visit(binder);
+        tree.getRoot().visit(databaseBinder);
 
         verify(cb).and(eq(pathBool1), eq(pathBool2));
     }
@@ -83,10 +83,10 @@ public class DatabaseBindingTest {
         when(root.<Boolean>get("active1")).thenReturn(pathBool1);
         when(root.<Boolean>get("active2")).thenReturn(pathBool2);
 
-        binder.setMappers(singletonMap("or", DbMappers.or()));
+        databaseBinder.setMappers(singletonMap("or", Mappers.or()));
 
         ExpressionTree tree = ExpressionTree.build("{active1}or{active2}", defaultSymbols());
-        tree.getRoot().visit(binder);
+        tree.getRoot().visit(databaseBinder);
 
         verify(cb).or(eq(pathBool1), eq(pathBool2));
     }
@@ -100,14 +100,14 @@ public class DatabaseBindingTest {
         when(cb.and(eq(predicate1), eq(predicate2))).thenReturn(predicate3);
 
         Map<String, BiFunction<Deque<Object>, CriteriaBuilder, Predicate>> mappers = new HashMap<>();
-        mappers.put("=", DbMappers.equalTo());
-        mappers.put("and", DbMappers.and());
-        binder.setMappers(mappers);
+        mappers.put("=", Mappers.equalTo());
+        mappers.put("and", Mappers.and());
+        databaseBinder.setMappers(mappers);
 
         String exp = "{prop}='something' and {name}='me'";
         ExpressionTree tree = ExpressionTree.build(exp, defaultSymbols());
-        tree.getRoot().visit(binder);
+        tree.getRoot().visit(databaseBinder);
 
-        assertEquals(predicate3, binder.getPredicate());
+        assertEquals(predicate3, databaseBinder.getPredicate());
     }
 }
