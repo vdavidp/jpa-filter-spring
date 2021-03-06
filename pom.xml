@@ -11,12 +11,12 @@
     <modules>
         <module>dynamic-search</module>
         <module>dynamic-search-autoconfigure</module>
-        <module>dynamic-search-spring</module>
+        <module>dynamic-search-starter</module>
     </modules>
 
     <properties>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <maven.compiler.source>8</maven.compiler.source>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 <!--        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>-->
     </properties>
@@ -33,7 +33,12 @@
             <dependency>
                 <groupId>io.dvp</groupId>
                 <artifactId>dynamic-search</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.dvp</groupId>
+                <artifactId>dynamic-search-autoconfigure</artifactId>
+                <version>${project.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
