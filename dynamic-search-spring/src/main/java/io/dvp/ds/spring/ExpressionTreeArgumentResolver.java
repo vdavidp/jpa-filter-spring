@@ -1,7 +1,6 @@
 package io.dvp.ds.spring;
 
 import io.dvp.ds.db.Binder;
-import io.dvp.ds.db.DatabaseBinder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.ObjectProvider;

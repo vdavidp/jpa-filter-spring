@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 
+import static java.util.Collections.unmodifiableMap;
+
 public class Mappers {
 
     @SuppressWarnings("rawtypes")
@@ -46,6 +48,6 @@ public class Mappers {
         map.put("=", Mappers.equalTo());
         map.put("and", Mappers.and());
         map.put("or", Mappers.or());
-        return map;
+        return unmodifiableMap(map);
     }
 }

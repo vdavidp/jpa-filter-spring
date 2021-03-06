@@ -15,6 +15,8 @@ import javax.persistence.criteria.Root;
 import java.util.*;
 import java.util.function.BiFunction;
 
+import static io.dvp.ds.db.Mappers.defaultMappers;
+import static io.dvp.ds.el.ExpressionTree.defaultSymbols;
 import static java.util.Arrays.asList;
 
 @RequiredArgsConstructor
@@ -25,8 +27,8 @@ public class ExpressionTreeSpecification implements Specification<Object> {
 
     @Override
     public Predicate toPredicate(Root<Object> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-        Map<String, BiFunction<Deque<Object>, CriteriaBuilder, Predicate>> mappers = Mappers.defaultMappers();
-        List<Symbol> symbols = asList(ExpressionTree.defaultSymbols());
+        Map<String, BiFunction<Deque<Object>, CriteriaBuilder, Predicate>> mappers = new HashMap<>(defaultMappers());
+        List<Symbol> symbols = new ArrayList<>(asList(defaultSymbols()));
 
         if (configurator != null) {
             configurator.modifySymbols(symbols);
