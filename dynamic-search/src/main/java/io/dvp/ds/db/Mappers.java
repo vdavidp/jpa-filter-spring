@@ -4,6 +4,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
 import java.util.Deque;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.BiFunction;
 
 public class Mappers {
@@ -37,5 +39,13 @@ public class Mappers {
             Expression<Boolean> left = (Expression<Boolean>) deque.removeFirst();
             return cb.or(left, right);
         };
+    }
+
+    public static Map<String, BiFunction<Deque<Object>, CriteriaBuilder, Predicate>> defaultMappers() {
+        Map<String, BiFunction<Deque<Object>, CriteriaBuilder, Predicate>> map = new HashMap<>();
+        map.put("=", Mappers.equalTo());
+        map.put("and", Mappers.and());
+        map.put("or", Mappers.or());
+        return map;
     }
 }

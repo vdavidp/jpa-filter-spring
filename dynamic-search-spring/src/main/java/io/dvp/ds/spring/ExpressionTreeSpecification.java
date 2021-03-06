@@ -1,35 +1,41 @@
 package io.dvp.ds.spring;
 
-import io.dvp.ds.db.DatabaseBinder;
+import io.dvp.ds.db.Binder;
 import io.dvp.ds.db.Mappers;
 import io.dvp.ds.el.ExpressionTree;
+import io.dvp.ds.el.Symbol;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Required;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BiFunction;
 
+import static java.util.Arrays.asList;
+
 @RequiredArgsConstructor
-public class ExpressionTreeSpecification implements Specification {
+public class ExpressionTreeSpecification implements Specification<Object> {
     private final String expression;
+    private final ExpressionTreeConfigurator configurator;
+    private final ObjectProvider<Binder> binderProvider;
 
     @Override
-    public Predicate toPredicate(Root root, CriteriaQuery criteriaQuery, CriteriaBuilder criteriaBuilder) {
-        Map<String, BiFunction<Deque<Object>, CriteriaBuilder, Predicate>> map = new HashMap<>();
-        map.put("=", Mappers.equalTo());
-        map.put("and", Mappers.and());
-        map.put("or", Mappers.or());
+    public Predicate toPredicate(Root<Object> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+        Map<String, BiFunction<Deque<Object>, CriteriaBuilder, Predicate>> mappers = Mappers.defaultMappers();
+        List<Symbol> symbols = asList(ExpressionTree.defaultSymbols());
 
-        ExpressionTree et = ExpressionTree.build(expression, ExpressionTree.defaultSymbols());
-        DatabaseBinder binder = new DatabaseBinder(root, criteriaBuilder);
-        binder.setMappers(map);
+        if (configurator != null) {
+            configurator.modifySymbols(symbols);
+            configurator.modifyMappers(mappers);
+        }
+
+        Binder binder = binderProvider.getObject(root, criteriaBuilder, mappers);
+
+        ExpressionTree et = ExpressionTree.build(expression, symbols.toArray(new Symbol[] {}));
         et.getRoot().visit(binder);
 
         return binder.getPredicate();

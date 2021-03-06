@@ -3,24 +3,19 @@ package io.dvp.ds.db;
 import io.dvp.ds.el.BinaryOperator;
 import io.dvp.ds.el.VarcharOperand;
 import io.dvp.ds.el.VariableOperand;
-import io.dvp.ds.el.Visitor;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.criteria.*;
 import java.util.*;
 import java.util.function.BiFunction;
 
 @RequiredArgsConstructor
-public class DatabaseBinder<T> implements Visitor {
+public class DatabaseBinder<T> implements Binder {
 
     private final Root<T> root;
     private final CriteriaBuilder cb;
-
+    private final Map<String, BiFunction<Deque<Object>, CriteriaBuilder, Predicate>> mappers;
     private Deque<Object> deque = new LinkedList<>();
-
-    @Setter
-    private Map<String, BiFunction<Deque<Object>, CriteriaBuilder, Predicate>> mappers;
 
     @Override
     public void accept(BinaryOperator operator) {
@@ -37,6 +32,7 @@ public class DatabaseBinder<T> implements Visitor {
         deque.addFirst(root.get(operand.getValue()));
     }
 
+    @Override
     public Predicate getPredicate() {
         return (Predicate) deque.removeFirst();
     }

@@ -1,7 +1,6 @@
 package io.dvp.ds.db;
 
 import io.dvp.ds.el.*;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -35,16 +34,11 @@ public class DatabaseBinderTest {
 
     DatabaseBinder<Article> databaseBinder;
 
-    @BeforeEach
-    void setup() {
-        databaseBinder = new DatabaseBinder<>(root, cb);
-    }
-
     @Test
     void bindEqualToOperatorWithOneExpression() {
         when(root.<String>get("title")).thenReturn(path1);
 
-        databaseBinder.setMappers(singletonMap("=", Mappers.equalTo()));
+        databaseBinder = new DatabaseBinder<>(root, cb, singletonMap("=", Mappers.equalTo()));
 
         ExpressionTree tree = ExpressionTree.build("{title}='Title1'", defaultSymbols());
         tree.getRoot().visit(databaseBinder);
@@ -57,7 +51,7 @@ public class DatabaseBinderTest {
         when(root.<String>get("title")).thenReturn(path1);
         when(root.<String>get("other")).thenReturn(path2);
 
-        databaseBinder.setMappers(singletonMap("=", Mappers.equalTo()));
+        databaseBinder = new DatabaseBinder<>(root, cb, singletonMap("=", Mappers.equalTo()));
 
         ExpressionTree tree = ExpressionTree.build("{title}={other}", defaultSymbols());
         tree.getRoot().visit(databaseBinder);
@@ -70,7 +64,7 @@ public class DatabaseBinderTest {
         when(root.<Boolean>get("active1")).thenReturn(pathBool1);
         when(root.<Boolean>get("active2")).thenReturn(pathBool2);
 
-        databaseBinder.setMappers(singletonMap("and", Mappers.and()));
+        databaseBinder = new DatabaseBinder<>(root, cb, singletonMap("and", Mappers.and()));
 
         ExpressionTree tree = ExpressionTree.build("{active1}and{active2}", defaultSymbols());
         tree.getRoot().visit(databaseBinder);
@@ -83,7 +77,7 @@ public class DatabaseBinderTest {
         when(root.<Boolean>get("active1")).thenReturn(pathBool1);
         when(root.<Boolean>get("active2")).thenReturn(pathBool2);
 
-        databaseBinder.setMappers(singletonMap("or", Mappers.or()));
+        databaseBinder = new DatabaseBinder<>(root, cb, singletonMap("or", Mappers.or()));
 
         ExpressionTree tree = ExpressionTree.build("{active1}or{active2}", defaultSymbols());
         tree.getRoot().visit(databaseBinder);
@@ -102,7 +96,7 @@ public class DatabaseBinderTest {
         Map<String, BiFunction<Deque<Object>, CriteriaBuilder, Predicate>> mappers = new HashMap<>();
         mappers.put("=", Mappers.equalTo());
         mappers.put("and", Mappers.and());
-        databaseBinder.setMappers(mappers);
+        databaseBinder = new DatabaseBinder<>(root, cb, mappers);
 
         String exp = "{prop}='something' and {name}='me'";
         ExpressionTree tree = ExpressionTree.build(exp, defaultSymbols());

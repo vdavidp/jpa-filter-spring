@@ -38,8 +38,8 @@ public class DatabaseBinderIT {
         mappers.put("=", Mappers.equalTo());
         mappers.put("or", Mappers.or());
 
-        DatabaseBinder<Article> binder = new DatabaseBinder<>(root, entityManager.getCriteriaBuilder());
-        binder.setMappers(mappers);
+        DatabaseBinder<Article> binder = new DatabaseBinder<>(
+                root, entityManager.getCriteriaBuilder(), mappers);
         tree.getRoot().visit(binder);
 
         cq.select(root).where(binder.getPredicate());
