@@ -4,19 +4,19 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.dvp</groupId>
-    <artifactId>dynamic-search-parent</artifactId>
+    <artifactId>jpa-filter-parent</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modules>
-        <module>dynamic-search</module>
-        <module>dynamic-search-autoconfigure</module>
-        <module>dynamic-search-starter</module>
+        <module>jpa-filter</module>
+        <module>jpa-filter-autoconfigure</module>
+        <module>jpa-filter-starter</module>
     </modules>
 
     <properties>
-        <maven.compiler.target>8</maven.compiler.target>
-        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 <!--        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>-->
     </properties>
@@ -32,12 +32,12 @@
             </dependency>
             <dependency>
                 <groupId>io.dvp</groupId>
-                <artifactId>dynamic-search</artifactId>
+                <artifactId>jpa-filter</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.dvp</groupId>
-                <artifactId>dynamic-search-autoconfigure</artifactId>
+                <artifactId>jpa-filter-autoconfigure</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>
