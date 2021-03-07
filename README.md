@@ -1,3 +1,3 @@
-# dynamic-search
+# JPA Filter
 
 WIP
