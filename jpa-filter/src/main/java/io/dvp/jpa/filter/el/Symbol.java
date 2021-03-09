@@ -4,11 +4,11 @@ import java.util.Optional;
 
 public interface Symbol {
 
-    Symbol merge(Symbol s);
+  Symbol merge(Symbol s);
 
-    Optional<Symbol> copy(String exp);
+  Optional<Symbol> copy(String exp);
 
-    int getWeight();
+  int getWeight();
 
-    void visit(Visitor visitor);
+  void visit(Visitor visitor);
 }

@@ -8,12 +8,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ArticleController {
 
-    @GetMapping("/articles")
-    ResponseEntity<String> findAll(Specification<Article> specification) {
-        if (specification != null) {
-            return ResponseEntity.ok("Found specification");
-        } else {
-            return ResponseEntity.status(500).body("Not found specification");
-        }
+  @GetMapping("/articles")
+  ResponseEntity<String> findAll(Specification<Article> specification) {
+    if (specification != null) {
+      return ResponseEntity.ok("Found specification");
+    } else {
+      return ResponseEntity.status(500).body("Not found specification");
     }
+  }
 }

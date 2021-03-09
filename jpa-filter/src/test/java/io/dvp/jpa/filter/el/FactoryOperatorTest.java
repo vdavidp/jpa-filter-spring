@@ -1,35 +1,39 @@
 package io.dvp.jpa.filter.el;
 
+import static java.util.Collections.singletonList;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertSame;
+
 import org.junit.jupiter.api.Test;
 
-import static java.util.Collections.singletonList;
-import static org.junit.jupiter.api.Assertions.*;
-
 public class FactoryOperatorTest {
-    FactoryOperator op = new FactoryOperator(".", 50, singletonList(new DecimalFactory()));
 
-    @Test
-    void copy() {
-        assertNotSame(op, op.copy(".").get());
-        assertFalse(op.copy(" . ").isPresent());
-        assertFalse(op.copy("a").isPresent());
-        assertFalse(op.copy(",").isPresent());
-    }
+  FactoryOperator op = new FactoryOperator(".", 50, singletonList(new DecimalFactory()));
 
-    @Test
-    void merge() {
-        Symbol left = new IntegerOperand().copy("938").get();
-        Symbol right = new IntegerOperand().copy("32").get();
+  @Test
+  void copy() {
+    assertNotSame(op, op.copy(".").get());
+    assertFalse(op.copy(" . ").isPresent());
+    assertFalse(op.copy("a").isPresent());
+    assertFalse(op.copy(",").isPresent());
+  }
 
-        assertSame(op, op.merge(left));
+  @Test
+  void merge() {
+    Symbol left = new IntegerOperand().copy("938").get();
+    Symbol right = new IntegerOperand().copy("32").get();
 
-        Symbol other = op.merge(right);
-        assertNotSame(other, op);
-        assertEquals("[938.32]", other.toString());
-    }
+    assertSame(op, op.merge(left));
 
-    @Test
-    void mergeChained() {
+    Symbol other = op.merge(right);
+    assertNotSame(other, op);
+    assertEquals("[938.32]", other.toString());
+  }
 
-    }
+  @Test
+  void mergeChained() {
+
+  }
 }
