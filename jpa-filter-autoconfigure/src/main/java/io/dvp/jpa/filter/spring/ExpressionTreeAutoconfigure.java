@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import org.springframework.beans.factory.ObjectProvider;
@@ -24,11 +25,13 @@ public class ExpressionTreeAutoconfigure {
 
   @Bean
   @Scope("prototype")
-  Binder databaseVisitor(Root<?> root,
+  <T> Binder databaseVisitor(
+      Root<T> root,
+      CriteriaQuery<T> cq,
       CriteriaBuilder cb,
       Map<String, BiFunction<Deque<Object>, CriteriaBuilder, Predicate>> mappers) {
 
-    return new DatabaseBinder<>(root, cb, mappers);
+    return new DatabaseBinder<>(root, cq, cb, mappers);
   }
 
   @Bean

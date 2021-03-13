@@ -22,7 +22,7 @@ public class ExpressionTreeArgumentResolver implements HandlerMethodArgumentReso
 
   @Override
   public boolean supportsParameter(MethodParameter methodParameter) {
-    return methodParameter.getParameter().getType() == Specification.class;
+    return methodParameter.getParameterType() == Specification.class;
   }
 
   @Override

@@ -40,7 +40,7 @@ public class ExpressionTreeSpecification implements Specification<Object> {
       configurator.modifyMappers(mappers);
     }
 
-    Binder binder = binderProvider.getObject(root, criteriaBuilder, mappers);
+    Binder binder = binderProvider.getObject(root, criteriaQuery, criteriaBuilder, mappers);
 
     ExpressionTree et = ExpressionTree.build(expression, symbols.toArray(new Symbol[]{}));
     et.getRoot().visit(binder);
