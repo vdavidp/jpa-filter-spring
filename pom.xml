@@ -10,8 +10,8 @@
 
     <modules>
         <module>jpa-filter</module>
-        <module>jpa-filter-autoconfigure</module>
-        <module>jpa-filter-starter</module>
+        <module>jpa-filter-spring</module>
+        <module>jpa-filter-spring-starter</module>
     </modules>
 
     <properties>
@@ -37,7 +37,7 @@
             </dependency>
             <dependency>
                 <groupId>io.dvp</groupId>
-                <artifactId>jpa-filter-autoconfigure</artifactId>
+                <artifactId>jpa-filter-spring</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>
