@@ -19,6 +19,11 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 <!--        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>-->
+
+        <!--suppress UnresolvedMavenProperty -->
+        <skip.surefire>${skipTests}</skip.surefire>
+        <!--suppress UnresolvedMavenProperty -->
+        <skip.failsafe>${skipTests}</skip.failsafe>
     </properties>
 
     <dependencyManagement>
@@ -52,6 +57,7 @@
                     <version>2.22.2</version>
                     <configuration>
                         <trimStackTrace>false</trimStackTrace>
+                        <skipTests>${skip.surefire}</skipTests>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -60,6 +66,7 @@
                     <version>2.22.2</version>
                     <configuration>
                         <trimStackTrace>false</trimStackTrace>
+                        <skipTests>${skip.failsafe}</skipTests>
                     </configuration>
                     <executions>
                         <execution>
