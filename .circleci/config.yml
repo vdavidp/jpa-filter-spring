@@ -26,7 +26,11 @@ jobs:
           name: Integration Tests
           command: mvn verify -Dskip.surefire
       - store_test_results:
-          path: .
+          path: jpa-filter/target
+      - store_test_results:
+          path: jpa-filter-spring/target
+      - store_test_results:
+          path: jpa-filter-spring-starter/target
 
 workflows:
   # Below is the definition of your workflow.
