@@ -38,6 +38,7 @@ public class ExpressionTreeAutoconfigure {
   WebMvcConfigurer expressionTreeLinker(
       @Autowired(required = false) ExpressionTreeConfigurator configurator,
       ObjectProvider<Binder> binderProvider) {
+
     return new WebMvcConfigurer() {
       @Override
       public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {

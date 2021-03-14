@@ -1,4 +1,4 @@
-package io.dvp.jpa.filter;
+package io.dvp.jpa.filter.spring.starter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

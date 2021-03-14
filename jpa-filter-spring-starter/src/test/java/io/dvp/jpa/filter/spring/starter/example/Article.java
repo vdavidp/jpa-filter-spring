@@ -1,4 +1,4 @@
-package io.dvp.jpa.filter.example;
+package io.dvp.jpa.filter.spring.starter.example;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

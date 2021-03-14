@@ -1,4 +1,4 @@
-package io.dvp.jpa.filter.example;
+package io.dvp.jpa.filter.spring.example;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,5 +1,6 @@
-package io.dvp.jpa.filter.example;
+package io.dvp.jpa.filter.spring.starter.example;
 
+import io.dvp.jpa.filter.spring.starter.example.Article;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

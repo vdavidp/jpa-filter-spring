@@ -1,8 +1,7 @@
-package io.dvp.jpa.filter;
+package io.dvp.jpa.filter.spring;
 
 import io.dvp.jpa.filter.el.BinaryOperator;
 import io.dvp.jpa.filter.el.Symbol;
-import io.dvp.jpa.filter.spring.ExpressionTreeConfigurator;
 import java.util.Deque;
 import java.util.List;
 import java.util.Map;
