@@ -1,6 +1,6 @@
 package io.dvp.jpa.filter.el;
 
-import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 
 import java.util.Arrays;
@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class ExpressionTree {
 
-  @Getter
   private final Symbol root;
 
   public static ExpressionTree build(String expression, Symbol... symbols) {
@@ -47,15 +46,19 @@ public class ExpressionTree {
   }
 
   public static Symbol[] defaultSymbols() {
-    return new Symbol[]{
+    return new Symbol[] {
         new IntegerOperand(),
-        new FactoryOperator(".", 30, asList(new DecimalFactory())),
+        new FactoryOperator(".", 30, singletonList(new DecimalFactory())),
         new VariableOperand(),
         new VarcharOperand(),
         new BinaryOperator("=", 20),
         new BinaryOperator("and", 10),
         new BinaryOperator("or", 10)
     };
+  }
+
+  public void visit(Visitor v) {
+    root.visit(v);
   }
 
   @Override
