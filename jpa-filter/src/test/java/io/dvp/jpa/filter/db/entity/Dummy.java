@@ -1,5 +1,6 @@
 package io.dvp.jpa.filter.db.entity;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,7 +13,6 @@ import lombok.Data;
 public class Dummy {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   private Integer integerValue;
@@ -20,4 +20,10 @@ public class Dummy {
   private Long longValue;
 
   private BigInteger bigIntegerValue;
+
+  private Float floatValue;
+
+  private Float doubleValue;
+
+  private BigDecimal bigDecimalValue;
 }

@@ -7,4 +7,8 @@ public interface Visitor {
   void accept(VarcharOperand operand);
 
   void accept(VariableOperand operand);
+
+  void accept(IntegerOperand operand);
+
+  void accept(DecimalFactory operand);
 }
