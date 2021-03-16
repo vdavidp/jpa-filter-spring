@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 public class RightUnaryOperatorTest {
-  RightUnaryOperator proto = new RightUnaryOperator("is null", 50);
+  RightUnaryOperator proto = new RightUnaryOperator("Is Null", 50);
   Symbol operand = new VariableOperand().copy("{data}").get();
 
   @Test
@@ -20,6 +20,7 @@ public class RightUnaryOperatorTest {
     assertIsValid("is null");
     assertIsValid("Is Null");
     assertIsValid("  IS NULL \t\t ");
+    assertIsValid("  Is null \t\t ");
     assertFalse(proto.copy("is  null").isPresent());
     assertFalse(proto.copy("isnull").isPresent());
   }
@@ -29,14 +30,14 @@ public class RightUnaryOperatorTest {
     assertTrue(copy.isPresent());
     assertNotSame(proto, copy.get());
     assertSame(RightUnaryOperator.class, copy.get().getClass());
-    assertEquals("[nullIS NULL]", copy.get().toString());
+    assertEquals("[nullIs Null]", copy.get().toString());
   }
 
   @Test
   void merge() {
     Symbol root = operand.merge(proto);
     assertSame(root, proto);
-    assertEquals("[[data]IS NULL]", proto.toString());
+    assertEquals("[[data]Is Null]", proto.toString());
   }
 
   @Test
@@ -46,7 +47,7 @@ public class RightUnaryOperatorTest {
     proto.merge(operand);
     Symbol root = proto.merge(sameWeight);
     assertSame(sameWeight, root);
-    assertEquals("[[[data]IS NULL]IS TRUE]", root.toString());
+    assertEquals("[[[data]Is Null]is true]", root.toString());
   }
 
   @Test

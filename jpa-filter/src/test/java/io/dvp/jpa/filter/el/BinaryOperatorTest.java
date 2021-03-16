@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 
 public class BinaryOperatorTest {
 
-  BinaryOperator operator = new BinaryOperator("+", 10);
+  BinaryOperator operator = new BinaryOperator("+m", 10);
   Symbol left, right, middle;
 
   Function<String, Symbol> numFactory = number -> new IntegerOperand().copy(number).get();
@@ -28,10 +28,14 @@ public class BinaryOperatorTest {
 
   @Test
   void copy() {
-    assertValid("+");
-    assertValid(" +");
-    assertValid("    + \t\t ");
-    assertFalse(operator.copy("a").isPresent());
+    assertValid("+m");
+    assertValid("+M");
+    assertValid(" +m");
+    assertValid(" +M");
+    assertValid("    +m \t\t ");
+    assertValid("    +M \t\t ");
+    assertFalse(operator.copy("+ m").isPresent());
+    assertFalse(operator.copy(" + M").isPresent());
     assertFalse(operator.copy("2").isPresent());
     assertFalse(operator.copy("++").isPresent());
   }
@@ -41,18 +45,18 @@ public class BinaryOperatorTest {
     assertTrue(op.isPresent());
     assertNotSame(operator, op.get());
     assertSame(BinaryOperator.class, op.get().getClass());
-    assertEquals("[null" + exp.trim() + "null]", op.get().toString());
+    assertEquals("[null" + exp.trim().toLowerCase() + "null]", op.get().toString());
   }
 
   @Test
   void merge() {
     assertEquals(operator, operator.merge(left));
     assertEquals(operator, operator.merge(right));
-    assertEquals("[[12]+[9]]", operator.toString());
+    assertEquals("[[12]+m[9]]", operator.toString());
 
-    Symbol op2 = operator.merge(new BinaryOperator("+", 0));
+    Symbol op2 = operator.merge(new BinaryOperator("*", 0));
     assertNotEquals(op2, operator);
-    assertEquals("[[[12]+[9]]+null]", op2.toString());
+    assertEquals("[[[12]+m[9]]*null]", op2.toString());
   }
 
   @Test
@@ -61,6 +65,6 @@ public class BinaryOperatorTest {
     operator.merge(left).merge(middle);
     assertSame(operator, operator.merge(heavier));
     assertSame(operator, operator.merge(right));
-    assertEquals("[[12]+[[38]/[9]]]", operator.toString());
+    assertEquals("[[12]+m[[38]/[9]]]", operator.toString());
   }
 }

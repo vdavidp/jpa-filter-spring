@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Optional;
+import java.util.TreeMap;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -44,7 +45,8 @@ public class DatabaseBinder<T> implements Binder {
     this.root = root;
     this.query = query;
     this.builder = builder;
-    this.mappers = mappers;
+    this.mappers = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    this.mappers.putAll(mappers);
 
     initializeJoiners();
   }

@@ -35,25 +35,25 @@ public class DatabaseBinderIT {
 
   @Test
   void bindAndOperator() {
-    String exp = "{title} = 'Article 3' and {mainTopic} = 'Love'";
+    String exp = "{title} = 'Article 3' And {mainTopic} = 'Love'";
     ctx.assertResultContains(exp, singletonList("Article 3"));
   }
 
   @Test
   void bindOrOperator() {
-    String exp = "{title} = 'Article 2' or {title} = 'Article 3'";
+    String exp = "{title} = 'Article 2' Or {title} = 'Article 3'";
     ctx.assertResultContains(exp, asList("Article 2", "Article 3"));
   }
 
   @Test
   void bindCollectionVariable() {
-    String exp = "{comments.author}='david' or {title}='Article 3'";
+    String exp = "{comments.author}='david' OR {title}='Article 3'";
     ctx.assertResultContains(exp, asList("Article 1", "Article 3"));
   }
 
   @Test
   void bindCollectionVariable2() {
-    String exp = "{title}='Article 3' and {comments.author}='grace'";
+    String exp = "{title}='Article 3' And {comments.author}='grace'";
     ctx.assertResultContains(exp, singletonList("Article 3"));
   }
 
@@ -65,7 +65,7 @@ public class DatabaseBinderIT {
 
   @Test
   void bindCollectionAndEntityVariables() {
-    String exp = "{comments.author} = 'david' and {language.name} = 'English'";
+    String exp = "{comments.author} = 'david' AND {language.name} = 'English'";
     ctx.assertResultContains(exp, singletonList("Article 1"));
   }
 }

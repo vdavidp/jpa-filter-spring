@@ -33,7 +33,7 @@ public class BinaryOperator implements Symbol {
 
   @Override
   public Optional<Symbol> copy(String exp) {
-    if (symbol.equals(exp.trim())) {
+    if (symbol.equalsIgnoreCase(exp.trim())) {
       return Optional.of(new BinaryOperator(this.symbol, this.weight));
     } else {
       return Optional.empty();

@@ -94,6 +94,6 @@ public class ExpressionTreeTest {
     ExpressionTree et = ExpressionTree.build("{data} is Null",
         new RightUnaryOperator("Is Null", 10),
         new VariableOperand());
-    assertEquals("[[data]IS NULL]", et.toString());
+    assertEquals("[[data]Is Null]", et.toString());
   }
 }

@@ -2,17 +2,15 @@ package io.dvp.jpa.filter.el;
 
 import java.util.Optional;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public class RightUnaryOperator implements Symbol {
+
   private final String exp;
   @Getter
   private final int weight;
   private Symbol operand;
-
-  public RightUnaryOperator(String exp, int weight) {
-    this.exp = exp.trim().toUpperCase();
-    this.weight = weight;
-  }
 
   @Override
   public Symbol merge(Symbol s) {
