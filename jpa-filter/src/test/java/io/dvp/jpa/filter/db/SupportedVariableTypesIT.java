@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 @DataJpaTest
-public class OperandsIT {
+public class SupportedVariableTypesIT {
   @PersistenceContext
   EntityManager entityManager;
   AssertContext<Dummy>.Verifier<Long> ctx;

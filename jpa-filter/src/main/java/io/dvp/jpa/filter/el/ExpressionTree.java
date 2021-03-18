@@ -48,12 +48,16 @@ public class ExpressionTree {
   public static Symbol[] defaultSymbols() {
     return new Symbol[] {
         new IntegerOperand(),
-        new FactoryOperator(".", 30, singletonList(new DecimalFactory())),
+        new FactoryOperator(".", 50, singletonList(new DecimalFactory())),
         new VariableOperand(),
         new VarcharOperand(),
         new BinaryOperator("=", 20),
         new BinaryOperator("and", 10),
-        new BinaryOperator("or", 10)
+        new BinaryOperator("or", 10),
+        new RightUnaryOperator("Is True", 30),
+        new RightUnaryOperator("Is False", 30),
+        new RightUnaryOperator("Is Null", 30),
+        new RightUnaryOperator("Is Not Null", 30)
     };
   }
 

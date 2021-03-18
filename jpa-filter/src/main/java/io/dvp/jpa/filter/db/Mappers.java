@@ -43,11 +43,47 @@ public class Mappers {
     };
   }
 
+  @SuppressWarnings("unchecked")
+  public static BiFunction<Deque<Object>, CriteriaBuilder, Predicate> isTrue() {
+    return (deque, cb) -> {
+      Expression<Boolean> bool = (Expression<Boolean>) deque.removeFirst();
+      return cb.isTrue(bool);
+    };
+  }
+
+  @SuppressWarnings("unchecked")
+  public static BiFunction<Deque<Object>, CriteriaBuilder, Predicate> isFalse() {
+    return (deque, cb) -> {
+      Expression<Boolean> bool = (Expression<Boolean>) deque.removeFirst();
+      return cb.isFalse(bool);
+    };
+  }
+
+  @SuppressWarnings("unchecked")
+  public static BiFunction<Deque<Object>, CriteriaBuilder, Predicate> isNull() {
+    return (deque, cb) -> {
+      Expression<Object> obj = (Expression<Object>) deque.removeFirst();
+      return cb.isNull(obj);
+    };
+  }
+
+  @SuppressWarnings("unchecked")
+  public static BiFunction<Deque<Object>, CriteriaBuilder, Predicate> isNotNull() {
+    return (deque, cb) -> {
+      Expression<Object> obj = (Expression<Object>) deque.removeFirst();
+      return cb.isNotNull(obj);
+    };
+  }
+
   public static Map<String, BiFunction<Deque<Object>, CriteriaBuilder, Predicate>> defaultMappers() {
     Map<String, BiFunction<Deque<Object>, CriteriaBuilder, Predicate>> map = new HashMap<>();
     map.put("=", Mappers.equalTo());
     map.put("and", Mappers.and());
     map.put("or", Mappers.or());
+    map.put("is true", Mappers.isTrue());
+    map.put("is false", Mappers.isFalse());
+    map.put("is null", Mappers.isNull());
+    map.put("is not null", Mappers.isNotNull());
     return unmodifiableMap(map);
   }
 }

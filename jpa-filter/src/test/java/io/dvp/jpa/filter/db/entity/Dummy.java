@@ -26,4 +26,6 @@ public class Dummy {
   private Float doubleValue;
 
   private BigDecimal bigDecimalValue;
+
+  private Boolean booleanValue;
 }

@@ -7,7 +7,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class RightUnaryOperator implements Symbol {
 
-  private final String exp;
+  @Getter
+  private final String symbol;
   @Getter
   private final int weight;
   private Symbol operand;
@@ -26,8 +27,8 @@ public class RightUnaryOperator implements Symbol {
 
   @Override
   public Optional<Symbol> copy(String exp) {
-    if (this.exp.equalsIgnoreCase(exp.trim())) {
-      return Optional.of(new RightUnaryOperator(this.exp, weight));
+    if (this.symbol.equalsIgnoreCase(exp.trim())) {
+      return Optional.of(new RightUnaryOperator(this.symbol, weight));
     } else {
       return Optional.empty();
     }
@@ -35,11 +36,12 @@ public class RightUnaryOperator implements Symbol {
 
   @Override
   public void visit(Visitor visitor) {
-    throw new RuntimeException("Not implemented");
+    operand.visit(visitor);
+    visitor.accept(this);
   }
 
   @Override
   public String toString() {
-    return "[" + operand + exp + "]";
+    return "[" + operand + symbol + "]";
   }
 }

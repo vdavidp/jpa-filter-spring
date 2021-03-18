@@ -3,6 +3,7 @@ package io.dvp.jpa.filter.db;
 import io.dvp.jpa.filter.el.BinaryOperator;
 import io.dvp.jpa.filter.el.DecimalFactory;
 import io.dvp.jpa.filter.el.IntegerOperand;
+import io.dvp.jpa.filter.el.RightUnaryOperator;
 import io.dvp.jpa.filter.el.VarcharOperand;
 import io.dvp.jpa.filter.el.VariableOperand;
 import java.util.Deque;
@@ -121,6 +122,11 @@ public class DatabaseBinder<T> implements Binder {
   @Override
   public void accept(DecimalFactory operand) {
     deque.addFirst(operand.getValue());
+  }
+
+  @Override
+  public void accept(RightUnaryOperator operator) {
+    deque.addFirst(mappers.get(operator.getSymbol()).apply(deque, builder));
   }
 
   @Override

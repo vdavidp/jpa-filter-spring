@@ -13,6 +13,7 @@ insert into comment (author, key, article_id) values
 ('grace', 't3', 3);
 
 insert into dummy (id, integer_value, long_value, big_integer_value, float_value,
-double_value, big_decimal_value) values
-(1, 22, 88, 221, 94.221, 9.123, 443.22),
-(2, 12, 10, 998, 1.333, 4.192, 39.22);
+double_value, big_decimal_value, boolean_value) values
+(1, 22, 88, 221, 94.221, 9.123, 443.22, true),
+(2, 12, 10, 998, 1.333, 4.192, 39.22, false),
+(3, 1, 2, 3, 4.0, null, null, false);
