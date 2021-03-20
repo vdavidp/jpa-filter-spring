@@ -96,4 +96,13 @@ public class ExpressionTreeTest {
         new VariableOperand());
     assertEquals("[[data]Is Null]", et.toString());
   }
+
+  @Test
+  void parseParenthesis() {
+    ExpressionTree et = ExpressionTree.build("(20 / (5 + 2) ) / 3",
+        new IntegerOperand(),
+        new BinaryOperator("+", 10),
+        new BinaryOperator("/", 20));
+    assertEquals("[[[20]/[[2]+[3]]]/[3]]", et.toString());
+  }
 }

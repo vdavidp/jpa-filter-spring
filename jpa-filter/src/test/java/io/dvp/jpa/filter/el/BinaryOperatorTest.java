@@ -1,5 +1,6 @@
 package io.dvp.jpa.filter.el;
 
+import static io.dvp.jpa.filter.el.Symbol.IDENTITY_MULTIPLIER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -34,14 +35,14 @@ public class BinaryOperatorTest {
     assertValid(" +M");
     assertValid("    +m \t\t ");
     assertValid("    +M \t\t ");
-    assertFalse(operator.copy("+ m").isPresent());
-    assertFalse(operator.copy(" + M").isPresent());
-    assertFalse(operator.copy("2").isPresent());
-    assertFalse(operator.copy("++").isPresent());
+    assertFalse(operator.copy("+ m", IDENTITY_MULTIPLIER).isPresent());
+    assertFalse(operator.copy(" + M", IDENTITY_MULTIPLIER).isPresent());
+    assertFalse(operator.copy("2", IDENTITY_MULTIPLIER).isPresent());
+    assertFalse(operator.copy("++", IDENTITY_MULTIPLIER).isPresent());
   }
 
   void assertValid(String exp) {
-    Optional<Symbol> op = operator.copy(exp);
+    Optional<Symbol> op = operator.copy(exp, IDENTITY_MULTIPLIER);
     assertTrue(op.isPresent());
     assertNotSame(operator, op.get());
     assertSame(BinaryOperator.class, op.get().getClass());
