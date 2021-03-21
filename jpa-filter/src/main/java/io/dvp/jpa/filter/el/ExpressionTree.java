@@ -4,10 +4,11 @@ import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 
 import java.util.Arrays;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
@@ -38,7 +39,7 @@ public class ExpressionTree {
 
   private static Optional<Symbol> findMatch(String exp, Symbol[] symbols) {
     List<Symbol> result = Arrays.stream(symbols)
-        .map(s -> s.copy(exp))
+        .map(s -> s.copy(exp, null))
         .filter(Optional::isPresent)
         .map(Optional::get)
         .collect(toList());
@@ -78,7 +79,7 @@ public class ExpressionTree {
     }
 
     @Override
-    public Optional<Symbol> copy(String symbol) {
+    public Optional<Symbol> copy(String symbol, EnumMap<ContextItem, Object> context) {
       throw new RuntimeException("Not implemented");
     }
 

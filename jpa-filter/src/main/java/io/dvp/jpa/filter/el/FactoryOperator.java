@@ -2,7 +2,9 @@ package io.dvp.jpa.filter.el;
 
 import static java.util.stream.Collectors.toList;
 
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -34,7 +36,7 @@ public class FactoryOperator implements Symbol {
 
   private Symbol findSymbol(String exp) {
     List<Symbol> result = symbols.stream()
-        .map(s -> s.copy(exp))
+        .map(s -> s.copy(exp, null))
         .filter(Optional::isPresent)
         .map(Optional::get)
         .collect(toList());
@@ -54,7 +56,7 @@ public class FactoryOperator implements Symbol {
   }
 
   @Override
-  public Optional<Symbol> copy(String exp) {
+  public Optional<Symbol> copy(String exp, EnumMap<ContextItem, Object> context) {
     if (symbol.equals(exp)) {
       return Optional.of(new FactoryOperator(symbol, weight, symbols));
     } else {

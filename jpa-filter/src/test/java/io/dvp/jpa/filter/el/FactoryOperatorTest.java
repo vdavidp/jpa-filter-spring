@@ -1,5 +1,6 @@
 package io.dvp.jpa.filter.el;
 
+import static io.dvp.jpa.filter.el.Helper.DEFAULT_CONTEXT;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -14,16 +15,16 @@ public class FactoryOperatorTest {
 
   @Test
   void copy() {
-    assertNotSame(op, op.copy(".").get());
-    assertFalse(op.copy(" . ").isPresent());
-    assertFalse(op.copy("a").isPresent());
-    assertFalse(op.copy(",").isPresent());
+    assertNotSame(op, op.copy(".", DEFAULT_CONTEXT).get());
+    assertFalse(op.copy(" . ", DEFAULT_CONTEXT).isPresent());
+    assertFalse(op.copy("a", DEFAULT_CONTEXT).isPresent());
+    assertFalse(op.copy(",", DEFAULT_CONTEXT).isPresent());
   }
 
   @Test
   void merge() {
-    Symbol left = new IntegerOperand().copy("938").get();
-    Symbol right = new IntegerOperand().copy("32").get();
+    Symbol left = new IntegerOperand().copy("938", DEFAULT_CONTEXT).get();
+    Symbol right = new IntegerOperand().copy("32", DEFAULT_CONTEXT).get();
 
     assertSame(op, op.merge(left));
 

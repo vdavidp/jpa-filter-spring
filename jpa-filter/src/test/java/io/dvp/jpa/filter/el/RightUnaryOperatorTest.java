@@ -1,5 +1,6 @@
 package io.dvp.jpa.filter.el;
 
+import static io.dvp.jpa.filter.el.Helper.DEFAULT_CONTEXT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
@@ -8,12 +9,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Optional;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 public class RightUnaryOperatorTest {
   RightUnaryOperator proto = new RightUnaryOperator("Is Null", 50);
-  Symbol operand = new VariableOperand().copy("{data}").get();
+  Symbol operand = new VariableOperand().copy("{data}", DEFAULT_CONTEXT).get();
 
   @Test
   void copy() {
@@ -21,12 +21,12 @@ public class RightUnaryOperatorTest {
     assertIsValid("Is Null");
     assertIsValid("  IS NULL \t\t ");
     assertIsValid("  Is null \t\t ");
-    assertFalse(proto.copy("is  null").isPresent());
-    assertFalse(proto.copy("isnull").isPresent());
+    assertFalse(proto.copy("is  null", DEFAULT_CONTEXT).isPresent());
+    assertFalse(proto.copy("isnull", DEFAULT_CONTEXT).isPresent());
   }
 
   void assertIsValid(String exp) {
-    Optional<Symbol> copy = proto.copy(exp);
+    Optional<Symbol> copy = proto.copy(exp, DEFAULT_CONTEXT);
     assertTrue(copy.isPresent());
     assertNotSame(proto, copy.get());
     assertSame(RightUnaryOperator.class, copy.get().getClass());

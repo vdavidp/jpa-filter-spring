@@ -1,5 +1,6 @@
 package io.dvp.jpa.filter.el;
 
+import static io.dvp.jpa.filter.el.Helper.DEFAULT_CONTEXT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -17,7 +18,7 @@ public class BinaryOperatorTest {
   BinaryOperator operator = new BinaryOperator("+m", 10);
   Symbol left, right, middle;
 
-  Function<String, Symbol> numFactory = number -> new IntegerOperand().copy(number).get();
+  Function<String, Symbol> numFactory = number -> new IntegerOperand().copy(number, DEFAULT_CONTEXT).get();
 
   @BeforeEach
   void init() {
@@ -34,14 +35,14 @@ public class BinaryOperatorTest {
     assertValid(" +M");
     assertValid("    +m \t\t ");
     assertValid("    +M \t\t ");
-    assertFalse(operator.copy("+ m").isPresent());
-    assertFalse(operator.copy(" + M").isPresent());
-    assertFalse(operator.copy("2").isPresent());
-    assertFalse(operator.copy("++").isPresent());
+    assertFalse(operator.copy("+ m", DEFAULT_CONTEXT).isPresent());
+    assertFalse(operator.copy(" + M", DEFAULT_CONTEXT).isPresent());
+    assertFalse(operator.copy("2", DEFAULT_CONTEXT).isPresent());
+    assertFalse(operator.copy("++", DEFAULT_CONTEXT).isPresent());
   }
 
   void assertValid(String exp) {
-    Optional<Symbol> op = operator.copy(exp);
+    Optional<Symbol> op = operator.copy(exp, DEFAULT_CONTEXT);
     assertTrue(op.isPresent());
     assertNotSame(operator, op.get());
     assertSame(BinaryOperator.class, op.get().getClass());

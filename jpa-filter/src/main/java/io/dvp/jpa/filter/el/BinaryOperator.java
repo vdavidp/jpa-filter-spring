@@ -1,5 +1,7 @@
 package io.dvp.jpa.filter.el;
 
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.Optional;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +34,7 @@ public class BinaryOperator implements Symbol {
   }
 
   @Override
-  public Optional<Symbol> copy(String exp) {
+  public Optional<Symbol> copy(String exp, EnumMap<ContextItem, Object> context) {
     if (symbol.equalsIgnoreCase(exp.trim())) {
       return Optional.of(new BinaryOperator(this.symbol, this.weight));
     } else {

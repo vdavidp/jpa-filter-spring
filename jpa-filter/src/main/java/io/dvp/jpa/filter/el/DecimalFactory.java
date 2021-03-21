@@ -1,6 +1,8 @@
 package io.dvp.jpa.filter.el;
 
 import java.math.BigDecimal;
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import lombok.AccessLevel;
@@ -17,7 +19,7 @@ public class DecimalFactory extends Operand {
   private BigDecimal value;
 
   @Override
-  public Optional<Symbol> copy(String exp) {
+  public Optional<Symbol> copy(String exp, EnumMap<ContextItem, Object> context) {
     if (pattern.matcher(exp).find()) {
       return Optional.of(new DecimalFactory(new BigDecimal(exp)));
     } else {
