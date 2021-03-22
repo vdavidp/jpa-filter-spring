@@ -9,37 +9,31 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class BinaryOperator implements Symbol {
+public class RightUnaryOperator implements Symbol {
 
   @Getter
   private final String symbol;
   @Getter
   private final int weight;
-
-  private Symbol left, right;
+  private Symbol operand;
 
   @Override
   public Symbol merge(Symbol s) {
-    if (left == null) {
-      left = s;
+    if (operand == null) {
+      operand = s;
       return this;
-    } else if (right == null) {
-      right = s;
-      return this;
-    } else if (s.getWeight() > weight) {
-      right = s.merge(right);
-      return this;
+    } else if (s.getWeight() >= this.weight) {
+      return s.merge(this);
     } else {
-      s.merge(this);
-      return s;
+      throw new RuntimeException("Invalid expression");
     }
   }
 
   @Override
   public Optional<Symbol> copy(String exp, Map<ContextItem, Object> context) {
-    if (symbol.equalsIgnoreCase(exp.trim())) {
+    if (this.symbol.equalsIgnoreCase(exp.trim())) {
       Integer multiplier = cast(context.get(MULTIPLIER), Integer.class);
-      return Optional.of(new BinaryOperator(this.symbol, this.weight * multiplier));
+      return Optional.of(new RightUnaryOperator(this.symbol, weight * multiplier));
     } else {
       return Optional.empty();
     }
@@ -47,13 +41,12 @@ public class BinaryOperator implements Symbol {
 
   @Override
   public void visit(Visitor visitor) {
-    left.visit(visitor);
-    right.visit(visitor);
+    operand.visit(visitor);
     visitor.accept(this);
   }
 
   @Override
   public String toString() {
-    return "[" + left + symbol + right + "]";
+    return "[" + operand + symbol + "]";
   }
 }

@@ -1,6 +1,9 @@
 package io.dvp.jpa.filter.db;
 
 import io.dvp.jpa.filter.el.BinaryOperator;
+import io.dvp.jpa.filter.el.DecimalFactory;
+import io.dvp.jpa.filter.el.IntegerOperand;
+import io.dvp.jpa.filter.el.RightUnaryOperator;
 import io.dvp.jpa.filter.el.VarcharOperand;
 import io.dvp.jpa.filter.el.VariableOperand;
 import java.util.Deque;
@@ -8,6 +11,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Optional;
+import java.util.TreeMap;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -42,7 +46,8 @@ public class DatabaseBinder<T> implements Binder {
     this.root = root;
     this.query = query;
     this.builder = builder;
-    this.mappers = mappers;
+    this.mappers = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    this.mappers.putAll(mappers);
 
     initializeJoiners();
   }
@@ -107,6 +112,21 @@ public class DatabaseBinder<T> implements Binder {
       Join<T, ?> join = root.join(root.getModel().getSingularAttribute(prop));
       joins.put(prop, join);
     }
+  }
+
+  @Override
+  public void accept(IntegerOperand operand) {
+    deque.addFirst(operand.getValue());
+  }
+
+  @Override
+  public void accept(DecimalFactory operand) {
+    deque.addFirst(operand.getValue());
+  }
+
+  @Override
+  public void accept(RightUnaryOperator operator) {
+    deque.addFirst(mappers.get(operator.getSymbol()).apply(deque, builder));
   }
 
   @Override

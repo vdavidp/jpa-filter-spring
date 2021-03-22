@@ -1,5 +1,6 @@
 package io.dvp.jpa.filter.el;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,7 +18,7 @@ public class VariableOperand extends Operand {
   private String value;
 
   @Override
-  public Optional<Symbol> copy(String exp) {
+  public Optional<Symbol> copy(String exp, Map<ContextItem, Object> context) {
     Matcher matcher = pattern.matcher(exp);
     if (matcher.find() && matcher.groupCount() == 1) {
       return Optional.of(new VariableOperand(matcher.group(1)));

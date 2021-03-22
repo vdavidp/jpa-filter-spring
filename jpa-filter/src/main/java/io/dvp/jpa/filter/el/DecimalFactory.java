@@ -1,10 +1,12 @@
 package io.dvp.jpa.filter.el;
 
 import java.math.BigDecimal;
+import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -12,10 +14,11 @@ import lombok.NoArgsConstructor;
 public class DecimalFactory extends Operand {
 
   private static final Pattern pattern = Pattern.compile("^[0-9]+\\.[0-9]+$");
-  private BigDecimal number;
+  @Getter
+  private BigDecimal value;
 
   @Override
-  public Optional<Symbol> copy(String exp) {
+  public Optional<Symbol> copy(String exp, Map<ContextItem, Object> context) {
     if (pattern.matcher(exp).find()) {
       return Optional.of(new DecimalFactory(new BigDecimal(exp)));
     } else {
@@ -25,11 +28,11 @@ public class DecimalFactory extends Operand {
 
   @Override
   public void visit(Visitor visitor) {
-    throw new RuntimeException("Not implemented");
+    visitor.accept(this);
   }
 
   @Override
   public String toString() {
-    return "[" + number + "]";
+    return "[" + value + "]";
   }
 }

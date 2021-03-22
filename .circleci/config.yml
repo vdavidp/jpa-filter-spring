@@ -29,13 +29,10 @@ jobs:
           name: Integration Tests
           command: mvn verify -Dskip.surefire
       - store_test_results:
-          name: jpa-filter tests 
           path: jpa-filter/target
       - store_test_results:
-          name: jpa-filter-spring tests
           path: jpa-filter-spring/target
       - store_test_results:
-          name: jpa-filter-spring-starter tests
           path: jpa-filter-spring-starter/target
       - codecov/upload:
           file: 'jpa-filter/target/site/jacoco/jacoco.xml'
@@ -54,7 +51,5 @@ workflows:
   # For more details on extending your workflow, see the configuration docs: https://circleci.com/docs/2.0/configuration-reference/#workflows
   main: 
     jobs:
-      - build-and-test:
-          filters:
-            branches:
-              only: master
+      - build-and-test
+          

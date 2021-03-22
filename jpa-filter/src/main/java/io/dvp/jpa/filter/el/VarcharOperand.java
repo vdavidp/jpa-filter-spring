@@ -2,6 +2,7 @@ package io.dvp.jpa.filter.el;
 
 import static lombok.AccessLevel.PRIVATE;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -19,7 +20,7 @@ public class VarcharOperand extends Operand {
   private String value;
 
   @Override
-  public Optional<Symbol> copy(String exp) {
+  public Optional<Symbol> copy(String exp, Map<ContextItem, Object> context) {
     Matcher matcher = pattern.matcher(exp);
     if (matcher.find() && matcher.groupCount() == 1) {
       String value = matcher.group(1).replace("\\'", "'").replace("\\\\", "\\");

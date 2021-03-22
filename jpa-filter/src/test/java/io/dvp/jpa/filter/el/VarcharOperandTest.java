@@ -1,5 +1,6 @@
 package io.dvp.jpa.filter.el;
 
+import static io.dvp.jpa.filter.el.TestHelper.IDENTITY_CONTEXT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
@@ -20,17 +21,17 @@ public class VarcharOperandTest {
     assertValid("'ooo\\'\\'s'", "[ooo''s]");
     assertValid("'\\\\'", "[\\]");
 
-    assertFalse(factory.copy("'''").isPresent());
-    assertFalse(factory.copy("'Not valid").isPresent());
-    assertFalse(factory.copy("other'").isPresent());
-    assertFalse(factory.copy("without quotes").isPresent());
-    assertFalse(factory.copy("123").isPresent());
-    assertFalse(factory.copy("'didi''d").isPresent());
-    assertFalse(factory.copy("'").isPresent());
+    assertFalse(factory.copy("'''", IDENTITY_CONTEXT).isPresent());
+    assertFalse(factory.copy("'Not valid", IDENTITY_CONTEXT).isPresent());
+    assertFalse(factory.copy("other'", IDENTITY_CONTEXT).isPresent());
+    assertFalse(factory.copy("without quotes", IDENTITY_CONTEXT).isPresent());
+    assertFalse(factory.copy("123", IDENTITY_CONTEXT).isPresent());
+    assertFalse(factory.copy("'didi''d", IDENTITY_CONTEXT).isPresent());
+    assertFalse(factory.copy("'", IDENTITY_CONTEXT).isPresent());
   }
 
   void assertValid(String rawSymbol, String interpretedSymbol) {
-    Optional<Symbol> obj = factory.copy(rawSymbol);
+    Optional<Symbol> obj = factory.copy(rawSymbol, IDENTITY_CONTEXT);
     assertTrue(obj.isPresent());
     assertNotSame(factory, obj.get());
     assertEquals(interpretedSymbol, obj.get().toString());

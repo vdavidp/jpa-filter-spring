@@ -1,5 +1,8 @@
 package io.dvp.jpa.filter.el;
 
+import static io.dvp.jpa.filter.el.ContextItem.MULTIPLIER;
+import static io.dvp.jpa.filter.el.TestHelper.IDENTITY_CONTEXT;
+import static java.util.Collections.singletonMap;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -14,10 +17,11 @@ import org.junit.jupiter.api.Test;
 
 public class BinaryOperatorTest {
 
-  BinaryOperator operator = new BinaryOperator("+", 10);
+  BinaryOperator operator = new BinaryOperator("+m", 10);
   Symbol left, right, middle;
 
-  Function<String, Symbol> numFactory = number -> new IntegerOperand().copy(number).get();
+  Function<String, Symbol> numFactory = number -> new IntegerOperand().copy(number,
+      IDENTITY_CONTEXT).get();
 
   @BeforeEach
   void init() {
@@ -28,31 +32,35 @@ public class BinaryOperatorTest {
 
   @Test
   void copy() {
-    assertValid("+");
-    assertValid(" +");
-    assertValid("    + \t\t ");
-    assertFalse(operator.copy("a").isPresent());
-    assertFalse(operator.copy("2").isPresent());
-    assertFalse(operator.copy("++").isPresent());
+    assertValid("+m");
+    assertValid("+M");
+    assertValid(" +m");
+    assertValid(" +M");
+    assertValid("    +m \t\t ");
+    assertValid("    +M \t\t ");
+    assertFalse(operator.copy("+ m", IDENTITY_CONTEXT).isPresent());
+    assertFalse(operator.copy(" + M", IDENTITY_CONTEXT).isPresent());
+    assertFalse(operator.copy("2", IDENTITY_CONTEXT).isPresent());
+    assertFalse(operator.copy("++", IDENTITY_CONTEXT).isPresent());
   }
 
   void assertValid(String exp) {
-    Optional<Symbol> op = operator.copy(exp);
+    Optional<Symbol> op = operator.copy(exp, IDENTITY_CONTEXT);
     assertTrue(op.isPresent());
     assertNotSame(operator, op.get());
     assertSame(BinaryOperator.class, op.get().getClass());
-    assertEquals("[null" + exp.trim() + "null]", op.get().toString());
+    assertEquals("[null" + exp.trim().toLowerCase() + "null]", op.get().toString());
   }
 
   @Test
   void merge() {
     assertEquals(operator, operator.merge(left));
     assertEquals(operator, operator.merge(right));
-    assertEquals("[[12]+[9]]", operator.toString());
+    assertEquals("[[12]+m[9]]", operator.toString());
 
-    Symbol op2 = operator.merge(new BinaryOperator("+", 0));
+    Symbol op2 = operator.merge(new BinaryOperator("*", 0));
     assertNotEquals(op2, operator);
-    assertEquals("[[[12]+[9]]+null]", op2.toString());
+    assertEquals("[[[12]+m[9]]*null]", op2.toString());
   }
 
   @Test
@@ -61,6 +69,14 @@ public class BinaryOperatorTest {
     operator.merge(left).merge(middle);
     assertSame(operator, operator.merge(heavier));
     assertSame(operator, operator.merge(right));
-    assertEquals("[[12]+[[38]/[9]]]", operator.toString());
+    assertEquals("[[12]+m[[38]/[9]]]", operator.toString());
+  }
+
+  @Test
+  void copyWithWeightMultiplier() {
+    BinaryOperator op = new BinaryOperator("+", 10);
+    Optional<Symbol> child = op.copy("+", singletonMap(MULTIPLIER, 4));
+    assertTrue(child.isPresent());
+    assertEquals(40, child.get().getWeight());
   }
 }
