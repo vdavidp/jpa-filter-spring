@@ -75,25 +75,25 @@ public class DatabaseBinderIT {
   }
 
   @Test
-  void bindsIsTrueOperator() {
+  void bindIsTrueOperator() {
     String exp = "{booleanValue} is true";
     ctxDummy.assertResultContains(exp, singletonList(1L));
   }
 
   @Test
-  void bindsIsFalseOperator() {
+  void bindIsFalseOperator() {
     String exp = "{booleanValue} IS FALSE";
     ctxDummy.assertResultContains(exp, asList(2L, 3L));
   }
 
   @Test
-  void bindsIsNullOperator() {
+  void bindIsNullOperator() {
     String exp = "{bigDecimalValue} Is Null";
     ctxDummy.assertResultContains(exp, singletonList(3L));
   }
 
   @Test
-  void bindsIsNotNull() {
+  void bindIsNotNullOperator() {
     String exp = "{bigDecimalValue} IS NOT NULL";
     ctxDummy.assertResultContains(exp, asList(1L, 2L));
   }

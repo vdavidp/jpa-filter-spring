@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface Symbol {
+  int IDENTITY_MULTIPLIER = 1;
 
   Symbol merge(Symbol s);
 
