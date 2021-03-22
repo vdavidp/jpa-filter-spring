@@ -1,6 +1,8 @@
 package io.dvp.jpa.filter.el;
 
-import static io.dvp.jpa.filter.el.Helper.DEFAULT_CONTEXT;
+import static io.dvp.jpa.filter.el.ContextItem.MULTIPLIER;
+import static io.dvp.jpa.filter.el.TestHelper.IDENTITY_CONTEXT;
+import static java.util.Collections.singletonMap;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
@@ -13,7 +15,7 @@ import org.junit.jupiter.api.Test;
 
 public class RightUnaryOperatorTest {
   RightUnaryOperator proto = new RightUnaryOperator("Is Null", 50);
-  Symbol operand = new VariableOperand().copy("{data}", DEFAULT_CONTEXT).get();
+  Symbol operand = new VariableOperand().copy("{data}", IDENTITY_CONTEXT).get();
 
   @Test
   void copy() {
@@ -21,12 +23,12 @@ public class RightUnaryOperatorTest {
     assertIsValid("Is Null");
     assertIsValid("  IS NULL \t\t ");
     assertIsValid("  Is null \t\t ");
-    assertFalse(proto.copy("is  null", DEFAULT_CONTEXT).isPresent());
-    assertFalse(proto.copy("isnull", DEFAULT_CONTEXT).isPresent());
+    assertFalse(proto.copy("is  null", IDENTITY_CONTEXT).isPresent());
+    assertFalse(proto.copy("isnull", IDENTITY_CONTEXT).isPresent());
   }
 
   void assertIsValid(String exp) {
-    Optional<Symbol> copy = proto.copy(exp, DEFAULT_CONTEXT);
+    Optional<Symbol> copy = proto.copy(exp, IDENTITY_CONTEXT);
     assertTrue(copy.isPresent());
     assertNotSame(proto, copy.get());
     assertSame(RightUnaryOperator.class, copy.get().getClass());
@@ -55,5 +57,12 @@ public class RightUnaryOperatorTest {
     Symbol lightOperator = new BinaryOperator("+", 40);
     proto.merge(operand);
     assertThrows(RuntimeException.class, () -> proto.merge(lightOperator));
+  }
+
+  @Test
+  void copyWithWeightMultiplier() {
+    Optional<Symbol> child = proto.copy("Is null", singletonMap(MULTIPLIER, 3));
+    assertTrue(child.isPresent());
+    assertEquals(150, child.get().getWeight());
   }
 }

@@ -42,7 +42,7 @@ public class ExpressionTreeSpecification implements Specification<Object> {
 
     Binder binder = binderProvider.getObject(root, criteriaQuery, criteriaBuilder, mappers);
 
-    ExpressionTree et = ExpressionTree.build(expression, symbols.toArray(new Symbol[]{}));
+    ExpressionTree et = new ExpressionTree.Builder().build(expression, symbols.toArray(new Symbol[]{}));
     et.visit(binder);
 
     return binder.getPredicate();

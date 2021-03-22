@@ -1,6 +1,8 @@
 package io.dvp.jpa.filter.el;
 
-import static io.dvp.jpa.filter.el.Helper.DEFAULT_CONTEXT;
+import static io.dvp.jpa.filter.el.ContextItem.MULTIPLIER;
+import static io.dvp.jpa.filter.el.TestHelper.IDENTITY_CONTEXT;
+import static java.util.Collections.singletonMap;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -18,7 +20,8 @@ public class BinaryOperatorTest {
   BinaryOperator operator = new BinaryOperator("+m", 10);
   Symbol left, right, middle;
 
-  Function<String, Symbol> numFactory = number -> new IntegerOperand().copy(number, DEFAULT_CONTEXT).get();
+  Function<String, Symbol> numFactory = number -> new IntegerOperand().copy(number,
+      IDENTITY_CONTEXT).get();
 
   @BeforeEach
   void init() {
@@ -35,14 +38,14 @@ public class BinaryOperatorTest {
     assertValid(" +M");
     assertValid("    +m \t\t ");
     assertValid("    +M \t\t ");
-    assertFalse(operator.copy("+ m", DEFAULT_CONTEXT).isPresent());
-    assertFalse(operator.copy(" + M", DEFAULT_CONTEXT).isPresent());
-    assertFalse(operator.copy("2", DEFAULT_CONTEXT).isPresent());
-    assertFalse(operator.copy("++", DEFAULT_CONTEXT).isPresent());
+    assertFalse(operator.copy("+ m", IDENTITY_CONTEXT).isPresent());
+    assertFalse(operator.copy(" + M", IDENTITY_CONTEXT).isPresent());
+    assertFalse(operator.copy("2", IDENTITY_CONTEXT).isPresent());
+    assertFalse(operator.copy("++", IDENTITY_CONTEXT).isPresent());
   }
 
   void assertValid(String exp) {
-    Optional<Symbol> op = operator.copy(exp, DEFAULT_CONTEXT);
+    Optional<Symbol> op = operator.copy(exp, IDENTITY_CONTEXT);
     assertTrue(op.isPresent());
     assertNotSame(operator, op.get());
     assertSame(BinaryOperator.class, op.get().getClass());
@@ -67,5 +70,13 @@ public class BinaryOperatorTest {
     assertSame(operator, operator.merge(heavier));
     assertSame(operator, operator.merge(right));
     assertEquals("[[12]+m[[38]/[9]]]", operator.toString());
+  }
+
+  @Test
+  void copyWithWeightMultiplier() {
+    BinaryOperator op = new BinaryOperator("+", 10);
+    Optional<Symbol> child = op.copy("+", singletonMap(MULTIPLIER, 4));
+    assertTrue(child.isPresent());
+    assertEquals(40, child.get().getWeight());
   }
 }

@@ -1,6 +1,8 @@
 package io.dvp.jpa.filter.el;
 
-import java.util.EnumMap;
+import static io.dvp.jpa.filter.el.ContextItem.MULTIPLIER;
+import static io.dvp.jpa.filter.el.Helper.cast;
+
 import java.util.Map;
 import java.util.Optional;
 import lombok.Getter;
@@ -28,9 +30,10 @@ public class RightUnaryOperator implements Symbol {
   }
 
   @Override
-  public Optional<Symbol> copy(String exp, EnumMap<ContextItem, Object> context) {
+  public Optional<Symbol> copy(String exp, Map<ContextItem, Object> context) {
     if (this.symbol.equalsIgnoreCase(exp.trim())) {
-      return Optional.of(new RightUnaryOperator(this.symbol, weight));
+      Integer multiplier = cast(context.get(MULTIPLIER), Integer.class);
+      return Optional.of(new RightUnaryOperator(this.symbol, weight * multiplier));
     } else {
       return Optional.empty();
     }

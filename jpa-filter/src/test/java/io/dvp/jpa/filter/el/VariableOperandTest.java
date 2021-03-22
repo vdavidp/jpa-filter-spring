@@ -1,6 +1,6 @@
 package io.dvp.jpa.filter.el;
 
-import static io.dvp.jpa.filter.el.Helper.DEFAULT_CONTEXT;
+import static io.dvp.jpa.filter.el.TestHelper.IDENTITY_CONTEXT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
@@ -22,18 +22,18 @@ public class VariableOperandTest {
     assertValid("{some-variable}");
     assertValid("{inside/almost-anything.is=valid}");
 
-    assertFalse(var.copy("123", DEFAULT_CONTEXT).isPresent());
-    assertFalse(var.copy("3Three", DEFAULT_CONTEXT).isPresent());
-    assertFalse(var.copy("_more", DEFAULT_CONTEXT).isPresent());
-    assertFalse(var.copy("$following", DEFAULT_CONTEXT).isPresent());
-    assertFalse(var.copy("{symbols { and } not allowed inside}", DEFAULT_CONTEXT).isPresent());
-    assertFalse(var.copy("{}", DEFAULT_CONTEXT).isPresent());
-    assertFalse(var.copy("{ }", DEFAULT_CONTEXT).isPresent());
-    assertFalse(var.copy("{\t}", DEFAULT_CONTEXT).isPresent());
+    assertFalse(var.copy("123", IDENTITY_CONTEXT).isPresent());
+    assertFalse(var.copy("3Three", IDENTITY_CONTEXT).isPresent());
+    assertFalse(var.copy("_more", IDENTITY_CONTEXT).isPresent());
+    assertFalse(var.copy("$following", IDENTITY_CONTEXT).isPresent());
+    assertFalse(var.copy("{symbols { and } not allowed inside}", IDENTITY_CONTEXT).isPresent());
+    assertFalse(var.copy("{}", IDENTITY_CONTEXT).isPresent());
+    assertFalse(var.copy("{ }", IDENTITY_CONTEXT).isPresent());
+    assertFalse(var.copy("{\t}", IDENTITY_CONTEXT).isPresent());
   }
 
   private void assertValid(String prop) {
-    Optional<Symbol> opt = var.copy(prop, DEFAULT_CONTEXT);
+    Optional<Symbol> opt = var.copy(prop, IDENTITY_CONTEXT);
     assertTrue(opt.isPresent());
     assertNotSame(var, opt.get());
     assertEquals("[" + prop.replaceAll("[{}]", "") + "]", opt.get().toString());

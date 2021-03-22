@@ -5,7 +5,7 @@ import lombok.Getter;
 public abstract class Operand implements Symbol {
 
   @Getter
-  private final int weight = 100;
+  private final int weight = Integer.MAX_VALUE;
 
   @Override
   public Symbol merge(Symbol s) {

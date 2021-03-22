@@ -1,8 +1,9 @@
 package io.dvp.jpa.filter.el;
 
+import static io.dvp.jpa.filter.el.ContextItem.MULTIPLIER;
+import static io.dvp.jpa.filter.el.Helper.cast;
 import static java.util.stream.Collectors.toList;
 
-import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -56,9 +57,10 @@ public class FactoryOperator implements Symbol {
   }
 
   @Override
-  public Optional<Symbol> copy(String exp, EnumMap<ContextItem, Object> context) {
+  public Optional<Symbol> copy(String exp, Map<ContextItem, Object> context) {
     if (symbol.equals(exp)) {
-      return Optional.of(new FactoryOperator(symbol, weight, symbols));
+      Integer multiplier = cast(context.get(MULTIPLIER), Integer.class);
+      return Optional.of(new FactoryOperator(symbol, weight * multiplier, symbols));
     } else {
       return Optional.empty();
     }

@@ -29,7 +29,7 @@ public class AssertContext<T> {
   }
 
   public List<T> executeQuery(String exp) {
-    ExpressionTree tree = ExpressionTree.build(exp, defaultSymbols());
+    ExpressionTree tree = new ExpressionTree.Builder().build(exp, defaultSymbols());
     tree.visit(binder);
 
     criteriaQuery.select(root).where(binder.getPredicate());

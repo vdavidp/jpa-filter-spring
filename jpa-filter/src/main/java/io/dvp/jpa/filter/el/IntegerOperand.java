@@ -1,7 +1,6 @@
 package io.dvp.jpa.filter.el;
 
 import java.math.BigInteger;
-import java.util.EnumMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -19,7 +18,7 @@ public class IntegerOperand extends Operand {
   private BigInteger value;
 
   @Override
-  public Optional<Symbol> copy(String exp, EnumMap<ContextItem, Object> context) {
+  public Optional<Symbol> copy(String exp, Map<ContextItem, Object> context) {
     if (pattern.matcher(exp).find()) {
       return Optional.of(new IntegerOperand(new BigInteger(exp)));
     } else {
