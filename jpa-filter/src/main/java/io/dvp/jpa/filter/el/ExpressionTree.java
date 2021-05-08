@@ -1,5 +1,11 @@
 package io.dvp.jpa.filter.el;
 
+import static io.dvp.jpa.filter.el.Symbol.WEIGHT_10;
+import static io.dvp.jpa.filter.el.Symbol.WEIGHT_20;
+import static io.dvp.jpa.filter.el.Symbol.WEIGHT_30;
+import static io.dvp.jpa.filter.el.Symbol.WEIGHT_40;
+import static io.dvp.jpa.filter.el.Symbol.WEIGHT_MAX;
+import static io.dvp.jpa.filter.el.Symbol.WEIGHT_MIN;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 
@@ -18,7 +24,7 @@ public class ExpressionTree {
 
   public static class Builder {
     private EnumMap<ContextItem, Object> context;
-    private int multiplier = 1;
+    private int multiplier = WEIGHT_MIN;
 
     public ExpressionTree build(String expression, Symbol... symbols) {
       context = new EnumMap<>(ContextItem.class);
@@ -30,11 +36,8 @@ public class ExpressionTree {
       int i = 0;
       for (; i < expression.length() - 1; i++) {
 
-        if (expression.charAt(i) == '(') {
-          context.put(ContextItem.MULTIPLIER, ++multiplier);
-          continue;
-        } else if (expression.charAt(i) == ')') {
-          context.put(ContextItem.MULTIPLIER, --multiplier);
+        if (tryIncreaseMultiplier(expression.charAt(i))
+            || tryDecreaseMultiplier(expression.charAt(i))) {
           continue;
         }
 
@@ -50,8 +53,27 @@ public class ExpressionTree {
       Optional<Symbol> match = findMatch(subExpr + expression.substring(i), symbols);
       if (match.isPresent()) {
         root = root.merge(match.get());
-      }
+      } //TODO If remaining exp is not recognized then throw exception
+
       return new ExpressionTree(root);
+    }
+
+    private boolean tryIncreaseMultiplier(char character) {
+      return modifyMultiplier(character, '(', +WEIGHT_MAX);
+    }
+
+    private boolean tryDecreaseMultiplier(char character) {
+      return modifyMultiplier(character, ')', -WEIGHT_MAX);
+    }
+
+    private boolean modifyMultiplier(char character, char symbol, int offset) {
+      if (symbol == character) {
+        multiplier += offset;
+        context.put(ContextItem.MULTIPLIER, multiplier);
+        return true;
+      } else {
+        return false;
+      }
     }
 
     private Optional<Symbol> findMatch(String exp, Symbol[] symbols) {
@@ -70,17 +92,17 @@ public class ExpressionTree {
         new FactoryOperator(".", 50, singletonList(new DecimalFactory())),
         new VariableOperand(),
         new VarcharOperand(),
-        new BinaryOperator("=", 20),
-        new BinaryOperator("and", 10),
-        new BinaryOperator("or", 10),
-        new RightUnaryOperator("Is True", 40),
-        new RightUnaryOperator("Is False", 40),
-        new RightUnaryOperator("Is Null", 40),
-        new RightUnaryOperator("Is Not Null", 40),
-        new BinaryOperator(">", 30),
-        new BinaryOperator(">=", 30),
-        new BinaryOperator("<", 30),
-        new BinaryOperator("<=", 30)
+        new BinaryOperator("=", WEIGHT_20),
+        new BinaryOperator("and", WEIGHT_10),
+        new BinaryOperator("or", WEIGHT_10),
+        new RightUnaryOperator("Is True", WEIGHT_40),
+        new RightUnaryOperator("Is False", WEIGHT_40),
+        new RightUnaryOperator("Is Null", WEIGHT_40),
+        new RightUnaryOperator("Is Not Null", WEIGHT_40),
+        new BinaryOperator(">", WEIGHT_30),
+        new BinaryOperator(">=", WEIGHT_30),
+        new BinaryOperator("<", WEIGHT_30),
+        new BinaryOperator("<=", WEIGHT_30)
     };
   }
 
