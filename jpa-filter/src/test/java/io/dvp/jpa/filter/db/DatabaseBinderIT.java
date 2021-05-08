@@ -97,4 +97,28 @@ public class DatabaseBinderIT {
     String exp = "{bigDecimalValue} IS NOT NULL";
     ctxDummy.assertResultContains(exp, asList(1L, 2L));
   }
+
+  @Test
+  void bindGreaterThanOperator() {
+    String exp = "{starts} > 3";
+    ctxArticle.assertResultContains(exp, asList("Article 1", "Article 3"));
+  }
+
+  @Test
+  void bindGreaterThanOrEqualToOperator() {
+    String exp = "{starts} >= 3";
+    ctxArticle.assertResultContains(exp, asList("Article 1", "Article 2", "Article 3"));
+  }
+
+  @Test
+  void bindLessThanOperator() {
+    String exp = "{starts} < 4";
+    ctxArticle.assertResultContains(exp, asList("Article 2", "Article X"));
+  }
+
+  @Test
+  void bindLessThanOrEqualOperator() {
+    String exp = "{starts} <= 4";
+    ctxArticle.assertResultContains(exp, asList("Article 2", "Article X", "Article 1"));
+  }
 }

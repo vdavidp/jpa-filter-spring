@@ -73,10 +73,14 @@ public class ExpressionTree {
         new BinaryOperator("=", 20),
         new BinaryOperator("and", 10),
         new BinaryOperator("or", 10),
-        new RightUnaryOperator("Is True", 30),
-        new RightUnaryOperator("Is False", 30),
-        new RightUnaryOperator("Is Null", 30),
-        new RightUnaryOperator("Is Not Null", 30)
+        new RightUnaryOperator("Is True", 40),
+        new RightUnaryOperator("Is False", 40),
+        new RightUnaryOperator("Is Null", 40),
+        new RightUnaryOperator("Is Not Null", 40),
+        new BinaryOperator(">", 30),
+        new BinaryOperator(">=", 30),
+        new BinaryOperator("<", 30),
+        new BinaryOperator("<=", 30)
     };
   }
 

@@ -47,6 +47,10 @@ public class BinaryOperator implements Symbol {
 
   @Override
   public void visit(Visitor visitor) {
+    if (left == null || right == null) {
+      throw new RuntimeException("Error at parsing binary operator: " + toString());
+    }
+
     left.visit(visitor);
     right.visit(visitor);
     visitor.accept(this);

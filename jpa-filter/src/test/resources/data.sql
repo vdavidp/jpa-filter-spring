@@ -1,11 +1,11 @@
 insert into language (name) values
 ('English'), ('Spanish'), ('French');
 
-insert into article (title, main_topic, language_id) values
-('Article 1', 'Health', 1),
-('Article 2', 'Work', 2),
-('Article 3', 'Love', 3),
-('Article X', 'Article X', 1);
+insert into article (title, main_topic, starts, language_id) values
+('Article 1', 'Health', 4, 1),
+('Article 2', 'Work', 3, 2),
+('Article 3', 'Love', 5, 3),
+('Article X', 'Article X', 2, 1);
 
 insert into comment (author, key, article_id) values
 ('david', 't1', 1),

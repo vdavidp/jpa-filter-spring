@@ -26,6 +26,8 @@ public class Article {
   @Column(nullable = false)
   private String mainTopic;
 
+  private Integer starts;
+
   @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Comment> comments;
 
