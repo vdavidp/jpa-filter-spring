@@ -62,6 +62,9 @@ public class DatabaseBinder<T> implements Binder {
 
   @Override
   public void accept(BinaryOperator operator) {
+    if (!mappers.containsKey(operator.getSymbol())) {
+      throw new RuntimeException("Database binder not found for operator: " + operator.getSymbol());
+    }
     deque.addFirst(mappers.get(operator.getSymbol()).apply(deque, builder));
   }
 

@@ -75,6 +75,42 @@ public class Mappers {
     };
   }
 
+  @SuppressWarnings("unchecked")
+  public static BiFunction<Deque<Object>, CriteriaBuilder, Predicate> greaterThan() {
+    return (deque, cb) -> {
+      Comparable<Object> right = (Comparable<Object>)deque.removeFirst();
+      Expression<Comparable<Object>> left = (Expression<Comparable<Object>>) deque.removeFirst();
+      return cb.greaterThan(left, right);
+    };
+  }
+
+  @SuppressWarnings("unchecked")
+  public static BiFunction<Deque<Object>, CriteriaBuilder, Predicate> greaterThanOrEqual() {
+    return (deque, cb) -> {
+      Comparable<Object> right = (Comparable<Object>) deque.removeFirst();
+      Expression<Comparable<Object>> left = (Expression<Comparable<Object>>) deque.removeFirst();
+      return cb.greaterThanOrEqualTo(left, right);
+    };
+  }
+
+  @SuppressWarnings("unchecked")
+  public static BiFunction<Deque<Object>, CriteriaBuilder, Predicate> lessThan() {
+    return (deque, cb) -> {
+      Comparable<Object> right = (Comparable<Object>) deque.removeFirst();
+      Expression<Comparable<Object>> left = (Expression<Comparable<Object>>) deque.removeFirst();
+      return cb.lessThan(left, right);
+    };
+  }
+
+  @SuppressWarnings("unchecked")
+  public static BiFunction<Deque<Object>, CriteriaBuilder, Predicate> lessThanOrEqual() {
+    return (deque, cb) -> {
+      Comparable<Object> right = (Comparable<Object>) deque.removeFirst();
+      Expression<Comparable<Object>> left = (Expression<Comparable<Object>>) deque.removeFirst();
+      return cb.lessThanOrEqualTo(left, right);
+    };
+  }
+
   public static Map<String, BiFunction<Deque<Object>, CriteriaBuilder, Predicate>> defaultMappers() {
     Map<String, BiFunction<Deque<Object>, CriteriaBuilder, Predicate>> map = new HashMap<>();
     map.put("=", Mappers.equalTo());
@@ -84,6 +120,10 @@ public class Mappers {
     map.put("is false", Mappers.isFalse());
     map.put("is null", Mappers.isNull());
     map.put("is not null", Mappers.isNotNull());
+    map.put(">", Mappers.greaterThan());
+    map.put(">=", Mappers.greaterThanOrEqual());
+    map.put("<", Mappers.lessThan());
+    map.put("<=", Mappers.lessThanOrEqual());
     return unmodifiableMap(map);
   }
 }
