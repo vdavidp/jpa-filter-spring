@@ -6,11 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Predicate;
 
 public interface ExpressionTreeConfigurator {
 
-  void modifyMappers(Map<String, BiFunction<Deque<Object>, CriteriaBuilder, Predicate>> mappers);
+  void modifyMappers(Map<String, BiFunction<Deque<Object>, CriteriaBuilder, Object>> mappers);
 
   void modifySymbols(List<Symbol> symbols);
 }

@@ -6,6 +6,7 @@ import static io.dvp.jpa.filter.el.Symbol.WEIGHT_30;
 import static io.dvp.jpa.filter.el.Symbol.WEIGHT_40;
 import static io.dvp.jpa.filter.el.Symbol.WEIGHT_MAX;
 import static io.dvp.jpa.filter.el.Symbol.WEIGHT_MIN;
+import io.dvp.jpa.filter.el.UnaryOperator.Order;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 
@@ -95,10 +96,11 @@ public class ExpressionTree {
         new BinaryOperator("=", WEIGHT_20),
         new BinaryOperator("and", WEIGHT_10),
         new BinaryOperator("or", WEIGHT_10),
-        new RightUnaryOperator("Is True", WEIGHT_40),
-        new RightUnaryOperator("Is False", WEIGHT_40),
-        new RightUnaryOperator("Is Null", WEIGHT_40),
-        new RightUnaryOperator("Is Not Null", WEIGHT_40),
+        new UnaryOperator("Is True", WEIGHT_40, Order.RIGHT),
+        new UnaryOperator("Is False", WEIGHT_40, Order.RIGHT),
+        new UnaryOperator("Is Null", WEIGHT_40, Order.RIGHT),
+        new UnaryOperator("Is Not Null", WEIGHT_40, Order.RIGHT),
+        new UnaryOperator("Date", WEIGHT_40, Order.LEFT),
         new BinaryOperator(">", WEIGHT_30),
         new BinaryOperator(">=", WEIGHT_30),
         new BinaryOperator("<", WEIGHT_30),

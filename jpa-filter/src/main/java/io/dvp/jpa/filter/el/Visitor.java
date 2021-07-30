@@ -12,5 +12,5 @@ public interface Visitor {
 
   void accept(DecimalFactory operand);
 
-  void accept(RightUnaryOperator operator);
+  void accept(UnaryOperator operator);
 }

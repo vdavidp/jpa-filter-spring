@@ -2,10 +2,11 @@ package io.dvp.jpa.filter.db.entity;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Date;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import lombok.Data;
 
 @Entity
@@ -28,4 +29,7 @@ public class Dummy {
   private BigDecimal bigDecimalValue;
 
   private Boolean booleanValue;
+  
+  @Temporal(TemporalType.DATE)
+  private Date utilDate;
 }

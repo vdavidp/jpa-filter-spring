@@ -1,20 +1,25 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package io.dvp.jpa.filter.el;
 
 import static io.dvp.jpa.filter.el.ContextItem.MULTIPLIER;
 import static io.dvp.jpa.filter.el.TestHelper.IDENTITY_CONTEXT;
+import io.dvp.jpa.filter.el.UnaryOperator.Order;
 import static java.util.Collections.singletonMap;
+import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Optional;
 import org.junit.jupiter.api.Test;
 
-public class RightUnaryOperatorTest {
-  RightUnaryOperator proto = new RightUnaryOperator("Is Null", 50);
+public class UnaryOperatorTest {
+  UnaryOperator proto = new UnaryOperator("Is Null", 50, Order.RIGHT);
   Symbol operand = new VariableOperand().copy("{data}", IDENTITY_CONTEXT).get();
 
   @Test
@@ -31,7 +36,7 @@ public class RightUnaryOperatorTest {
     Optional<Symbol> copy = proto.copy(exp, IDENTITY_CONTEXT);
     assertTrue(copy.isPresent());
     assertNotSame(proto, copy.get());
-    assertSame(RightUnaryOperator.class, copy.get().getClass());
+    assertSame(UnaryOperator.class, copy.get().getClass());
     assertEquals("[nullIs Null]", copy.get().toString());
   }
 
@@ -43,8 +48,8 @@ public class RightUnaryOperatorTest {
   }
 
   @Test
-  void mergeSameWeightOperator() {
-    Symbol sameWeight = new RightUnaryOperator("is true", 50);
+  void mergeSameWeightOrWeighterOperator() {
+    Symbol sameWeight = new UnaryOperator("is true", 50, Order.RIGHT);
 
     proto.merge(operand);
     Symbol root = proto.merge(sameWeight);
@@ -64,5 +69,12 @@ public class RightUnaryOperatorTest {
     Optional<Symbol> child = proto.copy("Is null", singletonMap(MULTIPLIER, 3));
     assertTrue(child.isPresent());
     assertEquals(150, child.get().getWeight());
+  }
+  
+  @Test
+  void leftToString() {
+    UnaryOperator op = new UnaryOperator("date", 50, Order.LEFT);
+    op.merge(new VarcharOperand().copy("'2010-10-23'", IDENTITY_CONTEXT).get());
+    assertEquals("[date[2010-10-23]]", op.toString());
   }
 }

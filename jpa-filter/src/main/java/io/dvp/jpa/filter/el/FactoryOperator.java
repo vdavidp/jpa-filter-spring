@@ -31,7 +31,7 @@ public class FactoryOperator implements Symbol {
       return this;
     } else {
       right = s;
-      return findSymbol(findRawContent(left) + "." + findRawContent(s));
+      return findSymbol(findRawContent(left) + symbol + findRawContent(s));
     }
   }
 

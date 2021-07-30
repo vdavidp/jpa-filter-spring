@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Predicate;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 
@@ -24,7 +23,7 @@ class ExpTreeConfiguration implements ExpressionTreeConfigurator {
 
   @Override
   public void modifyMappers(
-      Map<String, BiFunction<Deque<Object>, CriteriaBuilder, Predicate>> mappers) {
+      Map<String, BiFunction<Deque<Object>, CriteriaBuilder, Object>> mappers) {
     mappers.put(":", mappers.remove("="));
     mappers.put("||", mappers.remove("or"));
   }
