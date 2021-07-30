@@ -29,7 +29,7 @@ public class ExpressionTreeAutoconfigure {
       Root<T> root,
       CriteriaQuery<T> cq,
       CriteriaBuilder cb,
-      Map<String, BiFunction<Deque<Object>, CriteriaBuilder, Predicate>> mappers) {
+      Map<String, BiFunction<Deque<Object>, CriteriaBuilder, Object>> mappers) {
 
     return new DatabaseBinder<>(root, cq, cb, mappers);
   }

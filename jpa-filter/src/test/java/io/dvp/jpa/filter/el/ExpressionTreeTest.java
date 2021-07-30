@@ -1,10 +1,10 @@
 package io.dvp.jpa.filter.el;
 
+import io.dvp.jpa.filter.el.UnaryOperator.Order;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 public class ExpressionTreeTest {
@@ -93,9 +93,17 @@ public class ExpressionTreeTest {
   @Test
   void parseRightUnaryOperator() {
     ExpressionTree et = new ExpressionTree.Builder().build("{data} is Null",
-        new RightUnaryOperator("Is Null", 10),
+        new UnaryOperator("Is Null", 10, Order.RIGHT),
         new VariableOperand());
     assertEquals("[[data]Is Null]", et.toString());
+  }
+  
+  @Test
+  void parseLeftUnaryOperator() {
+    ExpressionTree et = new ExpressionTree.Builder().build("Date '2010-02-23'", 
+        new UnaryOperator("Date", 10, Order.LEFT),
+        new VarcharOperand());
+    assertEquals("[Date[2010-02-23]]", et.toString());
   }
 
   @Test

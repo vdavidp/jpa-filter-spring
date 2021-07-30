@@ -97,6 +97,12 @@ public class DatabaseBinderIT {
     String exp = "{bigDecimalValue} IS NOT NULL";
     ctxDummy.assertResultContains(exp, asList(1L, 2L));
   }
+  
+  @Test
+  void bindDateOperator() {
+    String exp = "{utilDate} = Date '2020-09-15'";
+    ctxDummy.assertResultContains(exp, asList(3L));
+  }
 
   @Test
   void bindGreaterThanOperator() {

@@ -3,7 +3,7 @@ package io.dvp.jpa.filter.db;
 import io.dvp.jpa.filter.el.BinaryOperator;
 import io.dvp.jpa.filter.el.DecimalFactory;
 import io.dvp.jpa.filter.el.IntegerOperand;
-import io.dvp.jpa.filter.el.RightUnaryOperator;
+import io.dvp.jpa.filter.el.UnaryOperator;
 import io.dvp.jpa.filter.el.VarcharOperand;
 import io.dvp.jpa.filter.el.VariableOperand;
 import java.util.Deque;
@@ -29,7 +29,7 @@ public class DatabaseBinder<T> implements Binder {
   private Root<T> root;
   private final CriteriaQuery<T> query;
   private final CriteriaBuilder builder;
-  private final Map<String, BiFunction<Deque<Object>, CriteriaBuilder, Predicate>> mappers;
+  private final Map<String, BiFunction<Deque<Object>, CriteriaBuilder, Object>> mappers;
 
   private final Deque<Object> deque = new LinkedList<>();
 
@@ -41,7 +41,7 @@ public class DatabaseBinder<T> implements Binder {
       Root<T> root,
       CriteriaQuery<T> query,
       CriteriaBuilder builder,
-      Map<String, BiFunction<Deque<Object>, CriteriaBuilder, Predicate>> mappers) {
+      Map<String, BiFunction<Deque<Object>, CriteriaBuilder, Object>> mappers) {
 
     this.root = root;
     this.query = query;
@@ -128,7 +128,7 @@ public class DatabaseBinder<T> implements Binder {
   }
 
   @Override
-  public void accept(RightUnaryOperator operator) {
+  public void accept(UnaryOperator operator) {
     deque.addFirst(mappers.get(operator.getSymbol()).apply(deque, builder));
   }
 

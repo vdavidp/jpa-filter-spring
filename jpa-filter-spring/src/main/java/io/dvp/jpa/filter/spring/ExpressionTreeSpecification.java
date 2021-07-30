@@ -31,7 +31,7 @@ public class ExpressionTreeSpecification implements Specification<Object> {
   @Override
   public Predicate toPredicate(Root<Object> root, CriteriaQuery<?> criteriaQuery,
       CriteriaBuilder criteriaBuilder) {
-    Map<String, BiFunction<Deque<Object>, CriteriaBuilder, Predicate>> mappers = new HashMap<>(
+    Map<String, BiFunction<Deque<Object>, CriteriaBuilder, Object>> mappers = new HashMap<>(
         defaultMappers());
     List<Symbol> symbols = new ArrayList<>(asList(defaultSymbols()));
 
