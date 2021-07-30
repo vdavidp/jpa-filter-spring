@@ -75,8 +75,8 @@ public class BinaryOperatorTest {
   @Test
   void copyWithWeightMultiplier() {
     BinaryOperator op = new BinaryOperator("+", 10);
-    Optional<Symbol> child = op.copy("+", singletonMap(MULTIPLIER, 4));
+    Optional<Symbol> child = op.copy("+", singletonMap(MULTIPLIER, 200));
     assertTrue(child.isPresent());
-    assertEquals(40, child.get().getWeight());
+    assertEquals(210, child.get().getWeight());
   }
 }

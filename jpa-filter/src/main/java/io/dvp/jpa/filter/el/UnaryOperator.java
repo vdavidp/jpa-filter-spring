@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package io.dvp.jpa.filter.el;
 
 import static io.dvp.jpa.filter.el.ContextItem.MULTIPLIER;
@@ -43,7 +38,7 @@ public class UnaryOperator implements Symbol {
   public Optional<Symbol> copy(String exp, Map<ContextItem, Object> context) {
     if (this.symbol.equalsIgnoreCase(exp.trim())) {
       Integer multiplier = cast(context.get(MULTIPLIER), Integer.class);
-      return Optional.of(new UnaryOperator(this.symbol, weight * multiplier, order));
+      return Optional.of(new UnaryOperator(this.symbol, weight + multiplier, order));
     } else {
       return Optional.empty();
     }

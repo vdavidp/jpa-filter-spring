@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package io.dvp.jpa.filter.el;
 
 import static io.dvp.jpa.filter.el.ContextItem.MULTIPLIER;
@@ -66,9 +61,9 @@ public class UnaryOperatorTest {
 
   @Test
   void copyWithWeightMultiplier() {
-    Optional<Symbol> child = proto.copy("Is null", singletonMap(MULTIPLIER, 3));
+    Optional<Symbol> child = proto.copy("Is null", singletonMap(MULTIPLIER, 200));
     assertTrue(child.isPresent());
-    assertEquals(150, child.get().getWeight());
+    assertEquals(250, child.get().getWeight());
   }
   
   @Test

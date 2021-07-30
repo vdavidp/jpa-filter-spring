@@ -39,7 +39,7 @@ public class BinaryOperator implements Symbol {
   public Optional<Symbol> copy(String exp, Map<ContextItem, Object> context) {
     if (symbol.equalsIgnoreCase(exp.trim())) {
       Integer multiplier = cast(context.get(MULTIPLIER), Integer.class);
-      return Optional.of(new BinaryOperator(this.symbol, this.weight * multiplier));
+      return Optional.of(new BinaryOperator(this.symbol, this.weight + multiplier));
     } else {
       return Optional.empty();
     }

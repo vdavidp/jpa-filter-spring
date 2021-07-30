@@ -39,7 +39,7 @@ public class FactoryOperatorTest {
 
   @Test
   void copyWithWeightMultiplier() {
-    Optional<Symbol> child = op.copy(".", singletonMap(MULTIPLIER, 5));
+    Optional<Symbol> child = op.copy(".", singletonMap(MULTIPLIER, 200));
     assertTrue(child.isPresent());
     assertEquals(250, child.get().getWeight());
   }

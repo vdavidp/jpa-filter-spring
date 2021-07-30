@@ -60,7 +60,7 @@ public class FactoryOperator implements Symbol {
   public Optional<Symbol> copy(String exp, Map<ContextItem, Object> context) {
     if (symbol.equals(exp)) {
       Integer multiplier = cast(context.get(MULTIPLIER), Integer.class);
-      return Optional.of(new FactoryOperator(symbol, weight * multiplier, symbols));
+      return Optional.of(new FactoryOperator(symbol, weight + multiplier, symbols));
     } else {
       return Optional.empty();
     }

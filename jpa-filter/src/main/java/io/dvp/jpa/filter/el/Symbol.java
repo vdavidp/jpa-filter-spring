@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface Symbol {
-  int WEIGHT_MIN = 1;
+  int WEIGHT_MIN = 0;
   int WEIGHT_10 = 10;
   int WEIGHT_20 = 20;
   int WEIGHT_30 = 30;
