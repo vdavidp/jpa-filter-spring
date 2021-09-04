@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-io.dvp.jpa.filter.spring.ExpressionTreeAutoconfigure
+com.github.vdavidp.jpa.filter.spring.ExpressionTreeAutoconfigure
