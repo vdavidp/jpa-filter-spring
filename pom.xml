@@ -1,12 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.dvp</groupId>
+    <groupId>com.github.vdavidp</groupId>
     <artifactId>jpa-filter-parent</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
+    
+    <name>JPA data filter</name>
+    <description>Add filtering capabilities to the spring crud repositories. 
+        Additionally it can be used alone to create expression trees.</description>
+    <url>https://github.com/vdavidp/jpa-filter</url>
+    
+    <licenses>
+        <license>
+            <name>GNU Lesser General Public License, version 2.1</name>
+            <url>https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html</url>
+        </license>
+    </licenses>
+    
+    <developers>
+        <developer>
+            <name>David Velasco</name>
+            <email>vp.david@hotmail.com</email>
+            <organization>No Organization</organization>
+            <organizationUrl>https://github.com/vdavidp</organizationUrl>
+        </developer>
+    </developers>
+    
+    <scm>
+        <connection>scm:git:git://github.com/vdavidp/jpa-filter.git</connection>
+        <developerConnection>scm:git:ssh://github.com:vdavidp/jpa-filter.git</developerConnection>
+        <url>https://github.com/vdavidp/jpa-filter/tree/master</url>
+    </scm>
+    
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+        </repository>
+    </distributionManagement>
 
     <modules>
         <module>jpa-filter</module>
@@ -18,7 +56,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-<!--        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>-->
+        <!--        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>-->
 
         <!--suppress UnresolvedMavenProperty -->
         <skip.surefire>${skipTests}</skip.surefire>
@@ -36,12 +74,12 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>io.dvp</groupId>
+                <groupId>com.github.vdavidp</groupId>
                 <artifactId>jpa-filter</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.dvp</groupId>
+                <groupId>com.github.vdavidp</groupId>
                 <artifactId>jpa-filter-spring</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -92,7 +130,21 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.2.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
+        
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -125,5 +177,37 @@
             </plugins>
         </pluginManagement>
     </build>
+    
+    <profiles>
+        <profile>
+            <id>ci-cd</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                                <configuration>
+                                    <!-- Prevent gpg from using pinentry programs. Fixes: gpg: signing 
+                                    failed: Inappropriate ioctl for device -->
+                                    <gpgArguments>
+                                        <arg>--pinentry-mode</arg>
+                                        <arg>loopback</arg>
+                                    </gpgArguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project> 
