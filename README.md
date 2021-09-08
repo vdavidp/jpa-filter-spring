@@ -1,6 +1,6 @@
 # JPA Filter
 
-[![CircleCI](https://circleci.com/gh/circleci/circleci-docs.svg?style=shield)](https://circleci.com/gh/vdavidp/jpa-filter) [![codecov](https://codecov.io/gh/vdavidp/jpa-filter/branch/master/graph/badge.svg?token=CSCU81AV0H)](https://codecov.io/gh/vdavidp/jpa-filter)
+[![CircleCI](https://circleci.com/gh/circleci/circleci-docs.svg?style=shield)](https://circleci.com/gh/vdavidp/jpa-filter-spring) [![codecov](https://codecov.io/gh/vdavidp/jpa-filter/branch/master/graph/badge.svg?token=CSCU81AV0H)](https://codecov.io/gh/vdavidp/jpa-filter)
 
 It adds filtering capabilities to spring-data crud repositories. Just add the query param **filter** with a predicate to filter the results. It was designed to be extensible in nature so you can define your own operators and operands.
 
