@@ -10,7 +10,7 @@ Additionally you can manually parse and execute predicates. Below you will find 
 
 1. Import the following artificat into your project.
     ```
-    <groupId>com.github.vdavidp</groupId>
+    <groupId>io.github.vdavidp</groupId>
     <artifactId>jpa-filter-spring-starter</artifactId>
     <version>...</version>
     ```

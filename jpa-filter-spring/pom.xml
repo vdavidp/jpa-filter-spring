@@ -3,7 +3,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <groupId>com.github.vdavidp</groupId>
+        <groupId>io.github.vdavidp</groupId>
         <artifactId>jpa-filter-parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
@@ -18,7 +18,7 @@
             <artifactId>spring-data-jpa</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.github.vdavidp</groupId>
+            <groupId>io.github.vdavidp</groupId>
             <artifactId>jpa-filter</artifactId>
         </dependency>
         <dependency>
