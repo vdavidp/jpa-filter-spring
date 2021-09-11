@@ -50,6 +50,7 @@ It adds filtering capabilities to spring-data crud repositories. Just add the qu
     }
     ```
 1. Make a request including a **filter** query param. The value must be encoded e.g.
+
     http://host/articles?filter=%7BreleasedDate%7D%20%3D%20Date%20%272021-10-01%27%20and%20%7Bcomments.author%7D%20%3D%20%27Person%201%27
 
     The filter query param decoded is: 
@@ -80,13 +81,13 @@ Operators must have a weight between 1 and 99 included. If you are defining a ne
 ### Operands
 integer, long, float, double, BigDecimal, BigInteger, varchar and variables.
 
-Refer for examples to https://github.com/vdavidp/jpa-filter-spring/blob/master/jpa-filter/src/test/java/com/github/vdavidp/jpa/filter/db/SupportedVariableTypesIT.java
+Refer for examples to https://github.com/vdavidp/jpa-filter-spring/blob/master/jpa-filter/src/test/java/io/github/vdavidp/jpa/filter/db/SupportedVariableTypesIT.java
 
 ### Operators
 The default operators are (case insensitive):
 =, and, or, Is True, Is False, Is Null, Is Not Null, Date, >, >=, <, <=
 
-Refer for examples to https://github.com/vdavidp/jpa-filter-spring/blob/master/jpa-filter/src/test/java/com/github/vdavidp/jpa/filter/db/DatabaseBinderIT.java
+Refer for examples to https://github.com/vdavidp/jpa-filter-spring/blob/master/jpa-filter/src/test/java/io/github/vdavidp/jpa/filter/db/DatabaseBinderIT.java
 
 ## Customizations
 You can remove, rename existing or add new symbols. In order to do that just expose a bean which implements [ExpressionTreeConfigurator](https://github.com/vdavidp/jpa-filter-spring/blob/master/jpa-filter-spring/src/main/java/io/github/vdavidp/jpa/filter/spring/ExpressionTreeConfigurator.java)
