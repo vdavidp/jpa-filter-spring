@@ -130,7 +130,7 @@ To add a new operator you need to follow 3 steps.
     ```
 1. Finally you need to implement the [ExpressionTreeConfigurator](https://github.com/vdavidp/jpa-filter-spring/blob/master/jpa-filter-spring/src/main/java/io/github/vdavidp/jpa/filter/spring/ExpressionTreeConfigurator.java) interface and register your new operator.
     
-    ```
+    ```java
     @Configuration
     public class CustomConfiguration {
 
