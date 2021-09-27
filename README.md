@@ -11,7 +11,7 @@ It adds filtering capabilities to spring-data crud repositories. Just add the qu
     ```
     <groupId>io.github.vdavidp</groupId>
     <artifactId>jpa-filter-spring-starter</artifactId>
-    <version>0.3.0</version>
+    <version>0.4.0</version>
     ```
 1. Create classes for following structure. Let's suppose *releaseDate* is of type java.util.Date.
     ```json
