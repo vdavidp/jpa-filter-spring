@@ -43,9 +43,10 @@ It adds filtering capabilities to spring-data crud repositories. Just add the qu
 1. In a controller put:
     ```java
     import org.springframework.data.jpa.domain.Specification;
+    import io.github.vdavidp.jpa.filter.spring.Filter;
 
     @GetMapping("/articles")
-    List<Article> findAll(Specification<Article> specification) {
+    List<Article> findAll(@Filter Specification<Article> specification) {
       return articleRepository.findAll(specification);
     }
     ```
