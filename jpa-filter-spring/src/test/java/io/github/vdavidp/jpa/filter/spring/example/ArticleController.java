@@ -1,5 +1,6 @@
 package io.github.vdavidp.jpa.filter.spring.example;
 
+import io.github.vdavidp.jpa.filter.spring.Filter;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -13,7 +14,7 @@ public class ArticleController {
   private ArticleRepository articleRepository;
 
   @GetMapping("/articles")
-  List<Article> findAll(Specification<Article> specification) {
+  List<Article> findAll(@Filter Specification<Article> specification) {
     return articleRepository.findAll(specification);
   }
 }
