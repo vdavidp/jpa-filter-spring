@@ -1,61 +1,108 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package io.github.vdavidp.jpa.filter.el;
 
-import static io.github.vdavidp.jpa.filter.el.ContextItem.MULTIPLIER;
-import static io.github.vdavidp.jpa.filter.el.Helper.cast;
-import java.util.Map;
-import java.util.Optional;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
-public class UnaryOperator implements Symbol {
-  
-  @Getter
-  private final String symbol;
-  @Getter
-  private final int weight;
-  private final Order order;
-  
-  private Symbol operand;
-  
+/**
+ *
+ * @author david
+ */
+public class UnaryOperator extends Operator {
+
   public enum Order {
     LEFT, RIGHT
   }
-
-  @Override
-  public Symbol merge(Symbol s) {
-    if (operand == null) {
-      operand = s;
-      return this;
-    } else if (s.getWeight() >= this.weight) {
-      return s.merge(this);
-    } else {
-      throw new RuntimeException("Invalid expression");
-    }
+  
+  private Symbol leaf;
+  private Order order;
+  
+  
+  public UnaryOperator(String symbol, int weight, Order order) {
+    super(symbol, weight);
+    this.order = order;
+  }
+  
+  public UnaryOperator(String symbol, int weight, Order order, Symbol leaf) {
+    this(symbol, weight, order);
+    this.leaf = leaf;
   }
 
   @Override
-  public Optional<Symbol> copy(String exp, Map<ContextItem, Object> context) {
-    if (this.symbol.equalsIgnoreCase(exp.trim())) {
-      Integer multiplier = cast(context.get(MULTIPLIER), Integer.class);
-      return Optional.of(new UnaryOperator(this.symbol, weight + multiplier, order));
-    } else {
-      return Optional.empty();
-    }
+  protected TokenDetails createDetails(int index, String left, String right) {
+    return new Details(index, left, right);
   }
-
-  @Override
-  public void visit(Visitor visitor) {
-    operand.visit(visitor);
-    visitor.accept(this);
-  }
-
+  
   @Override
   public String toString() {
-    if (order == Order.LEFT) {
-      return "[" + symbol + operand + "]";
-    } else {
-      return "[" + operand + symbol + "]";
+    if (order == Order.LEFT)
+      return "[" + symbol + leaf + "]";
+    else
+      return "[" + leaf + symbol + "]";
+  }
+  
+  
+  @Override
+  protected Operator executeAfter(Function<Symbol, Operator> factory) {
+    Operator op = factory.apply(leaf);
+    return new UnaryOperator(symbol, weight, order, op);
+  }
+  
+  @Override
+  public void visit(Visitor visitor) {
+    visitor.accept(this);
+  }
+  
+  @RequiredArgsConstructor
+  class Details implements Builder, TokenDetails {
+    @Getter
+    private final int index;
+    private final String left;
+    private final String right;
+    private BiFunction<String, ParenthesesCounter, ReducedPair> reducer;
+    private ParenthesesCounter counter;
+
+    @Override
+    public Builder withReducer(BiFunction<String, ParenthesesCounter, ReducedPair> reducer) {
+      this.reducer = reducer;
+      return this;
     }
+    
+    @Override
+    public Builder withCounter(ParenthesesCounter counter) {
+      this.counter = counter;
+      return this;
+    }
+
+    @Override
+    public ReducedPair build() {
+      ReducedPair leftResult = reducer.apply(left, counter);
+      ReducedPair rightResult = reducer.apply(right, leftResult.getCounter());
+      
+      Symbol leafSymbol = (order == Order.LEFT ? rightResult.getSymbol() : leftResult.getSymbol());
+      
+      int myWeight = weight + leftResult.getCounter().getCurrentCount();
+      
+      if (rightResult.getSymbol() instanceof Operator && myWeight >= ((Operator)rightResult.getSymbol()).weight) {
+        Operator other = (Operator)rightResult.getSymbol();
+        return new ReducedPair(
+            other.executeAfter(otherLeaf -> new UnaryOperator(symbol, myWeight, order, otherLeaf)));
+      }
+      
+      return new ReducedPair(
+          new UnaryOperator(symbol, weight + leftResult.getCounter().getCurrentCount(), order, leafSymbol));
+    }
+
+    @Override
+    public Builder builder() {
+      return this;
+    }
+    
   }
 }

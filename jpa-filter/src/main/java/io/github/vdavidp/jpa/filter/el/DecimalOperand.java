@@ -5,6 +5,7 @@
  */
 package io.github.vdavidp.jpa.filter.el;
 
+import java.math.BigDecimal;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.AllArgsConstructor;
@@ -17,18 +18,18 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor
 @AllArgsConstructor
-public class VariableOperand implements Operand {
-  private static final Pattern pattern = Pattern.compile("^[\\(\\s]*([a-zA-Z]+[a-zA-Z0-9]*\\.(?=[a-zA-Z])[a-zA-Z]+[a-zA-Z0-9]*|[a-zA-Z]+[a-zA-Z0-9]*)[\\)\\s]*$", 0);
+public class DecimalOperand implements Operand {
+  private static final Pattern pattern = Pattern.compile("^[\\(\\s]*([0-9]+\\.[0-9]+)[\\)\\s]*$");
   
   @Getter
-  private String value;
-      
+  private BigDecimal value;
+
   @Override
   public ReducedPair parse(String text, ParenthesesCounter counter) {
     Matcher m = pattern.matcher(text);
     if (m.find()) {
       counter = counter.count(leftSide(text, m), rightSide(text, m));
-      return new ReducedPair(new VariableOperand(m.group(1)), counter);
+      return new ReducedPair(new DecimalOperand(new BigDecimal(m.group(1))), counter);
     } else {
       return null;
     }
@@ -43,5 +44,4 @@ public class VariableOperand implements Operand {
   public String toString() {
     return "[" + value + "]";
   }
-  
 }

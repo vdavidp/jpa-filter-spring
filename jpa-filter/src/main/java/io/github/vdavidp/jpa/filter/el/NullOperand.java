@@ -8,7 +8,6 @@ package io.github.vdavidp.jpa.filter.el;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
@@ -17,31 +16,29 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor
 @AllArgsConstructor
-public class VariableOperand implements Operand {
-  private static final Pattern pattern = Pattern.compile("^[\\(\\s]*([a-zA-Z]+[a-zA-Z0-9]*\\.(?=[a-zA-Z])[a-zA-Z]+[a-zA-Z0-9]*|[a-zA-Z]+[a-zA-Z0-9]*)[\\)\\s]*$", 0);
-  
-  @Getter
-  private String value;
-      
+public class NullOperand implements Operand {
+  private static final Pattern pattern = Pattern.compile("^[\\(\\s]*([^\\)]*)[\\)\\s]*$");
+  protected String value;
+
   @Override
   public ReducedPair parse(String text, ParenthesesCounter counter) {
     Matcher m = pattern.matcher(text);
     if (m.find()) {
       counter = counter.count(leftSide(text, m), rightSide(text, m));
-      return new ReducedPair(new VariableOperand(m.group(1)), counter);
+      return new ReducedPair(new NullOperand(m.group(1)), counter);
     } else {
-      return null;
+      throw new ParseException("Expression not understood: [" + text + "]");
     }
   }
-  
+
   @Override
   public void visit(Visitor visitor) {
-    visitor.accept(this);
+    throw new UnsupportedOperationException("Null Operand no able to be visit");
   }
-  
+
   @Override
   public String toString() {
-    return "[" + value + "]";
+    throw new ParseException("This expression is not recognized: " + value);
   }
-  
+    
 }

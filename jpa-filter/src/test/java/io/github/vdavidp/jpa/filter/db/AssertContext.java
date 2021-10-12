@@ -1,7 +1,7 @@
 package io.github.vdavidp.jpa.filter.db;
 
 import static io.github.vdavidp.jpa.filter.db.Mappers.defaultMappers;
-import static io.github.vdavidp.jpa.filter.el.ExpressionTree.defaultSymbols;
+import io.github.vdavidp.jpa.filter.el.Defaults;
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -29,7 +29,7 @@ public class AssertContext<T> {
   }
 
   public List<T> executeQuery(String exp) {
-    ExpressionTree tree = new ExpressionTree.Builder().build(exp, defaultSymbols());
+    ExpressionTree tree = new ExpressionTree(exp, Defaults.operands(), Defaults.operators());
     tree.visit(binder);
 
     criteriaQuery.select(root).where(binder.getPredicate());

@@ -1,10 +1,10 @@
 package io.github.vdavidp.jpa.filter.db;
 
 import io.github.vdavidp.jpa.filter.el.BinaryOperator;
-import io.github.vdavidp.jpa.filter.el.DecimalFactory;
-import io.github.vdavidp.jpa.filter.el.IntegerOperand;
+import io.github.vdavidp.jpa.filter.el.DecimalOperand;
+import io.github.vdavidp.jpa.filter.el.NumberOperand;
+import io.github.vdavidp.jpa.filter.el.StringOperand;
 import io.github.vdavidp.jpa.filter.el.UnaryOperator;
-import io.github.vdavidp.jpa.filter.el.VarcharOperand;
 import io.github.vdavidp.jpa.filter.el.VariableOperand;
 import java.util.Deque;
 import java.util.HashMap;
@@ -16,6 +16,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -29,9 +30,9 @@ public class DatabaseBinder<T> implements Binder {
   private Root<T> root;
   private final CriteriaQuery<T> query;
   private final CriteriaBuilder builder;
-  private final Map<String, BiFunction<Deque<Object>, CriteriaBuilder, Object>> mappers;
+  private final Map<String, BiFunction<Deque<Expression<?>>, CriteriaBuilder, Predicate>> mappers;
 
-  private final Deque<Object> deque = new LinkedList<>();
+  private final Deque<Expression<?>> deque = new LinkedList<>();
 
   private final Map<String, Join<T, ?>> joins = new HashMap<>();
   private Map<CollectionType, Function<String, Join<T, ?>>> joiners;
@@ -41,7 +42,7 @@ public class DatabaseBinder<T> implements Binder {
       Root<T> root,
       CriteriaQuery<T> query,
       CriteriaBuilder builder,
-      Map<String, BiFunction<Deque<Object>, CriteriaBuilder, Object>> mappers) {
+      Map<String, BiFunction<Deque<Expression<?>>, CriteriaBuilder, Predicate>> mappers) {
 
     this.root = root;
     this.query = query;
@@ -69,21 +70,24 @@ public class DatabaseBinder<T> implements Binder {
   }
 
   @Override
-  public void accept(VarcharOperand operand) {
-    deque.addFirst(operand.getValue());
+  public void accept(StringOperand operand) {
+    deque.addFirst(builder.literal(operand.getValue()));
   }
 
   @Override
   public void accept(VariableOperand operand) {
     String[] props = operand.getValue().split("\\.");
-    if (props.length == 1) {
-      deque.addFirst(root.get(operand.getValue()));
-    } else if (props.length == 2) {
-      initializeSubQuery();
-      installJoin(props[0]);
-      deque.addFirst(joins.get(props[0]).get(props[1]));
-    } else {
-      throw new RuntimeException("No supported recursive join of depth 2");
+    switch (props.length) {
+      case 1:
+        deque.addFirst(root.get(operand.getValue()));
+        break;
+      case 2:
+        initializeSubQuery();
+        installJoin(props[0]);
+        deque.addFirst(joins.get(props[0]).get(props[1]));
+        break;
+      default:
+        throw new RuntimeException("No supported recursive join of depth 2");
     }
   }
 
@@ -118,13 +122,13 @@ public class DatabaseBinder<T> implements Binder {
   }
 
   @Override
-  public void accept(IntegerOperand operand) {
-    deque.addFirst(operand.getValue());
+  public void accept(NumberOperand operand) {
+    deque.addFirst(builder.literal(operand.getValue()));
   }
 
   @Override
-  public void accept(DecimalFactory operand) {
-    deque.addFirst(operand.getValue());
+  public void accept(DecimalOperand operand) {
+    deque.addFirst(builder.literal(operand.getValue()));
   }
 
   @Override

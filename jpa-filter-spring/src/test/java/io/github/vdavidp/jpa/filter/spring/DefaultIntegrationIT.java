@@ -26,7 +26,7 @@ public class DefaultIntegrationIT {
 
   @Test
   void checkAutoconfigurationInstallation() throws UnsupportedEncodingException {
-    String filter = URLEncoder.encode("{title}='Article 1' or {title}='Article 3'", "UTF-8");
+    String filter = "title:'Article 1' OR title:'Article 3'";
     String url = "http://localhost:" + port + "/articles?filter=" + filter;
     Article[] articles = restTemplate.getForObject(url, Article[].class);
 

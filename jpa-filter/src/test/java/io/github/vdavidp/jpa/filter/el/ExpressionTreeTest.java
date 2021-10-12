@@ -1,117 +1,111 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package io.github.vdavidp.jpa.filter.el;
 
 import io.github.vdavidp.jpa.filter.el.UnaryOperator.Order;
-import static java.util.Collections.singletonList;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import java.util.List;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 
+/**
+ *
+ * @author david
+ */
 public class ExpressionTreeTest {
 
   @Test
-  void parseNumber() {
-    ExpressionTree et = new ExpressionTree.Builder().build("912", new IntegerOperand());
-    assertEquals("[912]", et.toString());
+  void fromEmptyText() {
+    ExpressionTree et = new ExpressionTree("", List.of(new NumberOperand()), List.of(new BinaryOperator("+", 10)));
+    assertEquals("[]", et.toString());
   }
 
   @Test
-  void parseBinaryOperation() {
-    ExpressionTree et = new ExpressionTree.Builder().build("84 + 31",
-        new IntegerOperand(),
-        new BinaryOperator("+", 10));
-    assertEquals("[[84]+[31]]", et.toString());
-  }
-
-  @Test
-  void parseChainedBinaryOperation() {
-    ExpressionTree et = new ExpressionTree.Builder().build("4 + 5 + 123",
-        new IntegerOperand(),
-        new BinaryOperator("+", 10));
-    assertEquals("[[[4]+[5]]+[123]]", et.toString());
-  }
-
-  @Test
-  void parseOperationWithTwoDifferentOperatorPrecedence() {
-    ExpressionTree et = new ExpressionTree.Builder().build("14 + 12 / 4",
-        new IntegerOperand(),
-        new BinaryOperator("+", 10),
-        new BinaryOperator("/", 20));
-    assertEquals("[[14]+[[12]/[4]]]", et.toString());
-  }
-
-  @Test
-  void parseOperationWithThreeDifferentOperatorPrecedence() {
-    ExpressionTree et = new ExpressionTree.Builder().build("14 + 12 / 4 % 3",
-        new IntegerOperand(),
-        new BinaryOperator("+", 10),
-        new BinaryOperator("/", 20),
-        new BinaryOperator("%", 20));
-    assertEquals("[[14]+[[[12]/[4]]%[3]]]", et.toString());
-  }
-
-  @Test
-  void parseOperationWithTwoDifferentOperatorPrecedenceMultipleOccurrences() {
-    ExpressionTree et = new ExpressionTree.Builder().build("14 + 12 / 4 + 3 / 9",
-        new IntegerOperand(),
-        new BinaryOperator("+", 10),
-        new BinaryOperator("/", 20),
-        new BinaryOperator("%", 20));
-    assertEquals("[[[14]+[[12]/[4]]]+[[3]/[9]]]", et.toString());
-  }
-
-  @Test
-  void parseFactoryOperator() {
-    List<Symbol> factories = singletonList(new DecimalFactory());
-
-    ExpressionTree et = new ExpressionTree.Builder().build("4.32 + 22.2",
-        new IntegerOperand(), new BinaryOperator("+", 10),
-        new FactoryOperator(".", 50, factories));
-    assertEquals("[[4.32]+[22.2]]", et.toString());
-  }
-
-  @Test
-  void parseVariableOperand() {
-    List<Symbol> factories = singletonList(new DecimalFactory());
-
-    ExpressionTree et = new ExpressionTree.Builder().build("{obj.prop.subProp} + 4.32 + {otherProp}",
-        new IntegerOperand(),
-        new VariableOperand(),
-        new BinaryOperator("+", 10),
-        new FactoryOperator(".", 50, factories));
-    assertEquals("[[[obj.prop.subProp]+[4.32]]+[otherProp]]", et.toString());
-  }
-
-  @Test
-  void parseVarcharOperand() {
-    ExpressionTree et = new ExpressionTree.Builder().build("'Scape with backslashes\\\\' = 'That\\'s all'",
-        new BinaryOperator("=", 10),
-        new VarcharOperand());
-    assertEquals("[[Scape with backslashes\\]=[That's all]]", et.toString());
-  }
-
-  @Test
-  void parseRightUnaryOperator() {
-    ExpressionTree et = new ExpressionTree.Builder().build("{data} is Null",
-        new UnaryOperator("Is Null", 10, Order.RIGHT),
-        new VariableOperand());
-    assertEquals("[[data]Is Null]", et.toString());
+  void fromNumber() {
+    ExpressionTree et = new ExpressionTree("12", List.of(new NumberOperand()), List.of());
+    assertEquals("[12]", et.toString());
   }
   
   @Test
-  void parseLeftUnaryOperator() {
-    ExpressionTree et = new ExpressionTree.Builder().build("Date '2010-02-23'", 
-        new UnaryOperator("Date", 10, Order.LEFT),
-        new VarcharOperand());
-    assertEquals("[Date[2010-02-23]]", et.toString());
+  void fromDecimal() {
+    ExpressionTree et = new ExpressionTree("9543.4332", List.of(new DecimalOperand()), List.of());
+    assertEquals("[9543.4332]", et.toString());
+  }
+  
+  @Test
+  void fromString() {
+    ExpressionTree et = new ExpressionTree("'text'", List.of(new StringOperand()), List.of());
+    assertEquals("[text]", et.toString());
+  }
+  
+  @Test
+  void fromInvalidExpression() {
+    assertThrows(ParseException.class, () -> {
+      ExpressionTree et = new ExpressionTree("( and )", List.of(), List.of());
+      et.toString();
+    });
+  }
+  
+  @Test
+  void fromSingleVariable() {
+    ExpressionTree et = new ExpressionTree("prop", List.of(new VariableOperand()), List.of());
+    assertEquals("[prop]", et.toString());
+  }
+  
+  @Test
+  void fromNestedVariable() {
+    ExpressionTree et = new ExpressionTree("obj.prop", List.of(new VariableOperand()), List.of());
+    assertEquals("[obj.prop]", et.toString());
   }
 
   @Test
-  void parseParenthesis() {
-    ExpressionTree et = new ExpressionTree.Builder().build("(8+3)*((2+4)*6)",
-        new BinaryOperator("+", 10),
-        new BinaryOperator("*", 20),
-        new IntegerOperand());
-    assertEquals("[[[8]+[3]]*[[[2]+[4]]*[6]]]", et.toString());
+  void fromBinaryExpression() {
+    ExpressionTree et = new ExpressionTree("12 + 4", List.of(new NumberOperand()), List.of(new BinaryOperator("+", 10)));
+    assertEquals("[[12]+[4]]", et.toString());
+  }
+
+  @Test
+  void fromTwoSameWeightBinaryOperators() {
+    ExpressionTree et = new ExpressionTree("98 + 12 - 43", List.of(new NumberOperand()), List.of(new BinaryOperator("+", 10), new BinaryOperator("-", 10)));
+    assertEquals("[[[98]+[12]]-[43]]", et.toString());
+  }
+
+  @Test
+  void fromBinaryOperatorsDifferentWeight() {
+    ExpressionTree et = new ExpressionTree("3 + 2 * 4", List.of(new NumberOperand()), List.of(new BinaryOperator("+", 10), new BinaryOperator("*", 20)));
+    assertEquals("[[3]+[[2]*[4]]]", et.toString());
+  }
+
+  @Test
+  void fromBinaryOperatorsSparcedDifferentWeights() {
+    ExpressionTree et = new ExpressionTree("3 + 2 * 4 + 8 * 2", List.of(new NumberOperand()), List.of(new BinaryOperator("+", 10), new BinaryOperator("*", 20)));
+    assertEquals("[[[3]+[[2]*[4]]]+[[8]*[2]]]", et.toString());
+  }
+
+  @Test
+  void fromBinaryAndLeftUnaryOperator() {
+    ExpressionTree et = new ExpressionTree("2 + -3", List.of(new NumberOperand()), List.of(new BinaryOperator("+", 10), new UnaryOperator("-", 30, Order.LEFT)));
+    assertEquals("[[2]+[-[3]]]", et.toString());
+  }
+  
+  @Test
+  void fromLeftUnaryAndBinaryOperator() {
+    ExpressionTree et = new ExpressionTree("-3 + 2", List.of(new NumberOperand()), List.of(new BinaryOperator("+", 10), new UnaryOperator("-", 30, Order.LEFT)));
+    assertEquals("[[-[3]]+[2]]", et.toString());
+  }
+  
+  @Test
+  void fromBinaryAndRightUnaryOperator() {
+    ExpressionTree et = new ExpressionTree("3 + 5 Is Not Null", List.of(new NumberOperand()), List.of(new BinaryOperator("+", 10), new UnaryOperator("Is Not Null", 30, Order.RIGHT)));
+    assertEquals("[[3]+[[5]Is Not Null]]", et.toString());
+  }
+  
+  @Test
+  void fromExpressionContainingParentheses() {
+    ExpressionTree et = new ExpressionTree("(3 * (5 - 2))", List.of(new NumberOperand()), List.of(new BinaryOperator("*", 20), new BinaryOperator("-", 10)));
+    assertEquals("[[3]*[[5]-[2]]]", et.toString());
   }
 }

@@ -1,63 +1,100 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package io.github.vdavidp.jpa.filter.el;
 
-import static io.github.vdavidp.jpa.filter.el.ContextItem.MULTIPLIER;
-import static io.github.vdavidp.jpa.filter.el.Helper.cast;
-
-import java.util.Map;
-import java.util.Optional;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
-public class BinaryOperator implements Symbol {
-
-  @Getter
-  private final String symbol;
-  @Getter
-  private final int weight;
-
-  private Symbol left, right;
-
-  @Override
-  public Symbol merge(Symbol s) {
-    if (left == null) {
-      left = s;
-      return this;
-    } else if (right == null) {
-      right = s;
-      return this;
-    } else if (s.getWeight() > weight) {
-      right = s.merge(right);
-      return this;
-    } else {
-      s.merge(this);
-      return s;
-    }
+/**
+ *
+ * @author david
+ */
+public class BinaryOperator extends  Operator {
+  protected Symbol left;
+  protected Symbol right;
+  
+  public BinaryOperator(String symbol, int weight) {
+    super(symbol, weight);
   }
-
-  @Override
-  public Optional<Symbol> copy(String exp, Map<ContextItem, Object> context) {
-    if (symbol.equalsIgnoreCase(exp.trim())) {
-      Integer multiplier = cast(context.get(MULTIPLIER), Integer.class);
-      return Optional.of(new BinaryOperator(this.symbol, this.weight + multiplier));
-    } else {
-      return Optional.empty();
-    }
+  
+  protected BinaryOperator(String symbol, int weight, Symbol left, Symbol right) {
+    super(symbol, weight);
+    this.left = left;
+    this.right = right;
   }
-
+  
   @Override
-  public void visit(Visitor visitor) {
-    if (left == null || right == null) {
-      throw new RuntimeException("Error at parsing binary operator: " + toString());
-    }
-
-    left.visit(visitor);
-    right.visit(visitor);
-    visitor.accept(this);
+  public TokenDetails createDetails(int index, String left, String right) {
+    return new Details(index, left, right);
   }
-
+  
   @Override
   public String toString() {
     return "[" + left + symbol + right + "]";
   }
+
+  @Override
+  protected Operator executeAfter(Function<Symbol, Operator> factory) {
+    Operator newLeft = factory.apply(left);
+    return new BinaryOperator(symbol, weight, newLeft, right);
+  }
+  
+  @Override
+  public void visit(Visitor visitor) {
+    left.visit(visitor);
+    right.visit(visitor);
+    visitor.accept(this);
+  }
+  
+  @RequiredArgsConstructor
+  class Details implements TokenDetails, Builder {
+    @Getter
+    private final int index;
+    private final String leftText;
+    private final String rightText;
+    private BiFunction<String, ParenthesesCounter, ReducedPair> reducer;
+    private ParenthesesCounter counter;
+    
+   @Override
+    public Builder withReducer(BiFunction<String, ParenthesesCounter, ReducedPair> reducer) {
+      this.reducer = reducer;
+      return this;
+    }
+    
+    @Override
+    public Builder withCounter(ParenthesesCounter counter) {
+      this.counter = counter;
+      return this;
+    }
+
+    @Override
+    public ReducedPair build() {
+      ReducedPair leftResult = reducer.apply(leftText, counter);
+      ReducedPair rightResult = reducer.apply(rightText, leftResult.getCounter());
+      
+      Symbol leftSymbol = leftResult.getSymbol();
+      Symbol rightSymbol = rightResult.getSymbol();
+      int myWeight = weight + leftResult.getCounter().getCurrentCount();
+      
+      if (rightSymbol instanceof Operator && myWeight >= ((Operator)rightSymbol).weight) {
+        Operator other = (Operator)rightSymbol;
+        return new ReducedPair(
+            other.executeAfter(otherLeft -> new BinaryOperator(symbol, myWeight, leftSymbol, otherLeft)));
+      }
+    
+      return new ReducedPair(
+          new BinaryOperator(symbol, myWeight, leftSymbol, rightSymbol));
+    }
+    
+    @Override
+    public Builder builder() {
+      return this;
+    }
+  }  
+  
 }

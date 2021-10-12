@@ -9,8 +9,9 @@ package io.github.vdavidp.jpa.filter.el;
  *
  * @author david
  */
-public interface Symbol {
+public class ParseException extends RuntimeException {
   
-  void visit(Visitor visitor);
-  
+  public ParseException(String msg) {
+    super(msg);
+  }
 }

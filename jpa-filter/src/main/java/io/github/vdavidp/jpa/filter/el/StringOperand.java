@@ -17,18 +17,19 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor
 @AllArgsConstructor
-public class VariableOperand implements Operand {
-  private static final Pattern pattern = Pattern.compile("^[\\(\\s]*([a-zA-Z]+[a-zA-Z0-9]*\\.(?=[a-zA-Z])[a-zA-Z]+[a-zA-Z0-9]*|[a-zA-Z]+[a-zA-Z0-9]*)[\\)\\s]*$", 0);
+public class StringOperand implements Operand {
+  private static final Pattern pattern = Pattern.compile("^[\\(\\)\\s]*('(?:[^\\\\']|\\\\'|\\\\\\\\)*')[\\(\\)\\s]*$");
   
   @Getter
   private String value;
-      
+
   @Override
   public ReducedPair parse(String text, ParenthesesCounter counter) {
     Matcher m = pattern.matcher(text);
     if (m.find()) {
+      String value = m.group(1).substring(1, m.group(1).length() - 1).replace("\\'", "'").replace("\\\\", "\\");
       counter = counter.count(leftSide(text, m), rightSide(text, m));
-      return new ReducedPair(new VariableOperand(m.group(1)), counter);
+      return new ReducedPair(new StringOperand(value), counter);
     } else {
       return null;
     }

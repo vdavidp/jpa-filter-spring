@@ -9,8 +9,7 @@ package io.github.vdavidp.jpa.filter.el;
  *
  * @author david
  */
-public interface Symbol {
-  
-  void visit(Visitor visitor);
-  
+public interface TokenDetails {
+  int getIndex();
+  Builder builder();
 }

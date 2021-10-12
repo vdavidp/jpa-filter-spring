@@ -5,12 +5,14 @@
  */
 package io.github.vdavidp.jpa.filter.el;
 
+import java.util.function.BiFunction;
+
 /**
  *
  * @author david
  */
-public interface Symbol {
-  
-  void visit(Visitor visitor);
-  
+public interface Builder {
+  Builder withReducer(BiFunction<String, ParenthesesCounter, ReducedPair> reducer);
+  Builder withCounter(ParenthesesCounter counter);
+  ReducedPair build();
 }
