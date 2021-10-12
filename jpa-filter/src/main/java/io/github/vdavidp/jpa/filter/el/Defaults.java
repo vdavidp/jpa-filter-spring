@@ -23,6 +23,7 @@
  */
 package io.github.vdavidp.jpa.filter.el;
 
+import static java.util.Arrays.asList;
 import java.util.List;
 
 /**
@@ -31,7 +32,7 @@ import java.util.List;
  */
 public class Defaults {
   public static List<Operand> operands() {
-    return List.of(
+    return asList(
         new NumberOperand(),
         new DecimalOperand(),
         new StringOperand(),
@@ -39,7 +40,7 @@ public class Defaults {
   }
   
   public static List<Operator> operators() {
-    return List.of(
+    return asList(
         new BinaryOperator(":", 20),
         new BinaryOperator("!", 20),
         new BinaryOperator(">", 30),
