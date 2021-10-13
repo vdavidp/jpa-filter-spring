@@ -64,7 +64,7 @@ public class ExpressionTree {
           .filter(Objects::nonNull)
           .min(Comparator.comparing(Token::getIndex));
     
-    if (tokenOp.isEmpty()) {
+    if (!tokenOp.isPresent()) {
       return null;
     }
     
