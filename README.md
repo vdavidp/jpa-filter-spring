@@ -11,13 +11,13 @@ It adds filtering capabilities to spring-data crud repositories. Just add the qu
     ```
     <groupId>io.github.vdavidp</groupId>
     <artifactId>jpa-filter-spring-starter</artifactId>
-    <version>0.4.0</version>
+    <version>0.5.0</version>
     ```
-1. Create classes for following structure. Let's suppose *releaseDate* is of type java.util.Date.
+1. Create classes for following structure.
     ```json
       {
         "title": "Article 1",
-        "releasedDate": "2021-10-01",
+        "author": "John",
         "comments": [
           {
             "text": "Interesting",
@@ -50,106 +50,31 @@ It adds filtering capabilities to spring-data crud repositories. Just add the qu
       return articleRepository.findAll(specification);
     }
     ```
-1. Make a request including a **filter** query param. The value must be encoded e.g.
-
-    http://host/articles?filter=%7BreleasedDate%7D%20%3D%20Date%20%272021-10-01%27%20and%20%7Bcomments.author%7D%20%3D%20%27Person%201%27
-
-    The filter query param decoded is: 
+1. Make a request including a **filter** query param, e.g.
     ```
-    {releasedDate} = Date '2021-10-01' and {comments.author} = 'Person 1'
+    http://host/articles?filter=author:'John' OR comments.author:'Person 1'
     ```
 
-## Constraints
-For binary operators, the left side needs to be an expression, right side can be an expression or constant e.g.
-
-Not Valid:
-```
-'John Wick' = {fullName}
-5.34 >= {amount}
-```
-
-Valid:
-```
-{fullName} = 'John Wick'
-{amount} <= 5.34
-```
 
 ## Default Symbols
-Precedence of operators is same as defined for java. https://docs.oracle.com/javase/tutorial/java/nutsandbolts/operators.html
+Following operands are supported:
+* real numbers e.g. 123456699393848437273
+* decimals e.g. 12.33221
+* strings e.g. 'didid', 'That\\'s', 'single slash \\\\'
+* variables e.g. abc, abc123, abc.abc
 
-Operators must have a weight between 1 and 99 included. If you are defining a new operator you can use standard weight defined in https://github.com/vdavidp/jpa-filter-spring/blob/master/jpa-filter/src/main/java/io/github/vdavidp/jpa/filter/el/Symbol.java
+Following operators are supported:
+* : equals, e.g. ?filter=abc:23
+* ! not equals, e.g. ?filter=abc!23
+* < less than, e.g. ?filter=abc<43
+* \> greater than, e.g. ?filter=abc>33
+* AND e.g. ?filter=abc:33 AND cde:'kdi'
+* OR e.g. ?filter=name:'one' OR name:'two'
 
-### Operands
-integer, long, float, double, BigDecimal, BigInteger, varchar and variables.
+Of course parentheses can be used to force order. For example, these 2 predicates are different:
 
-Refer for examples to https://github.com/vdavidp/jpa-filter-spring/blob/master/jpa-filter/src/test/java/io/github/vdavidp/jpa/filter/db/SupportedVariableTypesIT.java
-
-### Operators
-The default operators are (case insensitive):
-=, and, or, Is True, Is False, Is Null, Is Not Null, Date, >, >=, <, <=
-
-Refer for examples to https://github.com/vdavidp/jpa-filter-spring/blob/master/jpa-filter/src/test/java/io/github/vdavidp/jpa/filter/db/DatabaseBinderIT.java
+* ?filter=role:'Boss' OR age>21 AND  age<100
+* ?filter=role:'Boss' OR (age>21 AND age<100)
 
 ## Customizations
-You can remove, rename existing or add new symbols. In order to do that just expose a bean which implements [ExpressionTreeConfigurator](https://github.com/vdavidp/jpa-filter-spring/blob/master/jpa-filter-spring/src/main/java/io/github/vdavidp/jpa/filter/spring/ExpressionTreeConfigurator.java)
-
-### Removing a Symbol
-Just remove from the list of symbols and from the map of mappers as follows:
-```java
-@Override
-public void modifyMappers(Map<String, BiFunction<Deque<Object>, CriteriaBuilder, Object>> mappers) {
-  mappers.remove("=");
-}
-
-@Override
-public void modifySymbols(List<Symbol> symbols) {
-  symbols.removeIf(s -> s instanceof BinaryOperator && ((BinaryOperator)s).getSymbol().equals("="));
-}
-```
-### Rename a Symbol
-Take a look a this example which at the end is just manipulation of the list and map provided by the interface. https://github.com/vdavidp/jpa-filter-spring/blob/master/jpa-filter-spring/src/test/java/io/github/vdavidp/jpa/filter/spring/CustomConfiguration.java
-
-### Add a new Symbol
-To add a new operator you need to follow 3 steps.
-1. Create the operator using the [BinaryOperator](https://github.com/vdavidp/jpa-filter-spring/blob/master/jpa-filter/src/main/java/io/github/vdavidp/jpa/filter/el/BinaryOperator.java) or [UnaryOperator](https://github.com/vdavidp/jpa-filter-spring/blob/master/jpa-filter/src/main/java/io/github/vdavidp/jpa/filter/el/BinaryOperator.java) classes. You will find examples in [ExpressionTree.defaultSymbols](https://github.com/vdavidp/jpa-filter-spring/blob/master/jpa-filter/src/main/java/io/github/vdavidp/jpa/filter/el/ExpressionTree.java#L90) method.
-1. Create the binder. The following is an example for the ":" (equals) operator . For binary operators, the first removed object from deque is the right side, the next one is the left side. You will find plenty of examples in class [Mappers](https://github.com/vdavidp/jpa-filter-spring/blob/master/jpa-filter/src/main/java/io/github/vdavidp/jpa/filter/db/Mappers.java)
-
-    ```java
-    class MyBinders
-        public static BiFunction<Deque<Object>, CriteriaBuilder, Object> equalTo() {
-            return (deque, cb) -> {
-              Object right = deque.removeFirst();
-              Expression left = (Expression) deque.removeFirst();
-              if (right instanceof Expression) {
-                return cb.equal(left, (Expression) right);
-              } else {
-                return cb.equal(left, right);
-              }
-            };
-        }
-    }
-    ```
-1. Finally you need to implement the [ExpressionTreeConfigurator](https://github.com/vdavidp/jpa-filter-spring/blob/master/jpa-filter-spring/src/main/java/io/github/vdavidp/jpa/filter/spring/ExpressionTreeConfigurator.java) interface and register your new operator.
-    
-    ```java
-    @Configuration
-    public class CustomConfiguration {
-
-      @Bean
-      ExpressionTreeConfigurator configurator() {
-        return new ExpTreeConfiguration();
-      }
-    }
-    
-    class ExpTreeConfiguration implements ExpressionTreeConfigurator {
-      @Override
-      public void modifyMappers(Map<String, BiFunction<Deque<Object>, CriteriaBuilder, Object>> mappers) {
-        mappers.put(":", MyBinders.equalTo());
-      }
-
-      @Override
-      public void modifySymbols(List<Symbol> symbols) {
-        symbols.add(new BinaryOperator(":", Symbol.WEIGHT_20));
-      }
-    }
-    ```
+TODO
