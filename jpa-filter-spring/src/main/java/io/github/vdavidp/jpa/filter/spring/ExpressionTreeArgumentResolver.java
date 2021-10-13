@@ -17,8 +17,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 @RequiredArgsConstructor
 public class ExpressionTreeArgumentResolver implements HandlerMethodArgumentResolver {
 
-  private final ExpressionTreeConfigurator configurator;
-  private final ObjectProvider<Binder> binderProvider;
+  private final ExpressionTreeProvider provider;
 
   @Override
   public boolean supportsParameter(MethodParameter methodParameter) {
@@ -42,7 +41,7 @@ public class ExpressionTreeArgumentResolver implements HandlerMethodArgumentReso
       return null;
     } else {
       log.info("Detected expression: {}", exp);
-      return new ExpressionTreeSpecification(exp, configurator, binderProvider);
+      return provider.create(exp);
     }
   }
 }

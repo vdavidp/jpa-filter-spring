@@ -3,6 +3,7 @@ package io.github.vdavidp.jpa.filter.spring;
 import static io.github.vdavidp.jpa.filter.db.Mappers.defaultMappers;
 
 import io.github.vdavidp.jpa.filter.db.Binder;
+import io.github.vdavidp.jpa.filter.db.DatabaseBinder;
 import io.github.vdavidp.jpa.filter.el.Defaults;
 import io.github.vdavidp.jpa.filter.el.ExpressionTree;
 import io.github.vdavidp.jpa.filter.el.Operand;
@@ -18,19 +19,24 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.data.jpa.domain.Specification;
 
-@RequiredArgsConstructor
-public class ExpressionTreeSpecification implements Specification<Object> {
+public class ExpressionTreeSpecification<T> implements Specification<T> {
 
-  private final String expression;
-  private final ExpressionTreeConfigurator configurator;
-  private final ObjectProvider<Binder> binderProvider;
+  private String expression;
+  private ExpressionTreeConfigurator configurator;
+  
+  public ExpressionTreeSpecification(String expression) {
+    this.expression = expression;
+  }
+  
+  public ExpressionTreeSpecification(String expression, ExpressionTreeConfigurator configurator) {
+    this(expression);
+    this.configurator = configurator;
+  }
 
   @Override
-  public Predicate toPredicate(Root<Object> root, CriteriaQuery<?> criteriaQuery,
+  public Predicate toPredicate(Root<T> root, CriteriaQuery<?> criteriaQuery,
       CriteriaBuilder criteriaBuilder) {
     Map<String, BiFunction<Deque<Expression<?>>, CriteriaBuilder, Predicate>> mappers = new HashMap<>(
         defaultMappers());
@@ -43,7 +49,7 @@ public class ExpressionTreeSpecification implements Specification<Object> {
       configurator.modifyMappers(mappers);
     }
 
-    Binder binder = binderProvider.getObject(root, criteriaQuery, criteriaBuilder, mappers);
+    Binder binder = new DatabaseBinder(root, criteriaQuery, criteriaBuilder, mappers);
 
     ExpressionTree et = new ExpressionTree(expression, operands, operators);
     et.visit(binder);
