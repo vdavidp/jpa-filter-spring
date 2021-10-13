@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import io.github.vdavidp.jpa.filter.spring.example.Article;
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -35,5 +34,14 @@ public class DefaultIntegrationIT {
 
     List<String> titles = Arrays.stream(articles).map(Article::getTitle).collect(toList());
     assertTrue(titles.containsAll(asList("Article 1", "Article 3")));
+  }
+  
+  @Test
+  void useAnotherQueryParamName() {
+    String filter = "title:'Article 1'";
+    String url = "http://localhost:" + port + "/articles2?search=" + filter;
+    Article[] articles = restTemplate.getForObject(url, Article[].class);
+    
+    assertEquals(1, articles.length);
   }
 }

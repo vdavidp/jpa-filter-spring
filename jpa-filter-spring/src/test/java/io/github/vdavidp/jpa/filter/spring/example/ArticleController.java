@@ -17,4 +17,9 @@ public class ArticleController {
   List<Article> findAll(@Filter Specification<Article> specification) {
     return articleRepository.findAll(specification);
   }
+  
+  @GetMapping("/articles2")
+  List<Article> findAll2(@Filter(queryParam = "search") Specification<Article> specification) {
+    return articleRepository.findAll(specification);
+  }
 }

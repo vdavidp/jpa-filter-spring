@@ -31,15 +31,16 @@ public class ExpressionTreeArgumentResolver implements HandlerMethodArgumentReso
       ModelAndViewContainer modelAndViewContainer,
       NativeWebRequest nativeWebRequest,
       WebDataBinderFactory webDataBinderFactory) throws Exception {
+    
+    Filter filter = methodParameter.getParameterAnnotation(Filter.class);
 
     HttpServletRequest request = nativeWebRequest.getNativeRequest(HttpServletRequest.class);
-    String exp = request.getParameter("filter");
+    String exp = request.getParameter(filter.queryParam());
 
     if (exp == null || "".equals(exp.trim())) {
-      log.info("Null or empty expression in filter query param");
+      log.info("Null or empty expression in {} query param", filter.queryParam());
       return null;
     } else {
-      exp = URLDecoder.decode(exp, "UTF-8");
       log.info("Detected expression: {}", exp);
       return new ExpressionTreeSpecification(exp, configurator, binderProvider);
     }
