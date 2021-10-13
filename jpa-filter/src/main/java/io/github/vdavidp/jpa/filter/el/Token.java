@@ -9,7 +9,7 @@ package io.github.vdavidp.jpa.filter.el;
  *
  * @author david
  */
-public interface TokenDetails {
+public interface Token {
   int getIndex();
   Builder builder();
 }

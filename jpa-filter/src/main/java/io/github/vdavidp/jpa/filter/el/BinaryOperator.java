@@ -29,7 +29,7 @@ public class BinaryOperator extends  Operator {
   }
   
   @Override
-  public TokenDetails createDetails(int index, String left, String right) {
+  public Token createDetails(int index, String left, String right) {
     return new Details(index, left, right);
   }
   
@@ -52,7 +52,7 @@ public class BinaryOperator extends  Operator {
   }
   
   @RequiredArgsConstructor
-  class Details implements TokenDetails, Builder {
+  class Details implements Token, Builder {
     @Getter
     private final int index;
     private final String leftText;
@@ -80,6 +80,10 @@ public class BinaryOperator extends  Operator {
       Symbol leftSymbol = leftResult.getSymbol();
       Symbol rightSymbol = rightResult.getSymbol();
       int myWeight = weight + leftResult.getCounter().getCurrentCount();
+      
+      if (leftSymbol instanceof NullOperand || rightSymbol instanceof NullOperand) {
+        return null;
+      }
       
       if (rightSymbol instanceof Operator && myWeight >= ((Operator)rightSymbol).weight) {
         Operator other = (Operator)rightSymbol;

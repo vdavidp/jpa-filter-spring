@@ -5,11 +5,15 @@
  */
 package io.github.vdavidp.jpa.filter.el;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Deque;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Queue;
+import static java.util.stream.Collectors.toCollection;
 
 /**
  *
@@ -42,24 +46,43 @@ public class ExpressionTree {
   }
   
   private ReducedPair reduce(String text, ParenthesesCounter counter) {
-    Optional<TokenDetails> token = operators.stream()
-          .map(op -> op.nextToken(text))
+    ReducedPair result = findOperator(text, 0, counter);
+    if (result != null) {  
+      return result;
+    } else {
+      return operands.stream()
+        .map(o -> o.parse(text, counter))
+        .filter(Objects::nonNull)
+        .findFirst()
+        .orElse(null);
+    }
+  }
+  
+  private ReducedPair findOperator(String text, int startIndex, ParenthesesCounter counter) {
+    Optional<Token> tokenOp = operators.stream()
+          .map(op -> op.nextToken(text, startIndex))
           .filter(Objects::nonNull)
-          .min(Comparator.comparing(TokenDetails::getIndex));
-      
-    if (token.isPresent()) {
-      TokenDetails td = token.get();
-      return td.builder()
+          .min(Comparator.comparing(Token::getIndex));
+    
+    if (tokenOp.isEmpty()) {
+      return null;
+    }
+    
+    ReducedPair result = build(tokenOp.get(), counter);
+    if (result != null) {
+      return result;
+    } else if (tokenOp.get().getIndex() + 1 < text.length()) {
+      return findOperator(text, tokenOp.get().getIndex() + 1, counter);
+    } else {
+      return null;
+    }
+  }
+  
+  private ReducedPair build(Token token, ParenthesesCounter counter) {
+    return token.builder()
           .withReducer(this::reduce)
           .withCounter(counter)
           .build();
-    } else {
-      return operands.stream()
-          .map(o -> o.parse(text, counter))
-          .filter(Objects::nonNull)
-          .findFirst()
-          .orElse(null);
-    }
   }
   
   public void visit(Visitor visitor) {
@@ -67,6 +90,7 @@ public class ExpressionTree {
   }
   
   class NullSymbol implements Symbol {
+    
     @Override
     public String toString() {
       return "[]";

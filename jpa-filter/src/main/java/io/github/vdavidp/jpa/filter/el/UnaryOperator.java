@@ -35,7 +35,7 @@ public class UnaryOperator extends Operator {
   }
 
   @Override
-  protected TokenDetails createDetails(int index, String left, String right) {
+  protected Token createDetails(int index, String left, String right) {
     return new Details(index, left, right);
   }
   
@@ -60,7 +60,7 @@ public class UnaryOperator extends Operator {
   }
   
   @RequiredArgsConstructor
-  class Details implements Builder, TokenDetails {
+  class Details implements Builder, Token {
     @Getter
     private final int index;
     private final String left;
@@ -85,7 +85,21 @@ public class UnaryOperator extends Operator {
       ReducedPair leftResult = reducer.apply(left, counter);
       ReducedPair rightResult = reducer.apply(right, leftResult.getCounter());
       
-      Symbol leafSymbol = (order == Order.LEFT ? rightResult.getSymbol() : leftResult.getSymbol());
+      Symbol leafSymbol;
+      
+      if (order == Order.LEFT 
+          && (!(leftResult.getSymbol() instanceof NullOperand)
+            || rightResult.getSymbol() instanceof NullOperand)) {
+          return null;
+      }
+      
+      if (order == Order.RIGHT
+          && (leftResult.getSymbol() instanceof NullOperand
+            || !(rightResult.getSymbol() instanceof NullOperand))) {
+        return null;
+      }
+      
+      leafSymbol = (order == Order.LEFT ? rightResult.getSymbol() : leftResult.getSymbol());
       
       int myWeight = weight + leftResult.getCounter().getCurrentCount();
       

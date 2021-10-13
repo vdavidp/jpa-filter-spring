@@ -9,6 +9,7 @@ import io.github.vdavidp.jpa.filter.el.UnaryOperator.Order;
 import java.math.BigInteger;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -20,13 +21,13 @@ public class UnaryOperatorTest {
   @Test
   void nextTokenForLeft() {
     UnaryOperator factory = new UnaryOperator("-", 10, Order.LEFT);
-    TokenDetails td = factory.nextToken("-1");
+    Token td = factory.nextToken("-1");
     assertEquals(0, td.getIndex());
     
     ReducedPair result = td.builder()
         .withReducer((t, c) -> {
           if (t.equals("")) {
-            return new ReducedPair(null, new ParenthesesCounter());
+            return new ReducedPair(new NullOperand(""), new ParenthesesCounter());
           } else {
             return new ReducedPair(number("1"));
           }
@@ -41,7 +42,7 @@ public class UnaryOperatorTest {
   @Test
   void nextTokenForRight() {
     UnaryOperator factory = new UnaryOperator("Is Number", 10, Order.RIGHT);
-    TokenDetails td = factory.nextToken("23 Is Number");
+    Token td = factory.nextToken("23 Is Number");
     assertEquals(3, td.getIndex());
     
     ReducedPair result = td.builder()
@@ -49,7 +50,7 @@ public class UnaryOperatorTest {
           if (t.equals("23 ")) {
             return new ReducedPair(number("23"), new ParenthesesCounter());
           } else {
-            return new ReducedPair(null);
+            return new ReducedPair(new NullOperand(""));
           }
         })
         .withCounter(new ParenthesesCounter())
@@ -62,11 +63,11 @@ public class UnaryOperatorTest {
   @Test
   void leftUnaryWithLighterOperator() {
     UnaryOperator factory = new UnaryOperator("-", 20, Order.LEFT);
-    TokenDetails td = factory.nextToken("-3 + 2");
+    Token td = factory.nextToken("-3 + 2");
     ReducedPair result = td.builder()
         .withReducer((t, c) -> {
           if (t.equals("")) {
-            return new ReducedPair(null, new ParenthesesCounter());
+            return new ReducedPair(new NullOperand(""), new ParenthesesCounter());
           } else {
             return new ReducedPair(new BinaryOperator("+", 10, number("3"), number("2")));
           }
@@ -79,5 +80,41 @@ public class UnaryOperatorTest {
   
   private Operand number(String text) {
     return new NumberOperand(new BigInteger(text));
+  }
+  
+  @Test
+  void nullWhenNoLeftUnaryOperand() {
+    UnaryOperator factory = new UnaryOperator("-", 20, Order.LEFT);
+    Token td = factory.nextToken("32 -");
+    ReducedPair result = td.builder()
+        .withReducer((t, c) -> {
+          if (t.equals("32 ")) {
+            return new ReducedPair(number("32"), c);
+          } else {
+            return new ReducedPair(new NullOperand(""));
+          }
+        })
+        .withCounter(new ParenthesesCounter())
+        .build();
+    
+    assertNull(result);
+  }
+  
+  @Test
+  void nullWhenNoRightUnaryOperand() {
+    UnaryOperator factory = new UnaryOperator("Is Number", 20, Order.RIGHT);
+    Token td = factory.nextToken("Is Number 23");
+    ReducedPair result = td.builder()
+        .withReducer((t, c) -> {
+          if (t.equals("")) {
+            return new ReducedPair(new NullOperand(), c);
+          } else {
+            return new ReducedPair(number("23"));
+          }
+        })
+        .withCounter(new ParenthesesCounter())
+        .build();
+    
+    assertNull(result);
   }
 }

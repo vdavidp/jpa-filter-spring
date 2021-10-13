@@ -8,6 +8,7 @@ package io.github.vdavidp.jpa.filter.el;
 import java.math.BigInteger;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -19,7 +20,7 @@ public class BinaryOperatorTest {
   @Test
   void nextToken() {
     BinaryOperator factory = new BinaryOperator("+", 0);
-    TokenDetails td = factory.nextToken("3 + 2");
+    Token td = factory.nextToken("3 + 2");
     assertEquals(2, td.getIndex());
     
     ReducedPair result = td.builder()
@@ -40,7 +41,7 @@ public class BinaryOperatorTest {
   @Test
   void incresesWeight() {
     BinaryOperator factory = new BinaryOperator("*", 20);
-    TokenDetails td = factory.nextToken("(5 * 2)");
+    Token td = factory.nextToken("(5 * 2)");
     ReducedPair result = td.builder()
         .withReducer((t, c) -> {
           if (t.equals("(5 ")) {
@@ -58,7 +59,7 @@ public class BinaryOperatorTest {
   @Test
   void joinWithWeighterOperator() {
     BinaryOperator factory = new BinaryOperator("*", 20);
-    TokenDetails td = factory.nextToken("3 * (5"); // - 2)
+    Token td = factory.nextToken("3 * (5"); // - 2)
     
     ReducedPair result = td.builder()
         .withReducer((t, c) -> {
@@ -77,5 +78,43 @@ public class BinaryOperatorTest {
   
   private NumberOperand number(String s) {
     return new NumberOperand(new BigInteger(s));
+  }
+  
+  @Test
+  void nullWhenLeftSideNotParsable() {
+    BinaryOperator factory = new BinaryOperator("+", 10);
+    Token td = factory.nextToken("3 + 2");
+    
+    ReducedPair result = td.builder()
+        .withReducer((t, c) -> {
+          if (t.equals("3 ")) {
+            return new ReducedPair(new NullOperand("3'"), new ParenthesesCounter());
+          } else {
+            return new ReducedPair(number("2"), new ParenthesesCounter());
+          }
+        })
+        .withCounter(new ParenthesesCounter())
+        .build();
+    
+    assertNull(result);
+  }
+  
+  @Test
+  void nullWhenRightSideNotParsable() {
+    BinaryOperator factory = new BinaryOperator("+", 10);
+    Token td = factory.nextToken("3 + 2");
+    
+    ReducedPair result = td.builder()
+        .withReducer((t, c) -> {
+          if (t.equals("3 ")) {
+            return new ReducedPair(number("3"), new ParenthesesCounter());
+          } else {
+            return new ReducedPair(new NullOperand("2"), new ParenthesesCounter());
+          }
+        })
+        .withCounter(new ParenthesesCounter())
+        .build();
+    
+    assertNull(result);
   }
 }

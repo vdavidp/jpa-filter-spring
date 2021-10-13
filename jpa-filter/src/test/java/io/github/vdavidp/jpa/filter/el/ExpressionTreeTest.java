@@ -9,6 +9,8 @@ import io.github.vdavidp.jpa.filter.el.UnaryOperator.Order;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static java.util.Arrays.asList;
+import java.util.List;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -16,6 +18,8 @@ import org.junit.jupiter.api.Test;
  * @author david
  */
 public class ExpressionTreeTest {
+  List<Operator> operators = asList(new BinaryOperator("*", 20), new BinaryOperator("-", 10), new BinaryOperator("+", 10));
+  List<Operand> operands = asList(new NumberOperand(), new StringOperand());
 
   @Test
   void fromEmptyText() {
@@ -108,4 +112,29 @@ public class ExpressionTreeTest {
     ExpressionTree et = new ExpressionTree("(3 * (5 - 2))", asList(new NumberOperand()), asList(new BinaryOperator("*", 20), new BinaryOperator("-", 10)));
     assertEquals("[[3]*[[5]-[2]]]", et.toString());
   }
+  
+  @Test
+  void negativeParenthesesCount() {
+    Throwable t = assertThrows(ParseException.class, () -> new ExpressionTree("(3 * (5 - 2)))", operands, operators));
+    assertEquals("Parentheses don't match", t.getMessage());
+  }
+
+  @Test
+  void stringContainsBinaryOperator() {
+    ExpressionTree et = new ExpressionTree("'ii+d' + 'txt'", operands, operators);
+    assertEquals("[[ii+d]+[txt]]", et.toString());
+  }
+  
+  @Test
+  void stringContainsLeftUnaryOperator() {
+    ExpressionTree et = new ExpressionTree("-'i-id'", operands, asList(new UnaryOperator("-", 30, Order.LEFT)));
+    assertEquals("[-[i-id]]", et.toString());
+  }
+  
+  @Test
+  void stringContainsRightUnaryOperator() {
+    ExpressionTree et = new ExpressionTree("'data IS NULL' IS NULL", operands, asList(new UnaryOperator("IS NULL", 30, Order.RIGHT)));
+    assertEquals("[[data IS NULL]IS NULL]", et.toString());
+  }
+  
 }
