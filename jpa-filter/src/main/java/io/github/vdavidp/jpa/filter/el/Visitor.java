@@ -23,5 +23,5 @@ public interface Visitor {
   
   void accept(BinaryOperator operator);
   
-  
+  void accept(UuidOperand operand);
 }

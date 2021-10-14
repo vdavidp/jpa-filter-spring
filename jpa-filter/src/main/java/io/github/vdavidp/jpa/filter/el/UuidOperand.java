@@ -23,31 +23,43 @@
  */
 package io.github.vdavidp.jpa.filter.el;
 
-import static java.util.Arrays.asList;
-import java.util.List;
+import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  *
  * @author david
  */
-public class Defaults {
-  public static List<Operand> operands() {
-    return asList(
-        new NumberOperand(),
-        new DecimalOperand(),
-        new UuidOperand(),
-        new StringOperand(),
-        new VariableOperand());
+@NoArgsConstructor
+@AllArgsConstructor
+public class UuidOperand implements Operand {
+  private static final Pattern pattern = Pattern.compile("^[\\(\\s]*([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})[\\)\\s]*$");
+  @Getter
+  private UUID value;
+
+  @Override
+  public ReducedPair parse(String text, ParenthesesCounter counter) {
+    Matcher m = pattern.matcher(text);
+    if (m.find()) {
+      counter = counter.count(leftSide(text, m), rightSide(text, m));
+      return new ReducedPair(new UuidOperand(UUID.fromString(m.group(1))), counter);
+    } else {
+      return null;
+    }
+  }
+
+  @Override
+  public void visit(Visitor visitor) {
+    visitor.accept(this);
   }
   
-  public static List<Operator> operators() {
-    return asList(
-        new BinaryOperator(":", 20),
-        new BinaryOperator("!", 20),
-        new BinaryOperator(">", 30),
-        new BinaryOperator("<", 30),
-        new BinaryOperator("AND", 10),
-        new BinaryOperator("OR", 10)
-    );
+  @Override
+  public String toString() {
+    return "[" + value + "]";
   }
+  
 }

@@ -3,6 +3,7 @@ package io.github.vdavidp.jpa.filter.db;
 import static java.util.Collections.singletonList;
 
 import io.github.vdavidp.jpa.filter.db.entity.Dummy;
+import static java.util.Arrays.asList;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,5 +55,11 @@ public class SupportedVariableTypesIT {
   void acceptsBigDecimal() {
     String exp = "bigDecimalValue:39.22";
     ctx.assertResultContains(exp, singletonList(2L));
+  }
+  
+  @Test
+  void acceptsUuid() {
+    String exp = "uuid: 7b064b40-230d-42a5-91d0-8e0fcee8244b";
+    ctx.assertResultContains(exp, asList(1L));
   }
 }

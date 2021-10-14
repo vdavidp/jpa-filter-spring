@@ -5,6 +5,7 @@ import io.github.vdavidp.jpa.filter.el.DecimalOperand;
 import io.github.vdavidp.jpa.filter.el.NumberOperand;
 import io.github.vdavidp.jpa.filter.el.StringOperand;
 import io.github.vdavidp.jpa.filter.el.UnaryOperator;
+import io.github.vdavidp.jpa.filter.el.UuidOperand;
 import io.github.vdavidp.jpa.filter.el.VariableOperand;
 import java.util.Deque;
 import java.util.HashMap;
@@ -134,6 +135,11 @@ public class DatabaseBinder<T> implements Binder {
   @Override
   public void accept(UnaryOperator operator) {
     deque.addFirst(mappers.get(operator.getSymbol()).apply(deque, builder));
+  }
+  
+  @Override
+  public void accept(UuidOperand operand) {
+    deque.addFirst(builder.literal(operand.getValue()));
   }
 
   @Override

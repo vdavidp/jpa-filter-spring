@@ -3,11 +3,13 @@ package io.github.vdavidp.jpa.filter.db.entity;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
+import java.util.UUID;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import lombok.Data;
+import org.hibernate.annotations.Type;
 
 @Entity
 @Data
@@ -32,4 +34,7 @@ public class Dummy {
   
   @Temporal(TemporalType.DATE)
   private Date utilDate;
+  
+  @Type(type = "uuid-char")
+  private UUID uuid;
 }
