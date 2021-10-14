@@ -61,6 +61,7 @@ Following operands are supported:
 * real numbers e.g. 123456699393848437273
 * decimals e.g. 12.33221
 * strings e.g. 'didid', 'That\\'s', 'single slash \\\\'
+* uuids e.g. 697833f8-a808-45c6-b339-b632065189e6
 * variables e.g. abc, abc123, abc.abc
 
 Following operators are supported:
