@@ -1,11 +1,8 @@
 package io.github.vdavidp.jpa.filter.spring;
 
-import io.github.vdavidp.jpa.filter.db.Binder;
-import java.net.URLDecoder;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.core.MethodParameter;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -15,7 +12,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 @Slf4j
 @RequiredArgsConstructor
-public class ExpressionTreeArgumentResolver implements HandlerMethodArgumentResolver {
+public class JpaFilterArgumentResolver implements HandlerMethodArgumentResolver {
 
   private final SpecificationProvider provider;
 

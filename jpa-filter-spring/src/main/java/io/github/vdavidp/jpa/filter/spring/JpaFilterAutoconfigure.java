@@ -12,7 +12,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @ConditionalOnWebApplication
-public class ExpressionTreeAutoconfigure {
+public class JpaFilterAutoconfigure {
   
   @Bean
   SpecificationProvider expressionTreeProvider(
@@ -28,7 +28,7 @@ public class ExpressionTreeAutoconfigure {
     return new WebMvcConfigurer() {
       @Override
       public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(new ExpressionTreeArgumentResolver(provider));
+        resolvers.add(new JpaFilterArgumentResolver(provider));
       }
     };
   }
