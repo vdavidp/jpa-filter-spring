@@ -15,14 +15,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class ExpressionTreeAutoconfigure {
   
   @Bean
-  ExpressionTreeProvider expressionTreeProvider(
+  SpecificationProvider expressionTreeProvider(
       @Autowired(required = false) ExpressionTreeConfigurator configurator) {
-    return new ExpressionTreeProvider(configurator);
+    return new SpecificationProvider(configurator);
   }
 
   @Bean
   WebMvcConfigurer expressionTreeLinker(
-      ExpressionTreeProvider provider,
+      SpecificationProvider provider,
       ObjectProvider<Binder> binderProvider) {
 
     return new WebMvcConfigurer() {

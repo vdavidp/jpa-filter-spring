@@ -31,10 +31,14 @@ import org.springframework.data.jpa.domain.Specification;
  * @author david
  */
 @AllArgsConstructor
-public class ExpressionTreeProvider {
+public class SpecificationProvider {
   private ExpressionTreeConfigurator configurator;
   
   public <T> Specification<T> create(String expression) {
-    return new ExpressionTreeSpecification<>(expression, configurator);
+    if (expression == null || expression.trim().equals("")) {
+      return (a, b, c) -> null;
+    } else {
+      return new ExpressionTreeSpecification<>(expression, configurator);
+    }
   }
 }

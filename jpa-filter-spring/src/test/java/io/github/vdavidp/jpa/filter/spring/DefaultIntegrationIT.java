@@ -44,4 +44,12 @@ public class DefaultIntegrationIT {
     
     assertEquals(1, articles.length);
   }
+  
+  @Test
+  void filterNoProvided() {
+    String url = "http://localhost:" + port + "/articles";
+    Article[] articles = restTemplate.getForObject(url, Article[].class);
+    
+    assertEquals(3, articles.length);
+  }
 }

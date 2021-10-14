@@ -17,7 +17,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 @RequiredArgsConstructor
 public class ExpressionTreeArgumentResolver implements HandlerMethodArgumentResolver {
 
-  private final ExpressionTreeProvider provider;
+  private final SpecificationProvider provider;
 
   @Override
   public boolean supportsParameter(MethodParameter methodParameter) {
@@ -38,10 +38,9 @@ public class ExpressionTreeArgumentResolver implements HandlerMethodArgumentReso
 
     if (exp == null || "".equals(exp.trim())) {
       log.info("Null or empty expression in {} query param", filter.queryParam());
-      return null;
-    } else {
-      log.info("Detected expression: {}", exp);
-      return provider.create(exp);
     }
+    
+    log.info("Detected expression: {}", exp);
+    return provider.create(exp);
   }
 }
