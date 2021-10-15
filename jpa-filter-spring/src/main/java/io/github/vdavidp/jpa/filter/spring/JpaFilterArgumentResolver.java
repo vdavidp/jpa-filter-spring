@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
+import org.springframework.core.ResolvableType;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -38,6 +39,7 @@ public class JpaFilterArgumentResolver implements HandlerMethodArgumentResolver 
     }
     
     log.info("Detected expression: {}", exp);
-    return provider.create(exp);
+    Class<?> type = ResolvableType.forType(methodParameter.getGenericParameterType()).resolveGeneric();
+    return provider.create(exp, type);
   }
 }

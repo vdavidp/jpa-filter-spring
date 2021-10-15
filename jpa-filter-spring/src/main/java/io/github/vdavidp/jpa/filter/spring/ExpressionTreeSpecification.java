@@ -8,6 +8,7 @@ import io.github.vdavidp.jpa.filter.el.Defaults;
 import io.github.vdavidp.jpa.filter.el.ExpressionTree;
 import io.github.vdavidp.jpa.filter.el.Operand;
 import io.github.vdavidp.jpa.filter.el.Operator;
+import io.github.vdavidp.jpa.filter.spring.visitor.FieldExistingVerifier;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
@@ -19,21 +20,15 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import lombok.AllArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 
+@AllArgsConstructor
 public class ExpressionTreeSpecification<T> implements Specification<T> {
 
   private String expression;
   private ExpressionTreeConfigurator configurator;
-  
-  public ExpressionTreeSpecification(String expression) {
-    this.expression = expression;
-  }
-  
-  public ExpressionTreeSpecification(String expression, ExpressionTreeConfigurator configurator) {
-    this(expression);
-    this.configurator = configurator;
-  }
+  private FieldExistingVerifier fieldExistingVerifier;
 
   @Override
   public Predicate toPredicate(Root<T> root, CriteriaQuery<?> criteriaQuery,
@@ -49,9 +44,10 @@ public class ExpressionTreeSpecification<T> implements Specification<T> {
       configurator.modifyMappers(mappers);
     }
 
-    Binder binder = new DatabaseBinder(root, criteriaQuery, criteriaBuilder, mappers);
-
     ExpressionTree et = new ExpressionTree(expression, operands, operators);
+    et.visit(fieldExistingVerifier);
+    
+    Binder binder = new DatabaseBinder(root, criteriaQuery, criteriaBuilder, mappers);
     et.visit(binder);
 
     return binder.getPredicate();

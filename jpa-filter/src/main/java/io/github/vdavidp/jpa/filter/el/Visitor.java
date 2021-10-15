@@ -11,17 +11,17 @@ package io.github.vdavidp.jpa.filter.el;
  */
 public interface Visitor {
 
-  void accept(StringOperand operand);
+  default void accept(StringOperand operand) {}
 
-  void accept(VariableOperand operand);
-
-  void accept(NumberOperand operand);
-
-  void accept(DecimalOperand operand);
-
-  void accept(UnaryOperator operator);
+  default void accept(VariableOperand operand) {}
   
-  void accept(BinaryOperator operator);
+  default void accept(NumberOperand operand) {}
   
-  void accept(UuidOperand operand);
+  default void accept(DecimalOperand operand) {}
+
+  default void accept(UnaryOperator operator) {}
+  
+  default void accept(BinaryOperator operator) {}
+  
+  default void accept(UuidOperand operand) {}
 }

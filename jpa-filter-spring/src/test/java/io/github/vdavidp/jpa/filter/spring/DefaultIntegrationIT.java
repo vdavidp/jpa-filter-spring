@@ -10,9 +10,13 @@ import io.github.vdavidp.jpa.filter.spring.example.Article;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.List;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -51,5 +55,11 @@ public class DefaultIntegrationIT {
     Article[] articles = restTemplate.getForObject(url, Article[].class);
     
     assertEquals(3, articles.length);
+  }
+  
+  @Test
+  void fieldVerifierIntegration() {
+    String url = "http://localhost:" + port + "/articles?filter=data:3";
+    assertThrows(HttpServerErrorException.class, () -> restTemplate.getForEntity(url, Article[].class));
   }
 }

@@ -21,25 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package io.github.vdavidp.jpa.filter.spring;
+package io.github.vdavidp.jpa.filter.spring.example;
 
-import io.github.vdavidp.jpa.filter.spring.visitor.FieldExistingVerifier;
-import lombok.AllArgsConstructor;
-import org.springframework.data.jpa.domain.Specification;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
+import lombok.Data;
 
 /**
  *
  * @author david
  */
-@AllArgsConstructor
-public class SpecificationProvider {
-  private ExpressionTreeConfigurator configurator;
+@Data
+@MappedSuperclass
+public class BaseEntity {
   
-  public <T> Specification<T> create(String expression, Class<?> entityClass) {
-    if (expression == null || expression.trim().equals("")) {
-      return (a, b, c) -> null;
-    } else {
-      return new ExpressionTreeSpecification<>(expression, configurator, new FieldExistingVerifier(entityClass));
-    }
-  }
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 }
