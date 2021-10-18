@@ -5,21 +5,16 @@
  */
 package io.github.vdavidp.jpa.filter.el;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 /**
  *
  * @author david
  */
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Getter
 public class ReducedPair {
-  private Symbol symbol;
-  private ParenthesesCounter counter;
-  
-  public ReducedPair(Symbol symbol) {
-    this.symbol = symbol;
-    this.counter = null;
-  }
+  private final Symbol symbol;
+  private final ParenthesesCounter counter;
 }

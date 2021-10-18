@@ -5,6 +5,7 @@
  */
 package io.github.vdavidp.jpa.filter.el;
 
+import static java.lang.String.format;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -30,6 +31,10 @@ public class ExpressionTree {
     
     this.operators = operators;
     this.root = parseExpression(text);
+    
+    if (this.root instanceof NullOperand) {
+      throw new ParseException(format("Not able to parse expression: [%s]", ((NullOperand)this.root).value));
+    }
   }
   
   private Symbol parseExpression(String text) {

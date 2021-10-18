@@ -70,6 +70,12 @@ public class ExpressionTreeTest {
     ExpressionTree et = new ExpressionTree("12 + 4", asList(new NumberOperand()), asList(new BinaryOperator("+", 10)));
     assertEquals("[[12]+[4]]", et.toString());
   }
+  
+  @Test
+  void fromInvalidBinaryExpression() {
+    Throwable t = assertThrows(ParseException.class, () -> new ExpressionTree("12 + 4 + (12 - 3 and)", asList(new NumberOperand()), asList(new BinaryOperator("+", 10), new BinaryOperator("-", 10))));
+    assertEquals("Not able to parse expression: [12 + 4 + (12 - 3 and)]", t.getMessage());
+  }
 
   @Test
   void fromTwoSameWeightBinaryOperators() {

@@ -17,18 +17,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class NullOperand implements Operand {
-  private static final Pattern pattern = Pattern.compile("^[\\(\\s]*([^\\)]*)[\\)\\s]*$");
   protected String value;
 
   @Override
   public ReducedPair parse(String text, ParenthesesCounter counter) {
-    Matcher m = pattern.matcher(text);
-    if (m.find()) {
-      counter = counter.count(leftSide(text, m), rightSide(text, m));
-      return new ReducedPair(new NullOperand(m.group(1)), counter);
-    } else {
-      throw new ParseException("Expression not understood: [" + text + "]");
-    }
+    return new ReducedPair(new NullOperand(text), counter);
   }
 
   @Override
@@ -38,7 +31,7 @@ public class NullOperand implements Operand {
 
   @Override
   public String toString() {
-    throw new ParseException("This expression is not recognized: " + value);
+    throw new ParseException("This expression is not recognized: [" + value + "]");
   }
     
 }

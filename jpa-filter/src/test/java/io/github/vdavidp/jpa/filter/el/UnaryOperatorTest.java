@@ -29,7 +29,7 @@ public class UnaryOperatorTest {
           if (t.equals("")) {
             return new ReducedPair(new NullOperand(""), new ParenthesesCounter());
           } else {
-            return new ReducedPair(number("1"));
+            return new ReducedPair(number("1"), new ParenthesesCounter());
           }
         })
         .withCounter(new ParenthesesCounter())
@@ -50,7 +50,7 @@ public class UnaryOperatorTest {
           if (t.equals("23 ")) {
             return new ReducedPair(number("23"), new ParenthesesCounter());
           } else {
-            return new ReducedPair(new NullOperand(""));
+            return new ReducedPair(new NullOperand(""), new ParenthesesCounter());
           }
         })
         .withCounter(new ParenthesesCounter())
@@ -69,7 +69,7 @@ public class UnaryOperatorTest {
           if (t.equals("")) {
             return new ReducedPair(new NullOperand(""), new ParenthesesCounter());
           } else {
-            return new ReducedPair(new BinaryOperator("+", 10, number("3"), number("2")));
+            return new ReducedPair(new BinaryOperator("+", 10, number("3"), number("2")), new ParenthesesCounter());
           }
         })
         .withCounter(new ParenthesesCounter())
@@ -91,7 +91,7 @@ public class UnaryOperatorTest {
           if (t.equals("32 ")) {
             return new ReducedPair(number("32"), c);
           } else {
-            return new ReducedPair(new NullOperand(""));
+            return new ReducedPair(new NullOperand(""), new ParenthesesCounter());
           }
         })
         .withCounter(new ParenthesesCounter())
@@ -109,7 +109,7 @@ public class UnaryOperatorTest {
           if (t.equals("")) {
             return new ReducedPair(new NullOperand(), c);
           } else {
-            return new ReducedPair(number("23"));
+            return new ReducedPair(number("23"), new ParenthesesCounter());
           }
         })
         .withCounter(new ParenthesesCounter())

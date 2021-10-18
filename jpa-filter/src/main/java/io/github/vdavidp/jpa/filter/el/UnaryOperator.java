@@ -106,11 +106,13 @@ public class UnaryOperator extends Operator {
       if (rightResult.getSymbol() instanceof Operator && myWeight >= ((Operator)rightResult.getSymbol()).weight) {
         Operator other = (Operator)rightResult.getSymbol();
         return new ReducedPair(
-            other.executeAfter(otherLeaf -> new UnaryOperator(symbol, myWeight, order, otherLeaf)));
+            other.executeAfter(otherLeaf -> new UnaryOperator(symbol, myWeight, order, otherLeaf)),
+            rightResult.getCounter());
       }
       
       return new ReducedPair(
-          new UnaryOperator(symbol, weight + leftResult.getCounter().getCurrentCount(), order, leafSymbol));
+          new UnaryOperator(symbol, weight + leftResult.getCounter().getCurrentCount(), order, leafSymbol),
+          rightResult.getCounter());
     }
 
     @Override

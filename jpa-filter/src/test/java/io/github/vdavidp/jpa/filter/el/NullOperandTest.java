@@ -28,22 +28,15 @@ public class NullOperandTest {
   }
   
   @Test
+  void noParenthesesCount() {
+    ReducedPair result = factory.parse("(3", counter);
+    assertEquals(0, result.getCounter().getCurrentCount());
+  }
+  
+  @Test
   void toStringMethod() {
     ReducedPair result = factory.parse("kdi{}+|¬", counter);
     Throwable ex = assertThrows(ParseException.class, () -> result.getSymbol().toString());
-    assertEquals("This expression is not recognized: kdi{}+|¬", ex.getMessage());
-  }
-  
-  @Test
-  void withValidParentheses() {
-    ReducedPair result = factory.parse("( ( )", counter);
-    assertNotSame(result.getSymbol(), factory);
-    assertEquals(1, result.getCounter().getCurrentCount());
-  }
-  
-  @Test
-  void withInvalidParentheses() {
-    Throwable t = assertThrows(ParseException.class, () -> factory.parse("()(", counter));
-    assertEquals("Expression not understood: [()(]", t.getMessage());
+    assertEquals("This expression is not recognized: [kdi{}+|¬]", ex.getMessage());
   }
 }

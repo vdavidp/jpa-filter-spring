@@ -88,11 +88,12 @@ public class BinaryOperator extends  Operator {
       if (rightSymbol instanceof Operator && myWeight >= ((Operator)rightSymbol).weight) {
         Operator other = (Operator)rightSymbol;
         return new ReducedPair(
-            other.executeAfter(otherLeft -> new BinaryOperator(symbol, myWeight, leftSymbol, otherLeft)));
+            other.executeAfter(otherLeft -> new BinaryOperator(symbol, myWeight, leftSymbol, otherLeft)),
+            rightResult.getCounter());
       }
     
       return new ReducedPair(
-          new BinaryOperator(symbol, myWeight, leftSymbol, rightSymbol));
+          new BinaryOperator(symbol, myWeight, leftSymbol, rightSymbol), rightResult.getCounter());
     }
     
     @Override

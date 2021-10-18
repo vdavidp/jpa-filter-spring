@@ -28,7 +28,7 @@ public class BinaryOperatorTest {
           if (t.equals("3 ")) {
             return new ReducedPair(number("3"), new ParenthesesCounter());
           } else {
-            return new ReducedPair(number("2"));
+            return new ReducedPair(number("2"), new ParenthesesCounter());
           }
         })
         .withCounter(new ParenthesesCounter())
@@ -47,7 +47,7 @@ public class BinaryOperatorTest {
           if (t.equals("(5 ")) {
           return new ReducedPair(number("5"), new ParenthesesCounter(100, 1));
           } else {
-            return new ReducedPair(number("2"));
+            return new ReducedPair(number("2"), new ParenthesesCounter());
           }
         })
         .withCounter(new ParenthesesCounter())
@@ -67,7 +67,7 @@ public class BinaryOperatorTest {
             return new ReducedPair(number("3"), new ParenthesesCounter(100, 0));
           } else {
             return new ReducedPair(
-                new BinaryOperator("-", 110, number("5"), number("2")));
+                new BinaryOperator("-", 110, number("5"), number("2")), new ParenthesesCounter());
           }
         })
         .withCounter(new ParenthesesCounter())
