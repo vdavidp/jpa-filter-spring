@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 public abstract class Operator implements Symbol {
   @Getter
   protected final String symbol;
+  @Getter
   protected final int weight;
   
   public Token nextToken(String text) {

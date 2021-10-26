@@ -5,16 +5,10 @@
  */
 package io.github.vdavidp.jpa.filter.el;
 
-import static java.lang.String.format;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Deque;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.Queue;
-import static java.util.stream.Collectors.toCollection;
 
 /**
  *
@@ -30,19 +24,7 @@ public class ExpressionTree {
     this.operands.add(new NullOperand());
     
     this.operators = operators;
-    this.root = parseExpression(text);
-    
-    if (this.root instanceof NullOperand) {
-      throw new ParseException(format("Not able to parse expression: [%s]", ((NullOperand)this.root).value));
-    }
-  }
-  
-  private Symbol parseExpression(String text) {
-    if (text.trim().equals("")) {
-      return new NullSymbol();
-    } else {
-      return reduce(text, new ParenthesesCounter(100)).getSymbol();
-    }
+    this.root = parse(new NullSymbol(), text, 0, new ParenthesesCounter());
   }
   
   @Override
@@ -50,44 +32,40 @@ public class ExpressionTree {
     return root.toString();
   }
   
-  private ReducedPair reduce(String text, ParenthesesCounter counter) {
-    ReducedPair result = findOperator(text, 0, counter);
-    if (result != null) {  
-      return result;
+  private Symbol parse(Symbol tree, String text, int startIndex, ParenthesesCounter counter) {
+    Token t = findToken(text, startIndex);
+    if (t == null) {
+      Symbol op = findOperand(text, counter).getSymbol();
+      if (op instanceof NullOperand) {
+        throw new ParseException("Not able to parse expression: [" + text + "]");
+      }
+      return tree.merge(op);
     } else {
-      return operands.stream()
+      ReducedPair pair = findOperand(t.getLeftText(), counter);
+      if (pair.getSymbol() instanceof NullOperand) {
+        return parse(tree, text, t.getIndex() + 1, counter);
+      } else {
+        tree = tree.merge(pair.getSymbol());
+        tree = tree.merge(t.build(pair.getCounter()));
+        return parse(tree, t.getRightText(), 0, pair.getCounter());
+      }
+    }
+  }
+  
+  private Token findToken(String text, int startIndex) {
+    return operators.stream()
+          .map(op -> op.nextToken(text, startIndex))
+          .filter(Objects::nonNull)
+          .min(Comparator.comparing(Token::getIndex))
+          .orElse(null);
+  }
+  
+  private ReducedPair findOperand(String text, ParenthesesCounter counter) {
+    return operands.stream()
         .map(o -> o.parse(text, counter))
         .filter(Objects::nonNull)
         .findFirst()
         .orElse(null);
-    }
-  }
-  
-  private ReducedPair findOperator(String text, int startIndex, ParenthesesCounter counter) {
-    Optional<Token> tokenOp = operators.stream()
-          .map(op -> op.nextToken(text, startIndex))
-          .filter(Objects::nonNull)
-          .min(Comparator.comparing(Token::getIndex));
-    
-    if (!tokenOp.isPresent()) {
-      return null;
-    }
-    
-    ReducedPair result = build(tokenOp.get(), counter);
-    if (result != null) {
-      return result;
-    } else if (tokenOp.get().getIndex() + 1 < text.length()) {
-      return findOperator(text, tokenOp.get().getIndex() + 1, counter);
-    } else {
-      return null;
-    }
-  }
-  
-  private ReducedPair build(Token token, ParenthesesCounter counter) {
-    return token.builder()
-          .withReducer(this::reduce)
-          .withCounter(counter)
-          .build();
   }
   
   public void visit(Visitor visitor) {
@@ -104,6 +82,16 @@ public class ExpressionTree {
     @Override
     public void visit(Visitor visitor) {
       throw new UnsupportedOperationException("Null Symbol not able to be visited");
+    }
+
+    @Override
+    public Symbol merge(Symbol symbol) {
+      return symbol;
+    }
+
+    @Override
+    public int getWeight() {
+      throw new UnsupportedOperationException("Not supported yet.");
     }
   }
 }

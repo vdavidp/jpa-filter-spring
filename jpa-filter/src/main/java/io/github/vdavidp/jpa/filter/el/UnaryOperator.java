@@ -16,6 +16,11 @@ import lombok.RequiredArgsConstructor;
  */
 public class UnaryOperator extends Operator {
 
+  @Override
+  public Symbol merge(Symbol symbol) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
   public enum Order {
     LEFT, RIGHT
   }
@@ -63,8 +68,10 @@ public class UnaryOperator extends Operator {
   class Details implements Builder, Token {
     @Getter
     private final int index;
-    private final String left;
-    private final String right;
+    @Getter
+    private final String leftText;
+    @Getter
+    private final String rightText;
     private BiFunction<String, ParenthesesCounter, ReducedPair> reducer;
     private ParenthesesCounter counter;
 
@@ -82,8 +89,8 @@ public class UnaryOperator extends Operator {
 
     @Override
     public ReducedPair build() {
-      ReducedPair leftResult = reducer.apply(left, counter);
-      ReducedPair rightResult = reducer.apply(right, leftResult.getCounter());
+      ReducedPair leftResult = reducer.apply(leftText, counter);
+      ReducedPair rightResult = reducer.apply(rightText, leftResult.getCounter());
       
       Symbol leafSymbol;
       
@@ -118,6 +125,11 @@ public class UnaryOperator extends Operator {
     @Override
     public Builder builder() {
       return this;
+    }
+
+    @Override
+    public Operator build(ParenthesesCounter counter) {
+      throw new UnsupportedOperationException("Not supported yet.");
     }
     
   }

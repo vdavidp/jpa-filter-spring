@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor
 @AllArgsConstructor
-public class DecimalOperand implements Operand {
+public class DecimalOperand extends Operand {
   private static final Pattern pattern = Pattern.compile("^[\\(\\s]*([0-9]+\\.[0-9]+)[\\)\\s]*$");
   
   @Getter

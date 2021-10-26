@@ -28,6 +28,19 @@ public class BinaryOperator extends  Operator {
     this.right = right;
   }
   
+  public Symbol merge(Symbol other) {
+    if (left == null) {
+      return new BinaryOperator(symbol, weight, other, null);
+    } else if (right == null) {
+      return new BinaryOperator(symbol, weight, left, other);
+    } else if (other.getWeight() > weight) {
+      return new BinaryOperator(symbol, weight, left, right.merge(other));
+    } else {
+      Operator op = (Operator)other;
+      return new BinaryOperator(op.symbol, op.weight, this, null);
+    }
+  }
+  
   @Override
   public Token createDetails(int index, String left, String right) {
     return new Details(index, left, right);
@@ -55,7 +68,9 @@ public class BinaryOperator extends  Operator {
   class Details implements Token, Builder {
     @Getter
     private final int index;
+    @Getter
     private final String leftText;
+    @Getter
     private final String rightText;
     private BiFunction<String, ParenthesesCounter, ReducedPair> reducer;
     private ParenthesesCounter counter;
@@ -70,6 +85,11 @@ public class BinaryOperator extends  Operator {
     public Builder withCounter(ParenthesesCounter counter) {
       this.counter = counter;
       return this;
+    }
+    
+    @Override
+    public Operator build(ParenthesesCounter counter) {
+      return new BinaryOperator(symbol, counter.getCurrentCount() * 100 + weight);
     }
 
     @Override

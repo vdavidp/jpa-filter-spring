@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
  */
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NoArgsConstructor
-public class NumberOperand implements Operand {
+public class NumberOperand extends Operand {
   private static final Pattern pattern = Pattern.compile("^[\\(\\s]*([0-9]+)[\\)\\s]*$");
   
   @Getter

@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor
 @AllArgsConstructor
-public class NullOperand implements Operand {
+public class NullOperand extends Operand {
   protected String value;
 
   @Override

@@ -13,4 +13,8 @@ public interface Symbol {
   
   void visit(Visitor visitor);
   
+  Symbol merge(Symbol symbol);
+  
+  int getWeight();
+  
 }

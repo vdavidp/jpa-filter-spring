@@ -9,12 +9,14 @@ import java.math.BigInteger;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
  *
  * @author david
  */
+@Disabled
 public class BinaryOperatorTest {
   
   @Test

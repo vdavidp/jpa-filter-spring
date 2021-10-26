@@ -11,15 +11,23 @@ import java.util.regex.Matcher;
  *
  * @author david
  */
-public interface Operand extends Symbol {
+public abstract class Operand implements Symbol {
   
-  ReducedPair parse(String text, ParenthesesCounter counter);
+  public abstract ReducedPair parse(String text, ParenthesesCounter counter);
   
-  default String leftSide(String text, Matcher m) {
+  protected String leftSide(String text, Matcher m) {
     return text.substring(0, m.start(1));
   }
   
-  default String rightSide(String text, Matcher m) {
+  protected String rightSide(String text, Matcher m) {
     return text.substring(m.end(1), text.length());
+  }
+  
+  public Symbol merge(Symbol other) {
+    return other.merge(this);
+  }
+  
+  public int getWeight() {
+    return Integer.MAX_VALUE;
   }
 }

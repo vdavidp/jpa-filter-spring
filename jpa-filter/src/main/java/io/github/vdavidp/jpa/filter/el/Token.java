@@ -11,5 +11,8 @@ package io.github.vdavidp.jpa.filter.el;
  */
 public interface Token {
   int getIndex();
+  String getLeftText();
+  String getRightText();
   Builder builder();
+  Operator build(ParenthesesCounter counter);
 }

@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor
 @AllArgsConstructor
-public class VariableOperand implements Operand {
+public class VariableOperand extends Operand {
   private static final Pattern pattern = Pattern.compile("^[\\(\\s]*([a-zA-Z]+[a-zA-Z0-9]*\\.(?=[a-zA-Z])[a-zA-Z]+[a-zA-Z0-9]*|[a-zA-Z]+[a-zA-Z0-9]*)[\\)\\s]*$", 0);
   
   @Getter

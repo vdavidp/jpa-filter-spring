@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor
 @AllArgsConstructor
-public class StringOperand implements Operand {
+public class StringOperand extends Operand {
   private static final Pattern pattern = Pattern.compile("^[\\(\\)\\s]*('(?:[^\\\\']|\\\\'|\\\\\\\\)*')[\\(\\)\\s]*$");
   
   @Getter

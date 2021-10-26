@@ -36,7 +36,7 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor
 @AllArgsConstructor
-public class UuidOperand implements Operand {
+public class UuidOperand extends Operand {
   private static final Pattern pattern = Pattern.compile("^[\\(\\s]*([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})[\\)\\s]*$");
   @Getter
   private UUID value;
