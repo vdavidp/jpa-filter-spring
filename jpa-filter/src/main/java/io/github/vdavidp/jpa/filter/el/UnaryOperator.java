@@ -16,11 +16,6 @@ import lombok.RequiredArgsConstructor;
  */
 public class UnaryOperator extends Operator {
 
-  @Override
-  public Symbol merge(Symbol symbol) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
-
   public enum Order {
     LEFT, RIGHT
   }
@@ -45,6 +40,11 @@ public class UnaryOperator extends Operator {
   }
   
   @Override
+  public Symbol merge(Symbol symbol) {
+    throw new UnsupportedOperationException("Not supported yet."); 
+  }
+  
+  @Override
   public String toString() {
     if (order == Order.LEFT)
       return "[" + symbol + leaf + "]";
@@ -65,67 +65,13 @@ public class UnaryOperator extends Operator {
   }
   
   @RequiredArgsConstructor
-  class Details implements Builder, Token {
+  class Details implements Token {
     @Getter
     private final int index;
     @Getter
     private final String leftText;
     @Getter
     private final String rightText;
-    private BiFunction<String, ParenthesesCounter, ReducedPair> reducer;
-    private ParenthesesCounter counter;
-
-    @Override
-    public Builder withReducer(BiFunction<String, ParenthesesCounter, ReducedPair> reducer) {
-      this.reducer = reducer;
-      return this;
-    }
-    
-    @Override
-    public Builder withCounter(ParenthesesCounter counter) {
-      this.counter = counter;
-      return this;
-    }
-
-    @Override
-    public ReducedPair build() {
-      ReducedPair leftResult = reducer.apply(leftText, counter);
-      ReducedPair rightResult = reducer.apply(rightText, leftResult.getCounter());
-      
-      Symbol leafSymbol;
-      
-      if (order == Order.LEFT 
-          && (!(leftResult.getSymbol() instanceof NullOperand)
-            || rightResult.getSymbol() instanceof NullOperand)) {
-          return null;
-      }
-      
-      if (order == Order.RIGHT
-          && (leftResult.getSymbol() instanceof NullOperand
-            || !(rightResult.getSymbol() instanceof NullOperand))) {
-        return null;
-      }
-      
-      leafSymbol = (order == Order.LEFT ? rightResult.getSymbol() : leftResult.getSymbol());
-      
-      int myWeight = weight + leftResult.getCounter().getCurrentCount();
-      
-      if (rightResult.getSymbol() instanceof Operator && myWeight >= ((Operator)rightResult.getSymbol()).weight) {
-        Operator other = (Operator)rightResult.getSymbol();
-        return new ReducedPair(
-            other.executeAfter(otherLeaf -> new UnaryOperator(symbol, myWeight, order, otherLeaf)),
-            rightResult.getCounter());
-      }
-      
-      return new ReducedPair(
-          new UnaryOperator(symbol, weight + leftResult.getCounter().getCurrentCount(), order, leafSymbol),
-          rightResult.getCounter());
-    }
-
-    @Override
-    public Builder builder() {
-      return this;
-    }
 
     @Override
     public Operator build(ParenthesesCounter counter) {

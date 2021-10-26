@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
  *
  * @author david
  */
-public class BinaryOperator extends  Operator {
+public class BinaryOperator extends Operator {
   protected Symbol left;
   protected Symbol right;
   
@@ -65,60 +65,17 @@ public class BinaryOperator extends  Operator {
   }
   
   @RequiredArgsConstructor
-  class Details implements Token, Builder {
+  class Details implements Token {
     @Getter
     private final int index;
     @Getter
     private final String leftText;
     @Getter
     private final String rightText;
-    private BiFunction<String, ParenthesesCounter, ReducedPair> reducer;
-    private ParenthesesCounter counter;
-    
-   @Override
-    public Builder withReducer(BiFunction<String, ParenthesesCounter, ReducedPair> reducer) {
-      this.reducer = reducer;
-      return this;
-    }
-    
-    @Override
-    public Builder withCounter(ParenthesesCounter counter) {
-      this.counter = counter;
-      return this;
-    }
     
     @Override
     public Operator build(ParenthesesCounter counter) {
       return new BinaryOperator(symbol, counter.getCurrentCount() * 100 + weight);
-    }
-
-    @Override
-    public ReducedPair build() {
-      ReducedPair leftResult = reducer.apply(leftText, counter);
-      ReducedPair rightResult = reducer.apply(rightText, leftResult.getCounter());
-      
-      Symbol leftSymbol = leftResult.getSymbol();
-      Symbol rightSymbol = rightResult.getSymbol();
-      int myWeight = weight + leftResult.getCounter().getCurrentCount();
-      
-      if (leftSymbol instanceof NullOperand || rightSymbol instanceof NullOperand) {
-        return null;
-      }
-      
-      if (rightSymbol instanceof Operator && myWeight >= ((Operator)rightSymbol).weight) {
-        Operator other = (Operator)rightSymbol;
-        return new ReducedPair(
-            other.executeAfter(otherLeft -> new BinaryOperator(symbol, myWeight, leftSymbol, otherLeft)),
-            rightResult.getCounter());
-      }
-    
-      return new ReducedPair(
-          new BinaryOperator(symbol, myWeight, leftSymbol, rightSymbol), rightResult.getCounter());
-    }
-    
-    @Override
-    public Builder builder() {
-      return this;
     }
   }  
   
