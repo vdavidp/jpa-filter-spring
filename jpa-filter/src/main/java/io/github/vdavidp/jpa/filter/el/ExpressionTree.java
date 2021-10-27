@@ -45,7 +45,7 @@ public class ExpressionTree {
       return tree.merge(op);
     } else {
       ReducedPair pair = findOperand(token.getLeftText(), counter);
-      if (!token.isValidOpening(pair.getSymbol())) {
+      if (!previousToken.isValidClosing(pair.getSymbol()) && !token.isValidOpening(pair.getSymbol())) {
         return parse(token, tree, text, token.getIndex() + 1, counter);
       } else {
         tree = tree.merge(pair.getSymbol());

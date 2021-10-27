@@ -114,6 +114,12 @@ public class ExpressionTreeTest {
   }
   
   @Test
+  void fromRightUnaryAndBinaryOperator() {
+    ExpressionTree et = new ExpressionTree("3 Is Valid + 4", asList(new NumberOperand()), asList(new BinaryOperator("+", 10), new UnaryOperator("Is Valid", 30, Order.RIGHT)));
+    assertEquals("[[[3]Is Valid]+[4]]", et.toString());
+  }
+  
+  @Test
   void fromExpressionContainingParentheses() {
     ExpressionTree et = new ExpressionTree("(3 * (5 - 2))", asList(new NumberOperand()), asList(new BinaryOperator("*", 20), new BinaryOperator("-", 10)));
     assertEquals("[[3]*[[5]-[2]]]", et.toString());
@@ -147,6 +153,24 @@ public class ExpressionTreeTest {
   void bug() {
     ExpressionTree et = new ExpressionTree("(a:2 OR b:3) AND (c:17)", Defaults.operands(), Defaults.operators());
     assertEquals("[[[[a]:[2]]OR[[b]:[3]]]AND[[c]:[17]]]", et.toString());
+  }
+  
+  @Test
+  void regression1() {
+    ExpressionTree et = new ExpressionTree("(3 + 2)Is Null", asList(new NumberOperand()), asList(new BinaryOperator("+", 10), new UnaryOperator("Is Null", 30, Order.RIGHT)));
+    assertEquals("[[[3]+[2]]Is Null]", et.toString());
+  }
+  
+  @Test
+  void regression2() {
+    ExpressionTree et = new ExpressionTree("-3 Is Null", asList(new NumberOperand()), asList(new UnaryOperator("-", 30, Order.LEFT), new UnaryOperator("Is Null", 30, Order.RIGHT)));
+    assertEquals("[[-[3]]Is Null]", et.toString());
+  }
+  
+  @Test
+  void regression3() {
+    ExpressionTree et = new ExpressionTree("-(3 Is Null)", asList(new NumberOperand()), asList(new UnaryOperator("-", 30, Order.LEFT), new UnaryOperator("Is Null", 30, Order.RIGHT)));
+    assertEquals("[-[[3]Is Null]]", et.toString());
   }
   
 }
