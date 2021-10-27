@@ -5,8 +5,6 @@
  */
 package io.github.vdavidp.jpa.filter.el;
 
-import java.util.function.BiFunction;
-import java.util.function.Function;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -40,8 +38,31 @@ public class UnaryOperator extends Operator {
   }
   
   @Override
-  public Symbol merge(Symbol symbol) {
-    throw new UnsupportedOperationException("Not supported yet."); 
+  public Symbol merge(Symbol other) {
+    if (other instanceof EmptyOperand) {
+      return this;
+    }
+    
+    if (order == Order.LEFT && other instanceof OpenParenthesesOperand) {
+      return this;
+    }
+    
+    if (order == Order.RIGHT && other instanceof CloseParenthesesOperand) {
+      return this;
+    }
+    
+    if (leaf == null) {
+      return new UnaryOperator(symbol, weight, order, other);
+    } else if (other.getWeight() > weight) {
+      return new UnaryOperator(symbol, weight, order, leaf.merge(other));
+    } else {
+      return ((Operator)other).executeAfter(this);
+    }
+  }
+  
+  @Override
+  protected Symbol executeAfter(Symbol other) {
+    return new UnaryOperator(symbol, weight, order, other);
   }
   
   @Override
@@ -50,13 +71,6 @@ public class UnaryOperator extends Operator {
       return "[" + symbol + leaf + "]";
     else
       return "[" + leaf + symbol + "]";
-  }
-  
-  
-  @Override
-  protected Operator executeAfter(Function<Symbol, Operator> factory) {
-    Operator op = factory.apply(leaf);
-    return new UnaryOperator(symbol, weight, order, op);
   }
   
   @Override
@@ -75,7 +89,25 @@ public class UnaryOperator extends Operator {
 
     @Override
     public Operator build(ParenthesesCounter counter) {
-      throw new UnsupportedOperationException("Not supported yet.");
+      return new UnaryOperator(symbol, weight + counter.getCurrentCount(), order);
+    }
+    
+    @Override
+    public boolean isValidOpening(Symbol s) {
+      if (order == Order.LEFT) {
+        return (s instanceof OpenParenthesesOperand) || (s instanceof EmptyOperand);
+      } else {
+        return !(s instanceof NullOperand);
+      }
+    }
+    
+    @Override
+    public boolean isValidClosing(Symbol s) {
+      if (order == Order.LEFT) {
+        return !(s instanceof NullOperand);
+      } else {
+        return (s instanceof CloseParenthesesOperand) || (s instanceof EmptyOperand);
+      }
     }
     
   }

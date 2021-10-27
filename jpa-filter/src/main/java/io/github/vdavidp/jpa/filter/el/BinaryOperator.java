@@ -36,8 +36,7 @@ public class BinaryOperator extends Operator {
     } else if (other.getWeight() > weight) {
       return new BinaryOperator(symbol, weight, left, right.merge(other));
     } else {
-      Operator op = (Operator)other;
-      return new BinaryOperator(op.symbol, op.weight, this, null);
+      return ((Operator)other).executeAfter(this);
     }
   }
   
@@ -50,11 +49,10 @@ public class BinaryOperator extends Operator {
   public String toString() {
     return "[" + left + symbol + right + "]";
   }
-
+  
   @Override
-  protected Operator executeAfter(Function<Symbol, Operator> factory) {
-    Operator newLeft = factory.apply(left);
-    return new BinaryOperator(symbol, weight, newLeft, right);
+  protected Symbol executeAfter(Symbol other) {
+    return new BinaryOperator(symbol, weight, other, right);
   }
   
   @Override
@@ -75,7 +73,17 @@ public class BinaryOperator extends Operator {
     
     @Override
     public Operator build(ParenthesesCounter counter) {
-      return new BinaryOperator(symbol, counter.getCurrentCount() * 100 + weight);
+      return new BinaryOperator(symbol, counter.getCurrentCount() + weight);
+    }
+    
+    @Override
+    public boolean isValidOpening(Symbol s) {
+      return !(s instanceof NullOperand);
+    }
+    
+    @Override
+    public boolean isValidClosing(Symbol s) {
+      return !(s instanceof NullOperand);
     }
   }  
   

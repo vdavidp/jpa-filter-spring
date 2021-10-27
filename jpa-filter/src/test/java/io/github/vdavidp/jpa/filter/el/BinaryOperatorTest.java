@@ -5,6 +5,7 @@
  */
 package io.github.vdavidp.jpa.filter.el;
 
+import io.github.vdavidp.jpa.filter.el.UnaryOperator.Order;
 import java.math.BigInteger;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
@@ -40,7 +41,7 @@ public class BinaryOperatorTest {
   }
   
   @Test
-  void mergeWithWeighterOperator() {
+  void mergeWithWeighterBinaryOperator() {
     Symbol s = proto.merge(number("1")).merge(number("2"));
     Symbol other = s.merge(new BinaryOperator("*", 20));
     assertNotSame(s, other);
@@ -48,11 +49,25 @@ public class BinaryOperatorTest {
   }
   
   @Test
-  void mergeWithLighterOperator() {
+  void mergeWithLighterBinaryOperator() {
     Symbol s = proto.merge(number("1")).merge(number("2"));
     Symbol other = s.merge(new BinaryOperator("AND", 5));
     assertNotSame(s, other);
     assertEquals("[[[1]+[2]]ANDnull]", other.toString());
+  }
+  
+  @Test
+  void mergeWithWeighterRightUnaryOperator() {
+    Symbol s = new BinaryOperator("+", 10, number("2"), number("3"));
+    Symbol s2 = s.merge(new UnaryOperator("Is Null", 30, Order.RIGHT));
+    assertEquals("[[2]+[[3]Is Null]]", s2.toString());
+  }
+  
+  @Test
+  void mergeWithLighterRightUnaryOperator() {
+    Symbol s = new BinaryOperator("+", 100, number("2"), number("3"));
+    Symbol s2 = s.merge(new UnaryOperator("Is Null", 30, Order.RIGHT));
+    assertEquals("[[[2]+[3]]Is Null]", s2.toString());
   }
   
   private NumberOperand number(String s) {

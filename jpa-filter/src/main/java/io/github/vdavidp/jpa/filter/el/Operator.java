@@ -20,10 +20,6 @@ public abstract class Operator implements Symbol {
   @Getter
   protected final int weight;
   
-  public Token nextToken(String text) {
-    return nextToken(text, 0);
-  }
-  
   public Token nextToken(String text, int startIndex) {
     int i = text.indexOf(symbol, startIndex);
     if (i > -1) {
@@ -35,5 +31,5 @@ public abstract class Operator implements Symbol {
   
   protected abstract Token createDetails(int index, String left, String right);
   
-  protected abstract Operator executeAfter(Function<Symbol, Operator> factory);
+  protected abstract Symbol executeAfter(Symbol other);
 }

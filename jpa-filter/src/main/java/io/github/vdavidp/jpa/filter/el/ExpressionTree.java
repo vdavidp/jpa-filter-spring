@@ -21,10 +21,13 @@ public class ExpressionTree {
   
   public ExpressionTree(String text, List<Operand> operands, List<Operator> operators) {
     this.operands = new ArrayList<>(operands);
+    this.operands.add(new EmptyOperand());
+    this.operands.add(new CloseParenthesesOperand());
+    this.operands.add(new OpenParenthesesOperand());
     this.operands.add(new NullOperand());
     
     this.operators = operators;
-    this.root = parse(new NullSymbol(), text, 0, new ParenthesesCounter());
+    this.root = parse(new DummyToken(), new NullSymbol(), text, 0, new ParenthesesCounter(100));
   }
   
   @Override
@@ -32,22 +35,22 @@ public class ExpressionTree {
     return root.toString();
   }
   
-  private Symbol parse(Symbol tree, String text, int startIndex, ParenthesesCounter counter) {
-    Token t = findToken(text, startIndex);
-    if (t == null) {
+  private Symbol parse(Token previousToken, Symbol tree, String text, int startIndex, ParenthesesCounter counter) {
+    Token token = findToken(text, startIndex);
+    if (token == null) {
       Symbol op = findOperand(text, counter).getSymbol();
-      if (op instanceof NullOperand) {
+      if (!previousToken.isValidClosing(op)) {
         throw new ParseException("Not able to parse expression: [" + text + "]");
       }
       return tree.merge(op);
     } else {
-      ReducedPair pair = findOperand(t.getLeftText(), counter);
-      if (pair.getSymbol() instanceof NullOperand) {
-        return parse(tree, text, t.getIndex() + 1, counter);
+      ReducedPair pair = findOperand(token.getLeftText(), counter);
+      if (!token.isValidOpening(pair.getSymbol())) {
+        return parse(token, tree, text, token.getIndex() + 1, counter);
       } else {
         tree = tree.merge(pair.getSymbol());
-        tree = tree.merge(t.build(pair.getCounter()));
-        return parse(tree, t.getRightText(), 0, pair.getCounter());
+        tree = tree.merge(token.build(pair.getCounter()));
+        return parse(token, tree, token.getRightText(), 0, pair.getCounter());
       }
     }
   }
@@ -72,7 +75,7 @@ public class ExpressionTree {
     root.visit(visitor);
   }
   
-  class NullSymbol implements Symbol {
+  static class NullSymbol implements Symbol {
     
     @Override
     public String toString() {
@@ -93,5 +96,39 @@ public class ExpressionTree {
     public int getWeight() {
       throw new UnsupportedOperationException("Not supported yet.");
     }
+  }
+  
+  static class DummyToken implements Token {
+
+    @Override
+    public int getIndex() {
+      throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public String getLeftText() {
+      throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public String getRightText() {
+      throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Operator build(ParenthesesCounter counter) {
+      throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public boolean isValidOpening(Symbol s) {
+      throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public boolean isValidClosing(Symbol s) {
+      return !(s instanceof NullOperand);
+    }
+    
   }
 }

@@ -5,8 +5,6 @@
  */
 package io.github.vdavidp.jpa.filter.el;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 

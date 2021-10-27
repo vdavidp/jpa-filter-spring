@@ -14,4 +14,6 @@ public interface Token {
   String getLeftText();
   String getRightText();
   Operator build(ParenthesesCounter counter);
+  boolean isValidOpening(Symbol s);
+  boolean isValidClosing(Symbol s);
 }
