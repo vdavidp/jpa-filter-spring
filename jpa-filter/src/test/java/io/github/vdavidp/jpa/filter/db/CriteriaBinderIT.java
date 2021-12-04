@@ -3,8 +3,8 @@ package io.github.vdavidp.jpa.filter.db;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 
-import io.github.vdavidp.jpa.filter.db.entity.Article;
-import io.github.vdavidp.jpa.filter.db.entity.Dummy;
+import io.github.vdavidp.jpa.filter.db.sample.Article;
+import io.github.vdavidp.jpa.filter.db.sample.Dummy;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 @DataJpaTest
-public class DatabaseBinderIT {
+public class CriteriaBinderIT {
 
   @PersistenceContext
   EntityManager entityManager;

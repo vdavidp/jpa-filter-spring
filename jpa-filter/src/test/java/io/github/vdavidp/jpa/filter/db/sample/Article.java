@@ -1,4 +1,4 @@
-package io.github.vdavidp.jpa.filter.db.entity;
+package io.github.vdavidp.jpa.filter.db.sample;
 
 import java.util.List;
 import javax.persistence.CascadeType;

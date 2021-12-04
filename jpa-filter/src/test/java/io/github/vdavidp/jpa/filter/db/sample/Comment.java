@@ -1,6 +1,6 @@
-package io.github.vdavidp.jpa.filter.db.entity;
+package io.github.vdavidp.jpa.filter.db.sample;
 
-import javax.persistence.Column;
+import java.sql.Timestamp;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -11,13 +11,15 @@ import lombok.Data;
 
 @Entity
 @Data
-public class KeyWord {
+public class Comment {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  private String name;
+  private String author;
+
+  private String key;
 
   @ManyToOne
   @JoinColumn(name = "article_id")

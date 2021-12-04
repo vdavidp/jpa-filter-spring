@@ -1,6 +1,5 @@
 package io.github.vdavidp.jpa.filter.spring;
 
-import io.github.vdavidp.jpa.filter.db.Binder;
 import java.util.List;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +21,7 @@ public class JpaFilterAutoconfigure {
 
   @Bean
   WebMvcConfigurer expressionTreeLinker(
-      SpecificationProvider provider,
-      ObjectProvider<Binder> binderProvider) {
+      SpecificationProvider provider) {
 
     return new WebMvcConfigurer() {
       @Override

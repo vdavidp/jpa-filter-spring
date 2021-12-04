@@ -2,7 +2,7 @@ package io.github.vdavidp.jpa.filter.db;
 
 import static java.util.Collections.singletonList;
 
-import io.github.vdavidp.jpa.filter.db.entity.Dummy;
+import io.github.vdavidp.jpa.filter.db.sample.Dummy;
 import static java.util.Arrays.asList;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;

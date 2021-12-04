@@ -7,6 +7,7 @@ import io.github.vdavidp.jpa.filter.el.StringOperand;
 import io.github.vdavidp.jpa.filter.el.UnaryOperator;
 import io.github.vdavidp.jpa.filter.el.UuidOperand;
 import io.github.vdavidp.jpa.filter.el.VariableOperand;
+import io.github.vdavidp.jpa.filter.el.Visitor;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -26,7 +27,7 @@ import javax.persistence.metamodel.Attribute;
 import javax.persistence.metamodel.PluralAttribute;
 import javax.persistence.metamodel.PluralAttribute.CollectionType;
 
-public class DatabaseBinder<T> implements Binder {
+public class CriteriaBinder<T> implements Visitor {
 
   private Root<T> root;
   private final CriteriaQuery<T> query;
@@ -39,7 +40,7 @@ public class DatabaseBinder<T> implements Binder {
   private Map<CollectionType, Function<String, Join<T, ?>>> joiners;
   private Subquery<T> subQuery;
 
-  public DatabaseBinder(
+  public CriteriaBinder(
       Root<T> root,
       CriteriaQuery<T> query,
       CriteriaBuilder builder,
@@ -142,7 +143,6 @@ public class DatabaseBinder<T> implements Binder {
     deque.addFirst(builder.literal(operand.getValue()));
   }
 
-  @Override
   public Predicate getPredicate() {
     if (subQuery != null) {
       Predicate subPredicate = (Predicate) deque.removeFirst();

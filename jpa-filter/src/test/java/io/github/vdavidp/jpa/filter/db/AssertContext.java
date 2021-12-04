@@ -1,6 +1,5 @@
 package io.github.vdavidp.jpa.filter.db;
 
-import static io.github.vdavidp.jpa.filter.db.Mappers.defaultMappers;
 import io.github.vdavidp.jpa.filter.el.Defaults;
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -13,19 +12,20 @@ import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
+import static io.github.vdavidp.jpa.filter.db.Mappers.defaultCriteriaMappers;
 
 public class AssertContext<T> {
   private final EntityManager entityManager;
   private final CriteriaQuery<T> criteriaQuery;
   private final Root<T> root;
-  private final DatabaseBinder<T> binder;
+  private final CriteriaBinder<T> binder;
 
   public AssertContext(EntityManager entityManager, Class<T> clazz) {
     this.entityManager = entityManager;
     criteriaQuery = entityManager.getCriteriaBuilder().createQuery(clazz);
     root = criteriaQuery.from(clazz);
-    binder = new DatabaseBinder<>(
-        root, criteriaQuery, entityManager.getCriteriaBuilder(), defaultMappers());
+    binder = new CriteriaBinder<>(
+        root, criteriaQuery, entityManager.getCriteriaBuilder(), defaultCriteriaMappers());
   }
 
   public List<T> executeQuery(String exp) {

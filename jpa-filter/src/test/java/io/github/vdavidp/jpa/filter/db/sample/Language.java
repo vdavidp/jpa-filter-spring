@@ -1,4 +1,4 @@
-package io.github.vdavidp.jpa.filter.db.entity;
+package io.github.vdavidp.jpa.filter.db.sample;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

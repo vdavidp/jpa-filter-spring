@@ -9,6 +9,7 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
@@ -130,7 +131,7 @@ public class Mappers {
 //    };
 //  }
 
-  public static Map<String, BiFunction<Deque<Expression<?>>, CriteriaBuilder, Predicate>> defaultMappers() {
+  public static Map<String, BiFunction<Deque<Expression<?>>, CriteriaBuilder, Predicate>> defaultCriteriaMappers() {
     Map<String, BiFunction<Deque<Expression<?>>, CriteriaBuilder, Predicate>> map = new HashMap<>();
     map.put(":", Mappers.equalTo());
     map.put("!", Mappers.notEqualsTo());
@@ -146,5 +147,17 @@ public class Mappers {
 //    map.put("<=", Mappers.lessThanOrEqual());
 //    map.put("date", Mappers.date());
     return unmodifiableMap(map);
+  }
+  
+  public static Function<String, String> defaultHqlMappers() {
+    return (symbol) -> {
+      if (":".equals(symbol)) {
+        return "=";
+      } else if ("!".equals(symbol)) {
+        return "!=";
+      } else {
+        return symbol;
+      }
+    };
   }
 }

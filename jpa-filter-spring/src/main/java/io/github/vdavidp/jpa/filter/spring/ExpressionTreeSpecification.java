@@ -1,9 +1,7 @@
 package io.github.vdavidp.jpa.filter.spring;
 
-import static io.github.vdavidp.jpa.filter.db.Mappers.defaultMappers;
 
-import io.github.vdavidp.jpa.filter.db.Binder;
-import io.github.vdavidp.jpa.filter.db.DatabaseBinder;
+import io.github.vdavidp.jpa.filter.db.CriteriaBinder;
 import io.github.vdavidp.jpa.filter.el.Defaults;
 import io.github.vdavidp.jpa.filter.el.ExpressionTree;
 import io.github.vdavidp.jpa.filter.el.Operand;
@@ -22,6 +20,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import lombok.AllArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
+import static io.github.vdavidp.jpa.filter.db.Mappers.defaultCriteriaMappers;
 
 @AllArgsConstructor
 public class ExpressionTreeSpecification<T> implements Specification<T> {
@@ -34,7 +33,7 @@ public class ExpressionTreeSpecification<T> implements Specification<T> {
   public Predicate toPredicate(Root<T> root, CriteriaQuery<?> criteriaQuery,
       CriteriaBuilder criteriaBuilder) {
     Map<String, BiFunction<Deque<Expression<?>>, CriteriaBuilder, Predicate>> mappers = new HashMap<>(
-        defaultMappers());
+        defaultCriteriaMappers());
     List<Operand> operands = new ArrayList<>(Defaults.operands());
     List<Operator> operators = new ArrayList<>(Defaults.operators());
 
@@ -47,7 +46,7 @@ public class ExpressionTreeSpecification<T> implements Specification<T> {
     ExpressionTree et = new ExpressionTree(expression, operands, operators);
     et.visit(fieldExistingVerifier);
     
-    Binder binder = new DatabaseBinder(root, criteriaQuery, criteriaBuilder, mappers);
+    CriteriaBinder binder = new CriteriaBinder(root, criteriaQuery, criteriaBuilder, mappers);
     et.visit(binder);
 
     return binder.getPredicate();
