@@ -16,12 +16,12 @@ import org.springframework.context.annotation.Bean;
 public class CustomConfiguration {
 
   @Bean
-  ExpressionTreeConfigurator configurator() {
+  SpecificationConfigurator configurator() {
     return new ExpTreeConfiguration();
   }
 }
 
-class ExpTreeConfiguration implements ExpressionTreeConfigurator {
+class ExpTreeConfiguration implements SpecificationConfigurator {
 
 //  @Override
 //  public void modifyMappers(

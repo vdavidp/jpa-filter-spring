@@ -1,7 +1,6 @@
 package io.github.vdavidp.jpa.filter.spring;
 
 import java.util.List;
-import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Bean;
@@ -10,16 +9,22 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-@ConditionalOnWebApplication
 public class JpaFilterAutoconfigure {
   
   @Bean
   SpecificationProvider expressionTreeProvider(
-      @Autowired(required = false) ExpressionTreeConfigurator configurator) {
+      @Autowired(required = false) SpecificationConfigurator configurator) {
     return new SpecificationProvider(configurator);
   }
-
+  
   @Bean
+  HqlProvider hqlProvider(
+      @Autowired(required = false) HqlConfigurator configurator) {
+    return new HqlProvider(configurator);
+  }
+  
+  @Bean
+  @ConditionalOnWebApplication
   WebMvcConfigurer expressionTreeLinker(
       SpecificationProvider provider) {
 

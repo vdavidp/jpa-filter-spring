@@ -23,23 +23,20 @@
  */
 package io.github.vdavidp.jpa.filter.spring;
 
-import io.github.vdavidp.jpa.filter.spring.visitor.FieldExistingVerifier;
-import lombok.AllArgsConstructor;
-import org.springframework.data.jpa.domain.Specification;
+import io.github.vdavidp.jpa.filter.el.Operand;
+import io.github.vdavidp.jpa.filter.el.Operator;
+import java.util.List;
+import java.util.function.Function;
 
 /**
  *
  * @author david
  */
-@AllArgsConstructor
-public class SpecificationProvider {
-  private SpecificationConfigurator configurator;
+public interface HqlConfigurator {
   
-  public <T> Specification<T> create(String expression, Class<?> entityClass) {
-    if (expression == null || expression.trim().equals("")) {
-      return (a, b, c) -> null;
-    } else {
-      return new ExpressionTreeSpecification<>(expression, configurator, new FieldExistingVerifier(entityClass));
-    }
-  }
+  Function<String, String> modifyMappers(Function<String, String> operatorMapper);
+ 
+  void modifyOperands(List<Operand> operands);
+  
+  void modifyOperators(List<Operator> operators);
 }

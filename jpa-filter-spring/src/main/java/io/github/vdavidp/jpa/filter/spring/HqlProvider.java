@@ -23,23 +23,40 @@
  */
 package io.github.vdavidp.jpa.filter.spring;
 
-import io.github.vdavidp.jpa.filter.spring.visitor.FieldExistingVerifier;
+import io.github.vdavidp.jpa.filter.db.HqlBinder;
+import io.github.vdavidp.jpa.filter.db.Mappers;
+import io.github.vdavidp.jpa.filter.el.Defaults;
+import io.github.vdavidp.jpa.filter.el.ExpressionTree;
+import io.github.vdavidp.jpa.filter.el.Operand;
+import io.github.vdavidp.jpa.filter.el.Operator;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
 import lombok.AllArgsConstructor;
-import org.springframework.data.jpa.domain.Specification;
 
 /**
  *
  * @author david
  */
 @AllArgsConstructor
-public class SpecificationProvider {
-  private SpecificationConfigurator configurator;
+public class HqlProvider {
+  private HqlConfigurator configurator;
   
-  public <T> Specification<T> create(String expression, Class<?> entityClass) {
-    if (expression == null || expression.trim().equals("")) {
-      return (a, b, c) -> null;
-    } else {
-      return new ExpressionTreeSpecification<>(expression, configurator, new FieldExistingVerifier(entityClass));
+  public String create(String filter) {
+    List<Operand> operands = new ArrayList<>(Defaults.operands());
+    List<Operator> operators = new ArrayList<>(Defaults.operators());
+    
+    Function<String, String> operatorMapper = Mappers.defaultHqlMappers();
+    if (configurator != null) {
+      configurator.modifyOperands(operands);
+      configurator.modifyOperators(operators);
+      operatorMapper = configurator.modifyMappers(operatorMapper);
     }
+    
+    ExpressionTree et = new ExpressionTree(filter, operands, operators);
+    
+    HqlBinder binder = new HqlBinder(operatorMapper);
+    et.visit(binder);
+    return binder.getPredicate();
   }
 }

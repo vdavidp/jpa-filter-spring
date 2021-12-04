@@ -23,23 +23,47 @@
  */
 package io.github.vdavidp.jpa.filter.spring;
 
-import io.github.vdavidp.jpa.filter.spring.visitor.FieldExistingVerifier;
-import lombok.AllArgsConstructor;
+import io.github.vdavidp.jpa.filter.spring.example.Article;
+import io.github.vdavidp.jpa.filter.spring.example.Comment;
+import io.github.vdavidp.jpa.filter.spring.example.CommentRepository;
+import java.util.List;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.domain.Specification;
 
 /**
  *
  * @author david
  */
-@AllArgsConstructor
-public class SpecificationProvider {
-  private SpecificationConfigurator configurator;
+@DataJpaTest
+@Import(JpaFilterAutoconfigure.class)
+public class SpecificationProviderIT {
   
-  public <T> Specification<T> create(String expression, Class<?> entityClass) {
-    if (expression == null || expression.trim().equals("")) {
-      return (a, b, c) -> null;
-    } else {
-      return new ExpressionTreeSpecification<>(expression, configurator, new FieldExistingVerifier(entityClass));
-    }
+  @Autowired
+  CommentRepository commentRepository;
+  
+  @Autowired
+  SpecificationProvider specificationProvider;
+  
+  @Test
+  void withFilter() {
+    String filter = "author:'john'";
+    manualSpecificationCreation(filter, 1);
   }
+  
+  @Test
+  void withNoFilter() {
+    manualSpecificationCreation(null, 3);
+  }
+  
+  private void manualSpecificationCreation(String filter, int expectedTotal) {
+    Specification<Comment> spec = specificationProvider.create(filter, Comment.class);
+    List<Comment> comments = commentRepository.findAll(spec);
+    
+    assertEquals(expectedTotal, comments.size());
+  }
+  
 }

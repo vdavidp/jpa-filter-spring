@@ -21,25 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package io.github.vdavidp.jpa.filter.spring;
+package io.github.vdavidp.jpa.filter.spring.example;
 
-import io.github.vdavidp.jpa.filter.spring.visitor.FieldExistingVerifier;
-import lombok.AllArgsConstructor;
-import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 /**
  *
  * @author david
  */
-@AllArgsConstructor
-public class SpecificationProvider {
-  private SpecificationConfigurator configurator;
+public interface CommentRepository extends JpaRepository<Comment, Long>, JpaSpecificationExecutor<Comment> {
   
-  public <T> Specification<T> create(String expression, Class<?> entityClass) {
-    if (expression == null || expression.trim().equals("")) {
-      return (a, b, c) -> null;
-    } else {
-      return new ExpressionTreeSpecification<>(expression, configurator, new FieldExistingVerifier(entityClass));
-    }
-  }
 }

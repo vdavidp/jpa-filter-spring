@@ -14,13 +14,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class DefaultIntegrationIT {
+public class DefaultWebIntegrationIT {
 
   @LocalServerPort
   int port;
@@ -58,7 +56,7 @@ public class DefaultIntegrationIT {
   }
   
   @Test
-  void fieldVerifierIntegration() {
+  void fieldNameVerifierIntegration() {
     String url = "http://localhost:" + port + "/articles?filter=data:3";
     assertThrows(HttpServerErrorException.class, () -> restTemplate.getForEntity(url, Article[].class));
   }

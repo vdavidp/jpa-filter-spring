@@ -26,7 +26,7 @@ import static io.github.vdavidp.jpa.filter.db.Mappers.defaultCriteriaMappers;
 public class ExpressionTreeSpecification<T> implements Specification<T> {
 
   private String expression;
-  private ExpressionTreeConfigurator configurator;
+  private SpecificationConfigurator configurator;
   private FieldExistingVerifier fieldExistingVerifier;
 
   @Override
