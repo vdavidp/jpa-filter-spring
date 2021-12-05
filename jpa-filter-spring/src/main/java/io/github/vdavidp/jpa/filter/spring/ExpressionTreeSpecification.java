@@ -21,8 +21,10 @@ import javax.persistence.criteria.Root;
 import lombok.AllArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import static io.github.vdavidp.jpa.filter.db.Mappers.defaultCriteriaMappers;
+import lombok.extern.slf4j.Slf4j;
 
 @AllArgsConstructor
+@Slf4j
 public class ExpressionTreeSpecification<T> implements Specification<T> {
 
   private String expression;
@@ -44,6 +46,7 @@ public class ExpressionTreeSpecification<T> implements Specification<T> {
     }
 
     ExpressionTree et = new ExpressionTree(expression, operands, operators);
+    log.info("expression-tree: {}", et.toString());
     et.visit(fieldExistingVerifier);
     
     CriteriaBinder binder = new CriteriaBinder(root, criteriaQuery, criteriaBuilder, mappers);

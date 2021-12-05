@@ -75,6 +75,7 @@ public class UnaryOperator extends Operator {
   
   @Override
   public void visit(Visitor visitor) {
+    leaf.visit(visitor);
     visitor.accept(this);
   }
   

@@ -20,7 +20,6 @@ import org.springframework.web.client.RestTemplate;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(CustomConfiguration.class)
-@Disabled("Fix test")
 public class CustomIntegrationIT {
 
   @LocalServerPort
@@ -30,14 +29,9 @@ public class CustomIntegrationIT {
 
   @Test
   void checkCustomizeDefaultConfiguration() throws UnsupportedEncodingException {
-    String filter = URLEncoder.encode("{title}:'Article 1' || {title}:'Article 3'", "UTF-8");
-    String url = "http://localhost:" + port + "/articles?filter=" + filter;
+    String url = "http://localhost:" + port + "/articles?filter=title:'Article 2' OR active IS TRUE";
     Article[] articles = restTemplate.getForObject(url, Article[].class);
-
-    assertNotNull(articles);
-    assertEquals(2, articles.length);
-
-    List<String> titles = Arrays.stream(articles).map(Article::getTitle).collect(toList());
-    assertTrue(titles.containsAll(asList("Article 1", "Article 3")));
+    
+    assertEquals(3, articles.length);
   }
 }
