@@ -46,7 +46,7 @@ public class ExpressionTreeSpecification<T> implements Specification<T> {
     }
 
     ExpressionTree et = new ExpressionTree(expression, operands, operators);
-    log.info("expression-tree: {}", et.toString());
+    log.debug("expression tree: {}", et.toString());
     et.visit(fieldExistingVerifier);
     
     CriteriaBinder binder = new CriteriaBinder(root, criteriaQuery, criteriaBuilder, mappers);

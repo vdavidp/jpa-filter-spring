@@ -97,12 +97,14 @@ public class HqlBinder implements Visitor {
   }
 
   public void accept(UnaryOperator operator) {
+    //TODO implement unary operator moving format to mapper
     throw new UnsupportedOperationException();
   }
   
   public void accept(BinaryOperator operator) {
     String right = stack.pop();
     String left = stack.pop();
+    //TODO Move format to mapper
     stack.push(format("(%s %s %s)", left, operatorMapper.apply(operator.getSymbol()), right));
   }
   
