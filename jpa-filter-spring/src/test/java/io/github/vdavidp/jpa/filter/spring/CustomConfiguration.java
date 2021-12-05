@@ -1,5 +1,6 @@
 package io.github.vdavidp.jpa.filter.spring;
 
+import io.github.vdavidp.jpa.filter.el.BinaryOperator;
 import io.github.vdavidp.jpa.filter.el.Operand;
 import io.github.vdavidp.jpa.filter.el.Operator;
 import io.github.vdavidp.jpa.filter.el.UnaryOperator;
@@ -8,6 +9,7 @@ import java.util.Deque;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
@@ -18,12 +20,17 @@ import org.springframework.context.annotation.Bean;
 public class CustomConfiguration {
 
   @Bean
-  SpecificationConfigurator configurator() {
-    return new ExpTreeConfiguration();
+  SpecificationConfigurator specificationConfig() {
+    return new SpecificationConfig();
+  }
+  
+  @Bean
+  HqlConfigurator hqlConfig() {
+    return new HqlConfig();
   }
 }
 
-class ExpTreeConfiguration implements SpecificationConfigurator {
+class SpecificationConfig implements SpecificationConfigurator {
 
   @Override
   public void modifyOperands(List<Operand> operands) {
@@ -41,5 +48,29 @@ class ExpTreeConfiguration implements SpecificationConfigurator {
       Expression<Boolean> operand = (Expression<Boolean>)stack.pop();
       return cb.isTrue(operand);
     });
+  }
+}
+  
+class HqlConfig implements HqlConfigurator {
+
+    @Override
+  public void modifyOperands(List<Operand> operands) {
+    
+  }
+
+  @Override
+  public void modifyOperators(List<Operator> operators) {
+    operators.add(new BinaryOperator("~", 40));
+  }
+
+  @Override
+  public Function<String, String> modifyMappers(Function<String, String> operatorMapper) {
+    return (o) -> {
+      if ("~".equals(o)) {
+        return "like";
+      } else {
+        return operatorMapper.apply(o);
+      }
+    };
   }
 }

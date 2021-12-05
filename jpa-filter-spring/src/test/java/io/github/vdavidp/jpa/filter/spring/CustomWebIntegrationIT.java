@@ -20,7 +20,7 @@ import org.springframework.web.client.RestTemplate;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(CustomConfiguration.class)
-public class CustomIntegrationIT {
+public class CustomWebIntegrationIT {
 
   @LocalServerPort
   int port;
@@ -28,10 +28,18 @@ public class CustomIntegrationIT {
   RestTemplate restTemplate = new RestTemplate();
 
   @Test
-  void checkCustomizeDefaultConfiguration() throws UnsupportedEncodingException {
+  void checkSpecificationCustomConfig() throws UnsupportedEncodingException {
     String url = "http://localhost:" + port + "/articles?filter=title:'Article 2' OR active IS TRUE";
     Article[] articles = restTemplate.getForObject(url, Article[].class);
     
     assertEquals(3, articles.length);
+  }
+  
+  @Test
+  void checkHqlCustomConfig() {
+    String url = "http://localhost:" + port + "/articlesHql?filter=title~'%2'";
+    Article[] articles = restTemplate.getForObject(url, Article[].class);
+    
+    assertEquals(1, articles.length);
   }
 }

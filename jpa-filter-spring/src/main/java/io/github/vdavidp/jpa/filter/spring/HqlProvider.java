@@ -31,6 +31,7 @@ import io.github.vdavidp.jpa.filter.el.Operand;
 import io.github.vdavidp.jpa.filter.el.Operator;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 import lombok.AllArgsConstructor;
 
@@ -42,7 +43,7 @@ import lombok.AllArgsConstructor;
 public class HqlProvider {
   private HqlConfigurator configurator;
   
-  public String create(String filter) {
+  public String create(String filter, Set<String> validNames, Function<String, String> mapName) {
     List<Operand> operands = new ArrayList<>(Defaults.operands());
     List<Operator> operators = new ArrayList<>(Defaults.operators());
     
@@ -55,7 +56,7 @@ public class HqlProvider {
     
     ExpressionTree et = new ExpressionTree(filter, operands, operators);
     
-    HqlBinder binder = new HqlBinder(operatorMapper);
+    HqlBinder binder = new HqlBinder(operatorMapper, validNames, mapName);
     et.visit(binder);
     return binder.getPredicate();
   }

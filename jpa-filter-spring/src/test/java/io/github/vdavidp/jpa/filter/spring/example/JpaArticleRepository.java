@@ -21,59 +21,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package io.github.vdavidp.jpa.filter.spring;
+package io.github.vdavidp.jpa.filter.spring.example;
 
-import io.github.vdavidp.jpa.filter.el.ParseException;
+import io.github.vdavidp.jpa.filter.spring.HqlProvider;
 import java.util.HashSet;
-import java.util.Set;
-import java.util.function.Function;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
+import org.springframework.stereotype.Repository;
 
 /**
  *
  * @author david
  */
-@DataJpaTest
-@Import(JpaFilterAutoconfigure.class)
-public class HqlProviderIT {
+@Repository
+public class JpaArticleRepository {
   
   @PersistenceContext
-  EntityManager entityManager;    
+  private EntityManager entityManager;
   
   @Autowired
-  HqlProvider hqlProvider;
+  private HqlProvider hqlProvider;
   
-  @Test
-  void withFilter() {
-    Set<String> validNames = new HashSet<>();
-    validNames.add("id");
-    validNames.add("article.title");
+  List<Article> getArticles(String filter) {
+    HashSet<String> validNames = new HashSet();
+    validNames.add("title");
+    validNames.add("active");
     
-    Function<String, String> nameMapper = (n) -> "c." + n;
-    
-    String query = "select c.author from Comment c where " + 
-        hqlProvider.create("id:2 AND article.title:'Article 2'", validNames, nameMapper);
-    Query q = entityManager.createQuery(query);
-    String name = (String)q.getSingleResult();
-    
-    assertEquals("john", name);
+    String q = "select a from Article a where " + hqlProvider.create(filter, validNames, n -> "a." + n);
+    Query query = entityManager.createQuery(q);
+    return (List<Article>)query.getResultList();
   }
   
-  @Test
-  void nullPointerWithoutFilter() {
-    assertThrows(NullPointerException.class, () -> hqlProvider.create(null, new HashSet(), n -> n));
-  }
-  
-  @Test 
-  void parseExceptionWhenEmptyFilter() {
-    assertThrows(ParseException.class, () -> hqlProvider.create("", new HashSet(), n -> n));
-  }
 }

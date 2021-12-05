@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class ArticleController {
+  
+  @Autowired
+  private JpaArticleRepository jpaArticleRepository;
 
   @Autowired
   private ArticleRepository articleRepository;
@@ -27,5 +30,10 @@ public class ArticleController {
   @GetMapping("/articles2")
   List<Article> findAll2(@Filter(queryParam = "search") Specification<Article> specification) {
     return articleRepository.findAll(specification);
+  }
+  
+  @GetMapping("/articlesHql")
+  List<Article> findAll3(@RequestParam String filter) {
+    return jpaArticleRepository.getArticles(filter);
   }
 }

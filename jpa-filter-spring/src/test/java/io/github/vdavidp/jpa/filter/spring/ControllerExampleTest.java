@@ -25,6 +25,7 @@ package io.github.vdavidp.jpa.filter.spring;
 
 import io.github.vdavidp.jpa.filter.spring.example.Article;
 import io.github.vdavidp.jpa.filter.spring.example.ArticleRepository;
+import io.github.vdavidp.jpa.filter.spring.example.JpaArticleRepository;
 import static java.util.Arrays.asList;
 import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.any;
@@ -50,6 +51,9 @@ public class ControllerExampleTest {
   
   @MockBean
   ArticleRepository articleRepository;
+  
+  @MockBean
+  JpaArticleRepository jpaArticleRepository;
   
   @Autowired
   MockMvc mockMvc;
