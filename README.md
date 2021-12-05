@@ -2,7 +2,9 @@
 
 [![CircleCI](https://circleci.com/gh/circleci/circleci-docs.svg?style=shield)](https://circleci.com/gh/vdavidp/jpa-filter-spring) [![codecov](https://codecov.io/gh/vdavidp/jpa-filter-spring/branch/master/graph/badge.svg?token=CSCU81AV0H)](https://codecov.io/gh/vdavidp/jpa-filter-spring)
 
-It adds filtering capabilities to spring-data crud repositories. Just add the query param **filter** with a predicate to filter the results. It was designed to be extensible in nature so you can define your own operators and operands.
+It adds filtering capabilities to spring-data crud repositories. Just add the query param **filter** with a predicate to filter the results. 
+
+The library was designed to be extensible in nature. You can define your own operators and operands. Manually creation of predicate is possible for spring specifications and raw HQL queries. You can go even further and use the ExpressionTree component with a custom Visitor for your own purposes.
 
 
 ## Quickstart
@@ -22,10 +24,6 @@ It adds filtering capabilities to spring-data crud repositories. Just add the qu
           {
             "text": "Interesting",
             "author": "Person 1"
-          },
-          {
-            "text": "Needs more examples",
-            "author": "Person 2"
           }
         ]
       }
@@ -54,9 +52,14 @@ It adds filtering capabilities to spring-data crud repositories. Just add the qu
     ```
     http://host/articles?filter=author:'John' OR comments.author:'Person 1'
     ```
+  
+### Manual creation of predicate
+Sometimes you may need to pre process the provided filter and after that then create the predicate. You can do it for both [specification](https://github.com/vdavidp/jpa-filter-spring/blob/master/jpa-filter-spring/src/test/java/io/github/vdavidp/jpa/filter/spring/SpecificationProviderIT.java) and [HQL](https://github.com/vdavidp/jpa-filter-spring/blob/master/jpa-filter-spring/src/test/java/io/github/vdavidp/jpa/filter/spring/HqlProviderIT.java) predicates
 
+## Default Configuration
 
-## Default Symbols
+By default it is installed some operators and operands. You can see an usage example [here](https://github.com/vdavidp/jpa-filter-spring/blob/master/jpa-filter-spring/src/test/java/io/github/vdavidp/jpa/filter/spring/DefaultWebIntegrationIT.java).
+
 Following operands are supported:
 * real numbers e.g. 123456699393848437273
 * decimals e.g. 12.33221
@@ -77,5 +80,5 @@ Of course parentheses can be used to force order. For example, these 2 predicate
 * ?filter=role:'Boss' OR age>21 AND  age<100
 * ?filter=role:'Boss' OR (age>21 AND age<100)
 
-## Customizations
-TODO
+## Custom Configuration
+Does your project requires some operator or operand the library is missing? Here you can find an example how to provide your own [configuration](https://github.com/vdavidp/jpa-filter-spring/blob/master/jpa-filter-spring/src/test/java/io/github/vdavidp/jpa/filter/spring/CustomConfiguration.java) for both specifications and HQL. This [test](https://github.com/vdavidp/jpa-filter-spring/blob/master/jpa-filter-spring/src/test/java/io/github/vdavidp/jpa/filter/spring/DefaultWebIntegrationIT.java) shows how it looks like to usage it.
