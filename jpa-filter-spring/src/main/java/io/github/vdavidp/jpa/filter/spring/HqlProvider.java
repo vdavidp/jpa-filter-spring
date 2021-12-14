@@ -30,7 +30,9 @@ import io.github.vdavidp.jpa.filter.el.ExpressionTree;
 import io.github.vdavidp.jpa.filter.el.Operand;
 import io.github.vdavidp.jpa.filter.el.Operator;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import lombok.AllArgsConstructor;
@@ -47,11 +49,11 @@ public class HqlProvider {
     List<Operand> operands = new ArrayList<>(Defaults.operands());
     List<Operator> operators = new ArrayList<>(Defaults.operators());
     
-    Function<String, String> operatorMapper = Mappers.defaultHqlMappers();
+    Map<String, Function<Deque<String>, String>> operatorMapper = Mappers.defaultHqlMappers();
     if (configurator != null) {
       configurator.modifyOperands(operands);
       configurator.modifyOperators(operators);
-      operatorMapper = configurator.modifyMappers(operatorMapper);
+      configurator.modifyMappers(operatorMapper);
     }
     
     ExpressionTree et = new ExpressionTree(filter, operands, operators);

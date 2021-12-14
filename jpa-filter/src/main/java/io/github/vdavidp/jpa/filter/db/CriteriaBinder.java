@@ -34,7 +34,7 @@ public class CriteriaBinder<T> implements Visitor {
   private final CriteriaBuilder builder;
   private final Map<String, BiFunction<Deque<Expression<?>>, CriteriaBuilder, Predicate>> mappers;
 
-  private final Deque<Expression<?>> deque = new LinkedList<>();
+  private final Deque<Expression<?>> stack = new LinkedList<>();
 
   private final Map<String, Join<T, ?>> joins = new HashMap<>();
   private Map<CollectionType, Function<String, Join<T, ?>>> joiners;
@@ -68,12 +68,12 @@ public class CriteriaBinder<T> implements Visitor {
     if (!mappers.containsKey(operator.getSymbol())) {
       throw new RuntimeException("Database binder not found for operator: " + operator.getSymbol());
     }
-    deque.addFirst(mappers.get(operator.getSymbol()).apply(deque, builder));
+    stack.push(mappers.get(operator.getSymbol()).apply(stack, builder));
   }
 
   @Override
   public void accept(StringOperand operand) {
-    deque.addFirst(builder.literal(operand.getValue()));
+    stack.push(builder.literal(operand.getValue()));
   }
 
   @Override
@@ -81,12 +81,12 @@ public class CriteriaBinder<T> implements Visitor {
     String[] props = operand.getValue().split("\\.");
     switch (props.length) {
       case 1:
-        deque.addFirst(root.get(operand.getValue()));
+        stack.push(root.get(operand.getValue()));
         break;
       case 2:
         initializeSubQuery();
         installJoin(props[0]);
-        deque.addFirst(joins.get(props[0]).get(props[1]));
+        stack.push(joins.get(props[0]).get(props[1]));
         break;
       default:
         throw new RuntimeException("No supported recursive join of depth 2");
@@ -125,31 +125,31 @@ public class CriteriaBinder<T> implements Visitor {
 
   @Override
   public void accept(NumberOperand operand) {
-    deque.addFirst(builder.literal(operand.getValue()));
+    stack.push(builder.literal(operand.getValue()));
   }
 
   @Override
   public void accept(DecimalOperand operand) {
-    deque.addFirst(builder.literal(operand.getValue()));
+    stack.push(builder.literal(operand.getValue()));
   }
 
   @Override
   public void accept(UnaryOperator operator) {
-    deque.addFirst(mappers.get(operator.getSymbol()).apply(deque, builder));
+    stack.push(mappers.get(operator.getSymbol()).apply(stack, builder));
   }
   
   @Override
   public void accept(UuidOperand operand) {
-    deque.addFirst(builder.literal(operand.getValue()));
+    stack.push(builder.literal(operand.getValue()));
   }
 
   public Predicate getPredicate() {
     if (subQuery != null) {
-      Predicate subPredicate = (Predicate) deque.removeFirst();
+      Predicate subPredicate = (Predicate) stack.pop();
       subQuery.select(root).where(subPredicate);
       return builder.exists(subQuery);
     } else {
-      return (Predicate) deque.removeFirst();
+      return (Predicate) stack.pop();
     }
   }
 }

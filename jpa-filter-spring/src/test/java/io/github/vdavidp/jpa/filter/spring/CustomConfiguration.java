@@ -5,6 +5,7 @@ import io.github.vdavidp.jpa.filter.el.Operand;
 import io.github.vdavidp.jpa.filter.el.Operator;
 import io.github.vdavidp.jpa.filter.el.UnaryOperator;
 import io.github.vdavidp.jpa.filter.el.UnaryOperator.Order;
+import static java.lang.String.format;
 import java.util.Deque;
 import java.util.List;
 import java.util.Map;
@@ -64,13 +65,11 @@ class HqlConfig implements HqlConfigurator {
   }
 
   @Override
-  public Function<String, String> modifyMappers(Function<String, String> operatorMapper) {
-    return (o) -> {
-      if ("~".equals(o)) {
-        return "like";
-      } else {
-        return operatorMapper.apply(o);
-      }
-    };
+  public void modifyMappers(Map<String, Function<Deque<String>, String>> operatorMapper) {
+    operatorMapper.put("~", (stack) -> {
+      String right = stack.pop();
+      String left = stack.pop();
+      return format("(%s like %s)", left, right);
+    });
   }
 }

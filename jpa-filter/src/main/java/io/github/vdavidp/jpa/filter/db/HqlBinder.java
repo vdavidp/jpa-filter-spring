@@ -36,6 +36,7 @@ import static java.lang.String.format;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -55,23 +56,26 @@ public class HqlBinder implements Visitor {
   
   private Function<String, String> mapName = n -> n;
   
-  private final Function<String, String> operatorMapper;
+  private final Map<String, Function<Deque<String>, String>> operatorMapper;
   
-  public HqlBinder(Function<String, String> operatorMapper) {
+  public HqlBinder(Map<String, Function<Deque<String>, String>> operatorMapper) {
     this.operatorMapper = operatorMapper;
   }
   
-  public HqlBinder(Function<String, String> operatorMapper, Set<String> validVariables) {
+  public HqlBinder(Map<String, Function<Deque<String>, String>> operatorMapper, 
+      Set<String> validVariables) {
     this(operatorMapper);
     this.validVariables = validVariables;
   }
   
-  public HqlBinder(Function<String, String> operatorMapper, Function<String, String> mapName) {
+  public HqlBinder(Map<String, Function<Deque<String>, String>> operatorMapper, 
+      Function<String, String> mapName) {
     this(operatorMapper);
     this.mapName = mapName;
   }
   
-  public HqlBinder(Function<String, String> operatorMapper, Set<String> validVariables, Function<String, String> mapName) {
+  public HqlBinder(Map<String, Function<Deque<String>, String>> operatorMapper, Set<String> validVariables, 
+      Function<String, String> mapName) {
     this(operatorMapper, validVariables);
     this.mapName = mapName;
   }
@@ -97,15 +101,11 @@ public class HqlBinder implements Visitor {
   }
 
   public void accept(UnaryOperator operator) {
-    //TODO implement unary operator moving format to mapper
-    throw new UnsupportedOperationException();
+    stack.push(operatorMapper.get(operator.getSymbol()).apply(stack));
   }
   
   public void accept(BinaryOperator operator) {
-    String right = stack.pop();
-    String left = stack.pop();
-    //TODO Move format to mapper
-    stack.push(format("(%s %s %s)", left, operatorMapper.apply(operator.getSymbol()), right));
+    stack.push(operatorMapper.get(operator.getSymbol()).apply(stack));
   }
   
   public void accept(UuidOperand operand) {

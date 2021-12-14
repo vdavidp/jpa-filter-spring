@@ -25,7 +25,9 @@ package io.github.vdavidp.jpa.filter.spring;
 
 import io.github.vdavidp.jpa.filter.el.Operand;
 import io.github.vdavidp.jpa.filter.el.Operator;
+import java.util.Deque;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 /**
@@ -34,7 +36,7 @@ import java.util.function.Function;
  */
 public interface HqlConfigurator {
   
-  Function<String, String> modifyMappers(Function<String, String> operatorMapper);
+  void modifyMappers(Map<String, Function<Deque<String>, String>> operatorMapper);
  
   void modifyOperands(List<Operand> operands);
   
