@@ -1,6 +1,6 @@
 # JPA Filter Spring
 
-[![CircleCI](https://circleci.com/gh/circleci/circleci-docs.svg?style=shield)](https://circleci.com/gh/vdavidp/jpa-filter-spring) [![codecov](https://codecov.io/gh/vdavidp/jpa-filter-spring/branch/master/graph/badge.svg?token=CSCU81AV0H)](https://codecov.io/gh/vdavidp/jpa-filter-spring)
+[![CircleCI](https://circleci.com/gh/circleci/circleci-docs.svg?style=shield)](https://circleci.com/gh/vdavidp/jpa-filter-spring) [![codecov](https://codecov.io/gh/vdavidp/jpa-filter-spring/branch/master/graph/badge.svg?token=CSCU81AV0H)](https://codecov.io/gh/vdavidp/jpa-filter-spring) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
 It adds filtering capabilities to spring-data crud repositories. Just add the query param **filter** with a predicate to filter the results. 
 
@@ -13,7 +13,7 @@ The library was designed to be extensible in nature. You can define your own ope
     ```
     <groupId>io.github.vdavidp</groupId>
     <artifactId>jpa-filter-spring-starter</artifactId>
-    <version>0.10.0</version>
+    <version>0.11.0</version>
     ```
 1. Create classes for following structure.
     ```json
