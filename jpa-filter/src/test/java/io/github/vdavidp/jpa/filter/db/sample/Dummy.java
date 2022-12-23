@@ -4,11 +4,12 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.UUID;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import lombok.Data;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.Type;
 
 @Entity
@@ -34,7 +35,7 @@ public class Dummy {
   
   @Temporal(TemporalType.DATE)
   private Date utilDate;
-  
-  @Type(type = "uuid-char")
+
+  @JdbcTypeCode(java.sql.Types.VARCHAR)
   private UUID uuid;
 }

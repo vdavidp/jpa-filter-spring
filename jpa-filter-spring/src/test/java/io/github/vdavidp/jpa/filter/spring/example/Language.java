@@ -23,7 +23,7 @@
  */
 package io.github.vdavidp.jpa.filter.spring.example;
 
-import javax.persistence.Entity;
+import jakarta.persistence.Entity;
 
 /**
  *

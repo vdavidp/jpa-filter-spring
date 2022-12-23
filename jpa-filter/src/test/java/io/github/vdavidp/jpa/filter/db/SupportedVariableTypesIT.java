@@ -4,8 +4,8 @@ import static java.util.Collections.singletonList;
 
 import io.github.vdavidp.jpa.filter.db.sample.Dummy;
 import static java.util.Arrays.asList;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
