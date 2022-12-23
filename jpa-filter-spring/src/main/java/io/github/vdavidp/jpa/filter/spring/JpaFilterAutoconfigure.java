@@ -12,20 +12,20 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class JpaFilterAutoconfigure {
   
   @Bean
-  SpecificationProvider expressionTreeProvider(
+  public SpecificationProvider expressionTreeProvider(
       @Autowired(required = false) SpecificationConfigurator configurator) {
     return new SpecificationProvider(configurator);
   }
   
   @Bean
-  HqlProvider hqlProvider(
+  public HqlProvider hqlProvider(
       @Autowired(required = false) HqlConfigurator configurator) {
     return new HqlProvider(configurator);
   }
   
   @Bean
   @ConditionalOnWebApplication
-  WebMvcConfigurer expressionTreeLinker(
+  public WebMvcConfigurer expressionTreeLinker(
       SpecificationProvider provider) {
 
     return new WebMvcConfigurer() {

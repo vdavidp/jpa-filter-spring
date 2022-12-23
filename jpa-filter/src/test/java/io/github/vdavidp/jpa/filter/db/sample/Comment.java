@@ -1,6 +1,5 @@
 package io.github.vdavidp.jpa.filter.db.sample;
 
-import java.sql.Timestamp;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,7 +18,7 @@ public class Comment {
 
   private String author;
 
-  private String key;
+  private String keyed;
 
   @ManyToOne
   @JoinColumn(name = "article_id")

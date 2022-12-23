@@ -7,7 +7,7 @@ insert into article (title, main_topic, starts, language_id) values
 ('Article 3', 'Love', 5, 3),
 ('Article X', 'Article X', 2, 1);
 
-insert into comment (author, key, article_id) values
+insert into comment (author, keyed, article_id) values
 ('david', 't1', 1),
 ('fabi', 't2', 2),
 ('grace', 't3', 3);

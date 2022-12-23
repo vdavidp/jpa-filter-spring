@@ -64,7 +64,7 @@ public class CriteriaBinderIT {
 
   @Test
   void bindCollectionVariableMultipleTimes() {
-    String exp = "comments.author:'grace' AND comments.key : 't3'";
+    String exp = "comments.author:'grace' AND comments.keyed : 't3'";
     ctxArticle.assertResultContains(exp, singletonList("Article 3"));
   }
 

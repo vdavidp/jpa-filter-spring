@@ -1,2 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-io.github.vdavidp.jpa.filter.spring.JpaFilterAutoconfigure
