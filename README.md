@@ -6,6 +6,8 @@ It adds filtering capabilities to spring-data crud repositories. Just add the qu
 
 The library was designed to be extensible in nature. You can define your own operators and operands. Manually creation of predicate is possible for spring specifications and raw HQL queries. You can go even further and use the ExpressionTree component with a custom Visitor for your own purposes.
 
+Starting at version 0.12.0 it only works with java 17 and spring boot 3.
+
 
 ## Quickstart
 
