@@ -13,7 +13,7 @@ The library was designed to be extensible in nature. You can define your own ope
     ```
     <groupId>io.github.vdavidp</groupId>
     <artifactId>jpa-filter-spring-starter</artifactId>
-    <version>0.11.0</version>
+    <version>0.12.0</version>
     ```
 1. Create classes for following structure.
     ```json
